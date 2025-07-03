@@ -1,0 +1,1 @@
+python [manage.py](http://_vscodecontentref_/2) makemigrations core

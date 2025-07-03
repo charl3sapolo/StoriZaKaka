@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discover Movies - Movie Recommender</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .questionnaire-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .question:nth-child(1) { animation-delay: 0.1s; }
+        .question:nth-child(2) { animation-delay: 0.2s; }
+        .question:nth-child(3) { animation-delay: 0.3s; }
+        .question:nth-child(4) { animation-delay: 0.4s; }
+        .question:nth-child(5) { animation-delay: 0.5s; }
+        .question:nth-child(6) { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question h3 {
+            color: #4a5568;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .mood-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .mood-btn {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        .mood-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .mood-btn.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .discover-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto 0;
+            min-width: 200px;
+        }
+
+        .discover-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .discover-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+            margin-right: 8px;
+        }
+
+        .recommendation-preview {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+        }
+
+        .recommendation-preview.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 Discover Your Perfect Movie</h1>
+            <p>Tell us how you're feeling, and we'll find the perfect movie for your mood</p>
+        </div>
+
+        <div class="questionnaire-card">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="question">
+                <h3><span class="emoji">😊</span>How are you feeling right now?</h3>
+                <div class="mood-options" data-question="currentMood">
+                    <div class="mood-btn" data-value="happy">😄 Happy</div>
+                    <div class="mood-btn" data-value="sad">😢 Sad</div>
+                    <div class="mood-btn" data-value="excited">🤩 Excited</div>
+                    <div class="mood-btn" data-value="calm">😌 Calm</div>
+                    <div class="mood-btn" data-value="stressed">😰 Stressed</div>
+                    <div class="mood-btn" data-value="romantic">💕 Romantic</div>
+                    <div class="mood-btn" data-value="adventurous">🚀 Adventurous</div>
+                    <div class="mood-btn" data-value="nostalgic">🌅 Nostalgic</div>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3><span class="emoji">⚡</span>What's your energy level?</h3>
+                <div class="slider-container">
+                    <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel">
+                    <div class="slider-labels">
+                        <span>Low Energy</span>
+                        <span>High Energy</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3><span class="emoji">🧠</span>Do you want something that makes you think?</h3>
+                <div class="mood-options" data-question="thinkingLevel">
+                    <div class="mood-btn" data-value="light">🍿 Light & Fun</div>
+                    <div class="mood-btn" data-value="moderate">🤔 Some Depth</div>
+                    <div class="mood-btn" data-value="deep">🧩 Mind-Bending</div>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3><span class="emoji">👥</span>Are you watching alone or with others?</h3>
+                <div class="mood-options" data-question="watchingWith">
+                    <div class="mood-btn" data-value="alone">🙋‍♀️ Solo</div>
+                    <div class="mood-btn" data-value="partner">💑 Partner</div>
+                    <div class="mood-btn" data-value="friends">👫 Friends</div>
+                    <div class="mood-btn" data-value="family">👨‍👩‍👧‍👦 Family</div>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3><span class="emoji">⏰</span>How much time do you have?</h3>
+                <div class="mood-options" data-question="timeAvailable">
+                    <div class="mood-btn" data-value="short">⚡ Quick (< 90 min)</div>
+                    <div class="mood-btn" data-value="medium">🎬 Standard (90-150 min)</div>
+                    <div class="mood-btn" data-value="long">📽️ Epic (150+ min)</div>
+                </div>
+            </div>
+
+            <div class="question">
+                <h3><span class="emoji">💭</span>What's on your mind lately?</h3>
+                <input type="text" class="text-input" id="currentThoughts" 
+                       placeholder="e.g., work stress, wanting to laugh, missing old friends...">
+            </div>
+
+            <button class="discover-btn" id="discoverBtn" onclick="generateRecommendations()">
+                <span class="emoji">🎯</span>
+                Discover My Perfect Movie
+            </button>
+
+            <div class="recommendation-preview" id="recommendationPreview">
+                <h3>🎉 Great! We're analyzing your mood...</h3>
+                <p>Based on your feelings, we'll find movies that perfectly match your current vibe!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const answers = {};
+        let completedQuestions = 0;
+        const totalQuestions = 6;
+
+        // Handle mood button selections
+        document.querySelectorAll('.mood-options').forEach(container => {
+            container.addEventListener('click', (e) => {
+                if (e.target.classList.contains('mood-btn')) {
+                    // Clear previous selections in this group
+                    container.querySelectorAll('.mood-btn').forEach(btn => 
+                        btn.classList.remove('selected'));
+                    
+                    // Select current button
+                    e.target.classList.add('selected');
+                    
+                    // Store answer
+                    const question = container.dataset.question;
+                    answers[question] = e.target.dataset.value;
+                    
+                    updateProgress();
+                }
+            });
+        });
+
+        // Handle slider
+        document.getElementById('energyLevel').addEventListener('input', (e) => {
+            answers.energyLevel = e.target.value;
+            updateProgress();
+        });
+
+        // Handle text input
+        document.getElementById('currentThoughts').addEventListener('input', (e) => {
+            answers.currentThoughts = e.target.value;
+            updateProgress();
+        });
+
+        function updateProgress() {
+            completedQuestions = 0;
+            
+            // Count completed questions
+            if (answers.currentMood) completedQuestions++;
+            if (answers.energyLevel) completedQuestions++;
+            if (answers.thinkingLevel) completedQuestions++;
+            if (answers.watchingWith) completedQuestions++;
+            if (answers.timeAvailable) completedQuestions++;
+            if (answers.currentThoughts && answers.currentThoughts.length > 0) completedQuestions++;
+            
+            const progress = (completedQuestions / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            // Enable/disable discover button
+            const discoverBtn = document.getElementById('discoverBtn');
+            if (completedQuestions >= 4) { // Require at least 4 questions answered
+                discoverBtn.disabled = false;
+            } else {
+                discoverBtn.disabled = true;
+            }
+        }
+
+        function generateRecommendations() {
+            // Show preview
+            const preview = document.getElementById('recommendationPreview');
+            preview.classList.add('show');
+            
+            // Log answers for debugging
+            console.log('User answers:', answers);
+            
+            // Here you would typically send the data to your Django backend
+            // For demo purposes, we'll show a success message
+            setTimeout(() => {
+                preview.innerHTML = `
+                    <h3>🎬 Perfect Match Found!</h3>
+                    <p>Based on your ${answers.currentMood || 'current'} mood and preferences, 
+                    we've found some amazing recommendations just for you!</p>
+                `;
+            }, 2000);
+            
+            // In a real implementation, you would redirect to results or update the page
+            // window.location.href = '/discover/results/';
+        }
+
+        // Initialize progress
+        updateProgress();
+    </script>
+</body>
+</html>

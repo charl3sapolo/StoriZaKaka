@@ -1,0 +1,129 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}Discover and get personalized movie recommendations. Find your next favorite film with our intelligent recommendation engine.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}movies, recommendations, film, cinema, Tanzania, East Africa{% endblock %}">
+    <meta name="author" content="Movie Recommender">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:title" content="{% block og_title %}Movie Recommender{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Discover and get personalized movie recommendations{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{% endblock %}">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ request.build_absolute_uri }}">
+    <meta property="twitter:title" content="{% block twitter_title %}Movie Recommender{% endblock %}">
+    <meta property="twitter:description" content="{% block twitter_description %}Discover and get personalized movie recommendations{% endblock %}">
+    <meta property="twitter:image" content="{% block twitter_image %}{% endblock %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/apple-touch-icon.png' %}">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="{% static 'css/base.css' %}" as="style">
+    <link rel="preload" href="{% static 'js/main.js' %}" as="script">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/header.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/cards.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/forms.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/buttons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/components/modals.css' %}">
+    
+    <!-- Page-specific CSS -->
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Theme CSS -->
+    <link rel="stylesheet" href="{% static 'css/themes/light.css' %}" id="theme-light" disabled>
+    <link rel="stylesheet" href="{% static 'css/themes/dark.css' %}" id="theme-dark" disabled>
+    
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="{% static 'css/responsive/mobile.css' %}" media="(max-width: 767px)">
+    <link rel="stylesheet" href="{% static 'css/responsive/tablet.css' %}" media="(min-width: 768px) and (max-width: 1023px)">
+    <link rel="stylesheet" href="{% static 'css/responsive/desktop.css' %}" media="(min-width: 1024px)">
+    
+    <title>{% block title %}Movie Recommender{% endblock %}</title>
+    
+    <!-- CSRF Token -->
+    {% csrf_token %}
+</head>
+<body class="theme-auto" data-theme="{{ user.theme|default:'auto' }}">
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">{% translate "Skip to main content" %}</a>
+    
+    <!-- Header -->
+    {% include 'base/components/header.html' %}
+    
+    <!-- Main content -->
+    <main id="main-content" class="main-content">
+        <!-- Flash messages -->
+        {% if messages %}
+            <div class="messages-container">
+                {% for message in messages %}
+                    <div class="message message-{{ message.tags }}" role="alert">
+                        <span class="message-text">{{ message }}</span>
+                        <button type="button" class="message-close" aria-label="{% translate 'Close message' %}">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        <!-- Page content -->
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    {% include 'base/components/footer.html' %}
+    
+    <!-- Modals -->
+    {% include 'base/components/modals.html' %}
+    
+    <!-- Loading spinner -->
+    {% include 'base/partials/loading_spinner.html' %}
+    
+    <!-- JavaScript -->
+    <script src="{% static 'js/main.js' %}" defer></script>
+    <script src="{% static 'js/modules/theme-switcher.js' %}" defer></script>
+    <script src="{% static 'js/modules/recommendation.js' %}" defer></script>
+    <script src="{% static 'js/modules/filters.js' %}" defer></script>
+    <script src="{% static 'js/modules/history.js' %}" defer></script>
+    <script src="{% static 'js/modules/auth.js' %}" defer></script>
+    <script src="{% static 'js/modules/utils.js' %}" defer></script>
+    
+    <!-- Page-specific JavaScript -->
+    {% block extra_js %}{% endblock %}
+    
+    <!-- Analytics (production only) -->
+    {% if not debug %}
+        <!-- Google Analytics or other analytics code here -->
+    {% endif %}
+    
+    <!-- Structured data for SEO -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Movie Recommender",
+        "description": "{% translate 'Discover and get personalized movie recommendations' %}",
+        "url": "{{ request.build_absolute_uri }}",
+        "potentialAction": {
+            "@type": "SearchAction",
+            "target": "{{ request.build_absolute_uri }}search/?q={search_term_string}",
+            "query-input": "required name=search_term_string"
+        }
+    }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,1976 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KakaFlix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* Dark Theme (default) */
+            --bg-primary: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            --bg-secondary: rgba(255, 255, 255, 0.05);
+            --bg-tertiary: rgba(0, 0, 0, 0.3);
+            --text-primary: #ffffff;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.3);
+            --header-bg: rgba(15, 15, 35, 0.95);
+            
+            /* Brand Colors */
+            --color-red: #EF4444;
+            --color-purple: #8B5CF6;
+            --color-orange: #F59E0B;
+            --color-green: #10B981;
+            --color-blue: #3B82F6;
+            
+            /* Gradients */
+            --gradient-primary: linear-gradient(135deg, var(--color-red), var(--color-purple));
+            --gradient-secondary: linear-gradient(135deg, var(--color-purple), var(--color-orange));
+            --gradient-blue: linear-gradient(135deg, var(--color-blue), var(--color-purple));
+        }
+
+        [data-theme="light"] {
+            --bg-primary: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+            --bg-secondary: rgba(255, 255, 255, 0.8);
+            --bg-tertiary: rgba(255, 255, 255, 0.6);
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: rgba(0, 0, 0, 0.1);
+            --border-hover: rgba(0, 0, 0, 0.2);
+            --shadow-color: rgba(0, 0, 0, 0.1);
+            --header-bg: rgba(248, 250, 252, 0.95);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Majestic Floating Bubbles */
+        .bubble-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.3;
+            animation: float 25s infinite ease-in-out;
+            z-index: -1;
+            transition: all 2s ease;
+        }
+
+        .bubble:hover {
+            opacity: 0.5;
+            filter: blur(30px);
+            transform: scale(1.1);
+        }
+
+        .bubble-1 {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, #8B5CF6, #3B82F6);
+            top: 15%;
+            left: 10%;
+            animation-delay: 0s;
+            animation-duration: 30s;
+        }
+
+        .bubble-2 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, #8f7f7f, #e6e3dd);
+            top: 65%;
+            left: 85%;
+            animation-delay: 5s;
+            animation-duration: 35s;
+        }
+ 
+        .bubble-3 {
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, #8bade6, #10B981);
+            top: 35%;
+            left: 75%;
+            animation-delay: 10s;
+            animation-duration: 25s;
+        }
+
+        .bubble-4 {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, #d5d3ce, #9c8d8d);
+            top: 75%;
+            left: 20%;
+            animation-delay: 15s;
+            animation-duration: 40s;
+        }
+
+        .bubble-5 {
+            width: 220px;
+            height: 220px;
+            background: radial-gradient(circle, #10B981, #3B82F6);
+            top: 25%;
+            left: 45%;
+            animation-delay: 20s;
+            animation-duration: 28s;
+        }
+
+        .bubble-6 {
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, #ac98dc, #e5d6d6);
+            top: 50%;
+            left: 5%;
+            animation-delay: 12s;
+            animation-duration: 32s;
+        }
+
+        .bubble-7 {
+            width: 320px;
+            height: 320px;
+            background: radial-gradient(circle, #afc7ee, #d4c5aa);
+            top: 10%;
+            left: 80%;
+            animation-delay: 18s;
+            animation-duration: 38s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            20% {
+                transform: translate(50px, 100px) rotate(90deg);
+            }
+            40% {
+                transform: translate(100px, 50px) rotate(180deg);
+            }
+            60% {
+                transform: translate(150px, 150px) rotate(270deg);
+            }
+            80% {
+                transform: translate(50px, 200px) rotate(360deg);
+            }
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+        }
+
+        /* Header Section */
+        .header {
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-red);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo-icon {
+            animation: pulse 2s infinite;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-center a {
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-center a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-center a:hover::after {
+            width: 100%;
+        }
+
+        .nav-center a:hover {
+            color: var(--color-red);
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+        }
+
+        .theme-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover .theme-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Language Toggle */
+        .language-toggle {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .language-toggle:hover {
+            background: var(--color-red);
+            color: white;
+            border-color: var(--color-red);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 120px 0 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 30% 20%, rgba(239, 68, 68, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Section Styles */
+        .section {
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.7;
+        }
+
+        /* Feature Cards */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            transform: translateX(0);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+            box-shadow: 0 20px 40px var(--shadow-color);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .feature-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Statistics Section */
+        .stats-section {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 4rem 2rem;
+            margin: 4rem 0;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.3;
+            z-index: -1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            padding: 1rem;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--color-red);
+            margin-bottom: 0.5rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* Movie Showcase */
+        .movie-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .movie-card {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .movie-card:hover {
+            transform: scale(1.02);
+            background: var(--bg-tertiary);
+            box-shadow: 0 20px 40px var(--shadow-color);
+        }
+
+        .movie-poster {
+            height: 380px;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .movie-poster::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, transparent 50%);
+        }
+
+        .movie-info {
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .movie-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .movie-meta {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .movie-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--color-orange);
+        }
+
+        .genre-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .genre-tag {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--color-red);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .movie-badge {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Technology Stack */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tech-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .tech-card:hover {
+            background: var(--bg-tertiary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px var(--shadow-color);
+        }
+
+        .tech-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            background: var(--gradient-blue);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tech-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .tech-description {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            margin: 4rem 0;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .cta-description {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 1.1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            margin: 0 0.5rem;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+        }
+
+        /* Scroll Progress Bar */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--gradient-primary);
+            z-index: 1001;
+            transition: width 0.1s ease;
+        }
+
+        /* Discover Section - Enhanced */
+        .discover-section {
+            padding: 5rem 0;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            margin: 4rem 0;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .discover-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+            opacity: 0.2;
+            z-index: -1;
+        }
+
+        .discover-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .discover-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .discover-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            position: relative;
+            display: inline-block;
+        }
+
+        .discover-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient-primary);
+            border-radius: 2px;
+        }
+
+        .discover-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .questionnaire-card {
+            background: var(--bg-tertiary);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--gradient-primary);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .question {
+            margin-bottom: 2.5rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .question h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+        }
+
+        .mood-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .mood-btn {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mood-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .mood-btn.selected {
+            background: var(--gradient-primary);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .slider-container {
+            margin-top: 1.5rem;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            outline: none;
+            margin-bottom: 1rem;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            cursor: pointer;
+            border: none;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--color-purple);
+            box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+        }
+
+        .discover-btn {
+            width: 100%;
+            padding: 1.2rem;
+            border-radius: 10px;
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+        }
+
+        .discover-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .recommendation-preview {
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-top: 2rem;
+            text-align: center;
+            border: 1px dashed var(--border-color);
+            animation: pulse 2s infinite;
+        }
+
+        .recommendation-preview h3 {
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .movie-match {
+            display: none;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .movie-match.show {
+            display: block;
+        }
+
+        .movie-match-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .match-percentage {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--color-green);
+        }
+
+        .movie-match-content {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .movie-match-poster {
+            width: 150px;
+            height: 225px;
+            border-radius: 10px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        .movie-match-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .movie-match-details h4 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .movie-match-meta {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .movie-match-rating {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--color-orange);
+        }
+
+        .movie-match-description {
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .movie-match-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .match-tag {
+            background: rgba(59, 130, 246, 0.2);
+            color: var(--color-blue);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .movie-match-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .watch-now-btn {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .watch-now-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .try-again-btn {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .try-again-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--border-hover);
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .nav-center {
+                display: none;
+            }
+            
+            .nav-controls {
+                gap: 0.5rem;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .movie-showcase {
+                grid-template-columns: 1fr;
+            }
+            
+            .theme-toggle, .language-toggle {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .section-title, .discover-title {
+                font-size: 2rem;
+            }
+
+            .question h3 {
+                font-size: 1.1rem;
+            }
+
+            .mood-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .movie-match-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .movie-match-poster {
+                width: 100%;
+                height: 300px;
+            }
+            
+            /* Adjust bubbles for mobile */
+            .bubble {
+                filter: blur(30px);
+                opacity: 0.25;
+            }
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Loading Animation */
+        .loading {
+            animation: pulse 2s infinite;
+        }
+
+        /* Language specific styles */
+        [data-lang="sw"] .nav-center a,
+        [data-lang="sw"] .section-title,
+        [data-lang="sw"] .feature-title {
+            font-size: 0.95em;
+        }
+    </style>
+</head>
+<body data-theme="dark" data-lang="en">
+    <!-- Majestic Floating Gradient Bubbles -->
+    <div class="bubble-container">
+        <div class="bubble bubble-1"></div>
+        <div class="bubble bubble-2"></div>
+        <div class="bubble bubble-3"></div>
+        <div class="bubble bubble-4"></div>
+        <div class="bubble bubble-5"></div>
+        <div class="bubble bubble-6"></div>
+        <div class="bubble bubble-7"></div>
+    </div>
+    
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <span class="logo-icon">🎬</span>
+                <span>KakaFlix</span>
+            </div>
+            <ul class="nav-center">
+                <li><a href="#home" data-en="Home" data-sw="Nyumbani">Home</a></li>
+                <li><a href="#features" data-en="Features" data-sw="Vipengele">Features</a></li>
+                <li><a href="#showcase" data-en="Showcase" data-sw="Maonesho">Showcase</a></li>
+                <li><a href="#discover" data-en="Discover" data-sw="Gundua">Discover</a></li>
+                <li><a href="#contact" data-en="Contact" data-sw="Mawasiliano">Contact</a></li>
+            </ul>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button class="language-toggle" id="languageToggle">
+                    <span data-en="SW" data-sw="EN">SW</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title" data-en="AI-Powered Movie Discovery" data-sw="Ugunduzi wa Filamu kwa Nguvu ya AI">AI-Powered Movie Discovery</h1>
+                <p class="hero-subtitle" 
+                   data-en="Find your perfect movie match with our intelligent recommendation system that understands your mood, preferences, and taste."
+                   data-sw="Pata filamu yako kamili kwa mfumo wetu wa mapendekezo wa akili bandia unaoelewa hali yako, mapendeleo na ladha.">
+                    Find your perfect movie match with our intelligent recommendation system that understands your mood, preferences, and taste.
+                </p>
+                <div class="hero-actions">
+                    <a href="#discover" class="btn btn-primary" data-en="Find My Movie" data-sw="Tafuta Filamu Yangu">
+                        <i class="fas fa-play"></i> Find My Movie
+                    </a>
+                    <a href="#showcase" class="btn btn-secondary" data-en="Browse Movies" data-sw="Vinjari Filamu">
+                        <i class="fas fa-film"></i> Browse Movies
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-en="Why Choose CineMatch?" data-sw="Kwa Nini Kuchagua CineMatch?">Why Choose CineMatch?</h2>
+                <p class="section-subtitle"
+                   data-en="Our unique approach to movie recommendations sets us apart from traditional platforms"
+                   data-sw="Mbinu yetu ya kipekee ya mapendekezo ya filamu inatufanya tuwe tofauti na majukwaa ya kawaida">
+                    Our unique approach to movie recommendations sets us apart from traditional platforms
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🧠</span>
+                    <h3 class="feature-title" data-en="Mood Recognition" data-sw="Utambuzi wa Hali">Mood Recognition</h3>
+                    <p class="feature-description"
+                       data-en="Our AI detects subtle emotional cues from your interactions to suggest movies that match your current state of mind."
+                       data-sw="AI yetu hugundua ishara za kihisia kutoka kwa mwingiliano wako kupendekeza filamu zinazolingana na hali yako ya sasa ya akili.">
+                        Our AI detects subtle emotional cues from your interactions to suggest movies that match your current state of mind.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3 class="feature-title" data-en="Precision Matching" data-sw="Ulinganifu Sahihi">Precision Matching</h3>
+                    <p class="feature-description"
+                       data-en="We analyze thousands of data points to find films with the perfect combination of themes, pacing, and emotional impact for you."
+                       data-sw="Tunachambua maelfu ya data kupata filamu zenye mchanganyiko kamili wa mada, mwendo, na athari za kihisia kwako.">
+                        We analyze thousands of data points to find films with the perfect combination of themes, pacing, and emotional impact for you.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🌍</span>
+                    <h3 class="feature-title" data-en="Global Cinema" data-sw="Sinema ya Kimataifa">Global Cinema</h3>
+                    <p class="feature-description"
+                       data-en="From Hollywood blockbusters to Tanzanian gems and international arthouse films, we celebrate diverse cinematic voices."
+                       data-sw="Kutoka kwa filamu kubwa za Hollywood hadi vito vya Kitanzania na filamu za kimataifa za sanaa, tunasisitiza sauti mbalimbali za sinema.">
+                        From Hollywood blockbusters to Tanzanian gems and international arthouse films, we celebrate diverse cinematic voices.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🔄</span>
+                    <h3 class="feature-title" data-en="Adaptive Learning" data-sw="Kujifunza Kukabiliana">Adaptive Learning</h3>
+                    <p class="feature-description"
+                       data-en="The more you use CineMatch, the better it understands your evolving tastes and preferences over time."
+                       data-sw="Kadiri unavyotumia CineMatch, ndivyo inavyoelewa vyema ladha na mapendeleo yako yanayobadilika kwa muda.">
+                        The more you use CineMatch, the better it understands your evolving tastes and preferences over time.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🎭</span>
+                    <h3 class="feature-title" data-en="Character Analysis" data-sw="Uchambuzi wa Wahusika">Character Analysis</h3>
+                    <p class="feature-description"
+                       data-en="We match you with films based on the personality types of characters you've connected with in the past."
+                       data-sw="Tunakufananisha na filamu kulingana na aina za tabia za wahusika ambao umeshirikiana nao hapo awali.">
+                        We match you with films based on the personality types of characters you've connected with in the past.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title" data-en="Cultural Context" data-sw="Muktadha wa Kitamaduni">Cultural Context</h3>
+                    <p class="feature-description"
+                       data-en="Our recommendations consider cultural relevance, ensuring films resonate with your background and experiences."
+                       data-sw="Mapendekezo yetu yanazingatia umuhimu wa kitamaduni, kuhakikisha filamu zinahusiana na asili yako na uzoefu wako.">
+                        Our recommendations consider cultural relevance, ensuring films resonate with your background and experiences.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Movie Showcase Section -->
+    <section class="section" id="showcase">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-en="Featured Movies" data-sw="Filamu Maalum">Featured Movies</h2>
+                <p class="section-subtitle"
+                   data-en="A selection of popular and critically acclaimed films from our collection"
+                   data-sw="Uteuzi wa filamu maarufu na zilizosifiwa kutoka kwenye mkusanyiko wetu">
+                    A selection of popular and critically acclaimed films from our collection
+                </p>
+            </div>
+            
+            <div class="movie-showcase">
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        <div style="width:100%;height:380px;background:linear-gradient(135deg, #8B5CF6, #3B82F6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Binti</div>
+                    </div>
+                    <div class="movie-badge">New</div>
+                    <div class="movie-info">
+                        <h3 class="movie-title">Binti</h3>
+                        <div class="movie-meta">
+                            <span>2021 • 98 <span data-en="min" data-sw="dakika">min</span></span>
+                            <span class="movie-rating">
+                                <i class="fas fa-star"></i> 8.2
+                            </span>
+                        </div>
+                        <div class="genre-tags">
+                            <span class="genre-tag" data-en="Drama" data-sw="Drama">Drama</span>
+                            <span class="genre-tag" data-en="Romance" data-sw="Mapenzi">Romance</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        <div style="width:100%;height:380px;background:linear-gradient(135deg, #EF4444, #F59E0B);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Dangerous Affair</div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title">Dangerous Affair</h3>
+                        <div class="movie-meta">
+                            <span>2022 • 105 <span data-en="min" data-sw="dakika">min</span></span>
+                            <span class="movie-rating">
+                                <i class="fas fa-star"></i> 7.8
+                            </span>
+                        </div>
+                        <div class="genre-tags">
+                            <span class="genre-tag" data-en="Thriller" data-sw="Thriller">Thriller</span>
+                            <span class="genre-tag" data-en="Drama" data-sw="Drama">Drama</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        <div style="width:100%;height:380px;background:linear-gradient(135deg, #F59E0B, #EF4444);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Matatizo</div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title">Matatizo</h3>
+                        <div class="movie-meta">
+                            <span>2023 • 88 <span data-en="min" data-sw="dakika">min</span></span>
+                            <span class="movie-rating">
+                                <i class="fas fa-star"></i> 8.5
+                            </span>
+                        </div>
+                        <div class="genre-tags">
+                            <span class="genre-tag" data-en="Comedy" data-sw="Ucheshi">Comedy</span>
+                            <span class="genre-tag" data-en="Family" data-sw="Familia">Family</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="movie-card">
+                    <div class="movie-poster">
+                        <div style="width:100%;height:380px;background:linear-gradient(135deg, #10B981, #3B82F6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">The Forgotten Kingdom</div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-title" data-en="The Forgotten Kingdom" data-sw="Ufalme Uliosahaulika">The Forgotten Kingdom</h3>
+                        <div class="movie-meta">
+                            <span>2023 • 112 <span data-en="min" data-sw="dakika">min</span></span>
+                            <span class="movie-rating">
+                                <i class="fas fa-star"></i> 9.1
+                            </span>
+                        </div>
+                        <div class="genre-tags">
+                            <span class="genre-tag" data-en="Adventure" data-sw="Mchezo">Adventure</span>
+                            <span class="genre-tag" data-en="Drama" data-sw="Drama">Drama</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Discover Section - Enhanced -->
+    <section class="section" id="discover">
+        <div class="container">
+            <div class="discover-section">
+                <div class="discover-container">
+                    <div class="discover-header">
+                        <h2 class="discover-title" data-en="Discover Your Perfect Movie" data-sw="Gundua Filamu Yako Kamili">Discover Your Perfect Movie</h2>
+                        <p class="discover-subtitle"
+                           data-en="Answer a few questions about your current mood and preferences, and we'll find the ideal film for you"
+                           data-sw="Jibu maswali machache kuhusu hali yako ya sasa na mapendeleo, na tutakupatia filamu bora kwako">
+                            Answer a few questions about your current mood and preferences, and we'll find the ideal film for you
+                        </p>
+                    </div>
+
+                    <div class="questionnaire-card">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+
+                        <!-- Question 1: Mood -->
+                        <div class="question active" id="question1">
+                            <h3><span class="emoji">😊</span> <span data-en="How are you feeling right now?" data-sw="Unajisikiaje sasa hivi?">How are you feeling right now?</span></h3>
+                            <div class="mood-options" data-question="currentMood">
+                                <div class="mood-btn" data-value="happy">
+                                    <span class="emoji">😄</span>
+                                    <span data-en="Happy" data-sw="Furaha">Happy</span>
+                                </div>
+                                <div class="mood-btn" data-value="sad">
+                                    <span class="emoji">😢</span>
+                                    <span data-en="Sad" data-sw="Huzuni">Sad</span>
+                                </div>
+                                <div class="mood-btn" data-value="excited">
+                                    <span class="emoji">🤩</span>
+                                    <span data-en="Excited" data-sw="Msisimko">Excited</span>
+                                </div>
+                                <div class="mood-btn" data-value="calm">
+                                    <span class="emoji">😌</span>
+                                    <span data-en="Calm" data-sw="Tulivu">Calm</span>
+                                </div>
+                                <div class="mood-btn" data-value="stressed">
+                                    <span class="emoji">😰</span>
+                                    <span data-en="Stressed" data-sw="Mkazo">Stressed</span>
+                                </div>
+                                <div class="mood-btn" data-value="romantic">
+                                    <span class="emoji">💕</span>
+                                    <span data-en="Romantic" data-sw="Kimapenzi">Romantic</span>
+                                </div>
+                                <div class="mood-btn" data-value="adventurous">
+                                    <span class="emoji">🚀</span>
+                                    <span data-en="Adventurous" data-sw="Mkikamili">Adventurous</span>
+                                </div>
+                                <div class="mood-btn" data-value="nostalgic">
+                                    <span class="emoji">🌅</span>
+                                    <span data-en="Nostalgic" data-sw="Kumbukumbu">Nostalgic</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 2: Energy Level -->
+                        <div class="question" id="question2">
+                            <h3><span class="emoji">⚡</span> <span data-en="What's your energy level?" data-sw="Kiwango chako cha nishati ni kipi?">What's your energy level?</span></h3>
+                            <div class="slider-container">
+                                <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" />
+                                <div class="slider-labels">
+                                    <span data-en="Low" data-sw="Chini">Low</span>
+                                    <span data-en="High" data-sw="Juu">High</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 3: Thinking Level -->
+                        <div class="question" id="question3">
+                            <h3><span class="emoji">🧠</span> <span data-en="Do you want something that makes you think?" data-sw="Unataka kitu ambacho kitakufanya ufikirie?">Do you want something that makes you think?</span></h3>
+                            <div class="mood-options" data-question="thinkingLevel">
+                                <div class="mood-btn" data-value="light">
+                                    <span class="emoji">🍿</span>
+                                    <span data-en="Light & Fun" data-sw="Mwepesi na Wa Kufurahisha">Light & Fun</span>
+                                </div>
+                                <div class="mood-btn" data-value="moderate">
+                                    <span class="emoji">🤔</span>
+                                    <span data-en="Some Depth" data-sw="Kina Fulani">Some Depth</span>
+                                </div>
+                                <div class="mood-btn" data-value="deep">
+                                    <span class="emoji">🧩</span>
+                                    <span data-en="Mind-Bending" data-sw="Ya Kuvuruga Akili">Mind-Bending</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 4: Watching With -->
+                        <div class="question" id="question4">
+                            <h3><span class="emoji">👥</span> <span data-en="Are you watching alone or with others?" data-sw="Unaangalia peke yako au na wengine?">Are you watching alone or with others?</span></h3>
+                            <div class="mood-options" data-question="watchingWith">
+                                <div class="mood-btn" data-value="alone">
+                                    <span class="emoji">🙋‍♀️</span>
+                                    <span data-en="Solo" data-sw="Peke Yako">Solo</span>
+                                </div>
+                                <div class="mood-btn" data-value="partner">
+                                    <span class="emoji">💑</span>
+                                    <span data-en="Partner" data-sw="Mwenzi">Partner</span>
+                                </div>
+                                <div class="mood-btn" data-value="friends">
+                                    <span class="emoji">👫</span>
+                                    <span data-en="Friends" data-sw="Marafiki">Friends</span>
+                                </div>
+                                <div class="mood-btn" data-value="family">
+                                    <span class="emoji">👨‍👩‍👧‍👦</span>
+                                    <span data-en="Family" data-sw="Familia">Family</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 5: Time Available -->
+                        <div class="question" id="question5">
+                            <h3><span class="emoji">⏰</span> <span data-en="How much time do you have?" data-sw="Una muda gani?">How much time do you have?</span></h3>
+                            <div class="mood-options" data-question="timeAvailable">
+                                <div class="mood-btn" data-value="short">
+                                    <span class="emoji">⚡</span>
+                                    <span data-en="Quick (&lt; 90 min)" data-sw="Haraka (&lt; 90 dakika)">Quick (&lt; 90 min)</span>
+                                </div>
+                                <div class="mood-btn" data-value="medium">
+                                    <span class="emoji">🎬</span>
+                                    <span data-en="Standard (90-150 min)" data-sw="Kawaida (90-150 dakika)">Standard (90-150 min)</span>
+                                </div>
+                                <div class="mood-btn" data-value="long">
+                                    <span class="emoji">📽️</span>
+                                    <span data-en="Epic (150+ min)" data-sw="Kubwa (150+ dakika)">Epic (150+ min)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 6: Current Thoughts -->
+                        <div class="question" id="question6">
+                            <h3><span class="emoji">💭</span> <span data-en="What's on your mind lately?" data-sw="Ni nini kilicho kwenye akili yako hivi karibuni?">What's on your mind lately?</span></h3>
+                            <input type="text" class="text-input" id="currentThoughts" 
+                                   data-en-placeholder="e.g., work stress, wanting to laugh, missing old friends..." 
+                                   data-sw-placeholder="mfano, msongo kazini, kutaka kucheka, kukumbuka rafiki wa zamani..." />
+                        </div>
+
+                        <!-- Navigation Buttons -->
+                        <div class="question-navigation">
+                            <button class="btn btn-secondary" id="prevBtn" style="display: none;">
+                                <i class="fas fa-arrow-left"></i> <span data-en="Previous" data-sw="Iliyopita">Previous</span>
+                            </button>
+                            <button class="btn btn-primary" id="nextBtn">
+                                <span data-en="Next" data-sw="Inayofuata">Next</span> <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+
+                        <!-- Discover Button (shown on last question) -->
+                        <button class="discover-btn" id="discoverBtn" style="display: none;">
+                            <span class="emoji">🎯</span> <span data-en="Discover My Perfect Movie" data-sw="Gundua Filamu Yangu Kamili">Discover My Perfect Movie</span>
+                        </button>
+
+                        <!-- Recommendation Preview -->
+                        <div class="recommendation-preview" id="recommendationPreview">
+                            <h3><span class="emoji">🎉</span> <span data-en="Great! We're analyzing your mood..." data-sw="Vizuri! Tunachambua hali yako...">Great! We're analyzing your mood...</span></h3>
+                            <p data-en="Based on your feelings, we'll find movies that perfectly match your current vibe!"
+                               data-sw="Kulingana na hisia zako, tutapata filamu zinazolingana kabisa na hali yako ya sasa!">
+                                Based on your feelings, we'll find movies that perfectly match your current vibe!
+                            </p>
+                        </div>
+
+                        <!-- Movie Match Result -->
+                        <div class="movie-match" id="movieMatch">
+                            <div class="movie-match-header">
+                                <h4 data-en="Your Perfect Match" data-sw="Mechi Yako Kamili">Your Perfect Match</h4>
+                                <span class="match-percentage">92% Match</span>
+                            </div>
+                            <div class="movie-match-content">
+                                <div class="movie-match-poster">
+                                    <div style="width:150px;height:225px;background:linear-gradient(135deg, #8B5CF6, #3B82F6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Binti</div>
+                                </div>
+                                <div class="movie-match-details">
+                                    <h4>Binti</h4>
+                                    <div class="movie-match-meta">
+                                        <span>2021 • 98 <span data-en="min" data-sw="dakika">min</span></span>
+                                        <span class="movie-match-rating">
+                                            <i class="fas fa-star"></i> 8.2
+                                        </span>
+                                        <span>Tanzania</span>
+                                    </div>
+                                    <p class="movie-match-description" data-en="A heartwarming coming-of-age story about a young Tanzanian woman navigating love, family expectations, and her dreams in modern Dar es Salaam."
+                                       data-sw="Hadithi ya kuvutia ya ukuaji wa msichana wa Kitanzania anayepambana na mapenzi, matarajio ya familia, na ndoto zake katika Dar es Salaam ya kisasa.">
+                                        A heartwarming coming-of-age story about a young Tanzanian woman navigating love, family expectations, and her dreams in modern Dar es Salaam.
+                                    </p>
+                                    <div class="movie-match-tags">
+                                        <span class="match-tag" data-en="Emotional" data-sw="Ya Kihisia">Emotional</span>
+                                        <span class="match-tag" data-en="Uplifting" data-sw="Ya Kukuza">Uplifting</span>
+                                        <span class="match-tag" data-en="Cultural" data-sw="Ya Kitamaduni">Cultural</span>
+                                    </div>
+                                    <div class="movie-match-actions">
+                                        <a href="#" class="watch-now-btn">
+                                            <i class="fas fa-play"></i> <span data-en="Watch Now" data-sw="Angalia Sasa">Watch Now</span>
+                                        </a>
+                                        <a href="#" class="try-again-btn" id="tryAgainBtn">
+                                            <i class="fas fa-redo"></i> <span data-en="Try Again" data-sw="Jaribu Tena">Try Again</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Statistics Section -->
+    <section class="section">
+        <div class="container">
+            <div class="stats-section">
+                <div class="section-header">
+                    <h2 class="section-title" data-en="By The Numbers" data-sw="Kwa Nambari">By The Numbers</h2>
+                    <p class="section-subtitle" 
+                       data-en="Our platform in statistics that showcase our growing community"
+                       data-sw="Jukwaa letu katika takwimu zinazoonyesha ukuaji wa jumuiya yetu">Our platform in statistics that showcase our growing community</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">10,000+</span>
+                        <span class="stat-label" data-en="Movies Available" data-sw="Filamu Zinazopatikana">Movies Available</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">25+</span>
+                        <span class="stat-label" data-en="Genres Covered" data-sw="Aina za Filamu">Genres Covered</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">150K+</span>
+                        <span class="stat-label" data-en="Happy Users" data-sw="Watumiaji Wenye Furaha">Happy Users</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">97%</span>
+                        <span class="stat-label" data-en="Satisfaction Rate" data-sw="Kiwango cha Kuridhika">Satisfaction Rate</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <h2 class="cta-title" data-en="Ready for Your Perfect Movie Match?" data-sw="Uko Tayari kwa Mechi Yako Kamili ya Filamu?">Ready for Your Perfect Movie Match?</h2>
+            <p class="cta-description"
+               data-en="Join thousands of movie lovers who discover their next favorite film with CineMatch every day."
+               data-sw="Jiunge na maelfu ya wapenzi wa filamu wanaogundua filamu yao inayofuata kupenda na CineMatch kila siku.">
+                Join thousands of movie lovers who discover their next favorite film with CineMatch every day.
+            </p>
+            <a href="/signup" class="btn btn-primary" data-en="Get Started" data-sw="Anza Sasa">
+                <i class="fas fa-rocket"></i> Get Started
+            </a>
+            <a href="/login" class="btn btn-secondary" data-en="Login" data-sw="Ingia">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        </div>
+    </section>
+
+    <!-- JavaScript -->
+    <script>
+        // Scroll to top on page load
+        window.onload = function() {
+            window.scrollTo(0, 0);
+        };
+
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const langToggle = document.getElementById('languageToggle');
+        const rootElement = document.body;
+
+        themeToggle.addEventListener('click', () => {
+            const newTheme = rootElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            rootElement.setAttribute('data-theme', newTheme);
+            themeToggle.querySelector('.theme-icon').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+            
+            // Save preference to localStorage
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Language Toggle
+        langToggle.addEventListener('click', () => {
+            const currentLang = rootElement.getAttribute('data-lang');
+            const newLang = currentLang === 'en' ? 'sw' : 'en';
+            rootElement.setAttribute('data-lang', newLang);
+            langToggle.querySelector('span').textContent = newLang === 'en' ? 'SW' : 'EN';
+
+            // Update all elements with data-en and data-sw attributes
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const attr = `data-${newLang}`;
+                if (el.hasAttribute(attr)) {
+                    el.textContent = el.getAttribute(attr);
+                    
+                    // Handle placeholders for input fields
+                    if (el.tagName === 'INPUT' && el.hasAttribute(`${attr}-placeholder`)) {
+                        el.placeholder = el.getAttribute(`${attr}-placeholder`);
+                    }
+                }
+            });
+            
+            // Save preference to localStorage
+            localStorage.setItem('language', newLang);
+        });
+
+        // Scroll Progress
+        window.addEventListener('scroll', () => {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (window.scrollY / totalHeight) * 100;
+            scrollProgress.style.width = `${progress}%`;
+        });
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            rootElement.setAttribute('data-theme', savedTheme);
+            themeToggle.querySelector('.theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+        }
+
+        // Check for saved language preference
+        const savedLang = localStorage.getItem('language');
+        if (savedLang) {
+            rootElement.setAttribute('data-lang', savedLang);
+            langToggle.querySelector('span').textContent = savedLang === 'en' ? 'SW' : 'EN';
+            
+            // Update all elements with data-en and data-sw attributes
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const attr = `data-${savedLang}`;
+                if (el.hasAttribute(attr)) {
+                    el.textContent = el.getAttribute(attr);
+                    
+                    // Handle placeholders for input fields
+                    if (el.tagName === 'INPUT' && el.hasAttribute(`${attr}-placeholder`)) {
+                        el.placeholder = el.getAttribute(`${attr}-placeholder`);
+                    }
+                }
+            });
+        }
+
+        // Discover Questionnaire Logic
+        const questions = document.querySelectorAll('.question');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const discoverBtn = document.getElementById('discoverBtn');
+        const progressFill = document.getElementById('progressFill');
+        const moodOptions = document.querySelectorAll('.mood-options .mood-btn');
+        const recommendationPreview = document.getElementById('recommendationPreview');
+        const movieMatch = document.getElementById('movieMatch');
+        const tryAgainBtn = document.getElementById('tryAgainBtn');
+        
+        let currentQuestion = 0;
+        const totalQuestions = questions.length;
+        const answers = {};
+        
+        // Initialize first question
+        showQuestion(currentQuestion);
+        
+        // Next button click handler
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestion < totalQuestions - 1) {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        });
+        
+        // Previous button click handler
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion(currentQuestion);
+            }
+        });
+        
+        // Mood option click handler
+        moodOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                const question = option.parentElement.getAttribute('data-question');
+                const value = option.getAttribute('data-value');
+                
+                // Remove selected class from all options in this group
+                option.parentElement.querySelectorAll('.mood-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                
+                // Add selected class to clicked option
+                option.classList.add('selected');
+                
+                // Save answer
+                answers[question] = value;
+            });
+        });
+        
+        // Energy level slider change handler
+        const energySlider = document.getElementById('energyLevel');
+        energySlider.addEventListener('input', () => {
+            answers.energyLevel = energySlider.value;
+        });
+        
+        // Current thoughts input handler
+        const currentThoughts = document.getElementById('currentThoughts');
+        currentThoughts.addEventListener('input', () => {
+            answers.currentThoughts = currentThoughts.value;
+        });
+        
+        // Discover button click handler
+        discoverBtn.addEventListener('click', () => {
+            // Show loading state
+            recommendationPreview.style.display = 'block';
+            movieMatch.style.display = 'none';
+            
+            // Simulate API call with timeout
+            setTimeout(() => {
+                recommendationPreview.style.display = 'none';
+                movieMatch.classList.add('show');
+                
+                // Scroll to movie match
+                movieMatch.scrollIntoView({ behavior: 'smooth' });
+            }, 2000);
+        });
+        
+        // Try again button click handler
+        tryAgainBtn.addEventListener('click', () => {
+            currentQuestion = 0;
+            showQuestion(currentQuestion);
+            movieMatch.classList.remove('show');
+            
+            // Reset form
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            energySlider.value = 5;
+            currentThoughts.value = '';
+            
+            // Scroll to first question
+            questions[0].scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Show question function
+        function showQuestion(index) {
+            // Hide all questions
+            questions.forEach(question => {
+                question.classList.remove('active');
+            });
+            
+            // Show current question
+            questions[index].classList.add('active');
+            
+            // Update progress bar
+            const progress = ((index + 1) / totalQuestions) * 100;
+            progressFill.style.width = `${progress}%`;
+            
+            // Update navigation buttons
+            if (index === 0) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'inline-flex';
+            }
+            
+            if (index === totalQuestions - 1) {
+                nextBtn.style.display = 'none';
+                discoverBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'inline-flex';
+                discoverBtn.style.display = 'none';
+            }
+            
+            // Scroll to question
+            questions[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Animate elements when they come into view
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.feature-card, .movie-card');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // Set initial state for animation
+        document.querySelectorAll('.feature-card, .movie-card').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+        
+        // Add scroll event listener
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Trigger once on page load
+        animateOnScroll();
+    </script>
+</body>
+</html>

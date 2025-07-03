@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Movie Recommender</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .profile-header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .profile-header h1 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .profile-basic-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            background: rgba(102, 126, 234, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #2d3748;
+            font-size: 1.1rem;
+        }
+
+        .profile-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-header h2 {
+            color: #2d3748;
+            font-size: 1.6rem;
+            margin-left: 10px;
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .question-group {
+            margin-bottom: 30px;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .question-group:nth-child(2) { animation-delay: 0.1s; }
+        .question-group:nth-child(3) { animation-delay: 0.2s; }
+        .question-group:nth-child(4) { animation-delay: 0.3s; }
+        .question-group:nth-child(5) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .question-label {
+            color: #4a5568;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .preference-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .preference-btn {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .preference-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .preference-btn.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .preference-btn.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            font-size: 0.8rem;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-container {
+            margin: 20px 0;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #e2e8f0;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #667eea;
+            cursor: pointer;
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .time-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .time-btn {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 0.85rem;
+        }
+
+        .time-btn.selected {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border-color: #48bb78;
+        }
+
+        .mood-timeline {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+
+        .day-mood {
+            text-align: center;
+            padding: 10px 5px;
+            border-radius: 8px;
+            background: #f7fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .day-mood:hover {
+            background: #e2e8f0;
+        }
+
+        .day-mood.selected {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .personality-trait {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: #f7fafc;
+            border-radius: 12px;
+        }
+
+        .trait-label {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .trait-slider {
+            width: 200px;
+        }
+
+        .save-profile-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto;
+            min-width: 200px;
+        }
+
+        .save-profile-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .profile-insights {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .insight-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .insight-tag {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .preference-grid {
+                grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            }
+            
+            .mood-timeline {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            
+            .personality-trait {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .trait-slider {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">👤</div>
+            <h1>Welcome back, John!</h1>
+            <p style="color: #718096; font-size: 1.1rem;">Let's make your movie recommendations even more personal</p>
+            
+            <div class="profile-basic-info">
+                <div class="info-item">
+                    <div class="info-label">Username</div>
+                    <div class="info-value">johnsmith</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Email</div>
+                    <div class="info-value">john@example.com</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Language</div>
+                    <div class="info-value">English</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Theme</div>
+                    <div class="info-value">Dark Mode</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Movie Preferences Section -->
+        <div class="profile-section">
+            <div class="section-header">
+                <div class="section-icon">🎬</div>
+                <h2>Movie Preferences</h2>
+            </div>
+
+            <div class="question-group">
+                <div class="question-label">What genres do you love? (Select all that apply)</div>
+                <div class="preference-grid" data-question="favoriteGenres">
+                    <div class="preference-btn" data-value="action">🎯 Action</div>
+                    <div class="preference-btn" data-value="comedy">😂 Comedy</div>
+                    <div class="preference-btn" data-value="drama">🎭 Drama</div>
+                    <div class="preference-btn" data-value="horror">👻 Horror</div>
+                    <div class="preference-btn" data-value="romance">💕 Romance</div>
+                    <div class="preference-btn" data-value="scifi">🚀 Sci-Fi</div>
+                    <div class="preference-btn" data-value="thriller">⚡ Thriller</div>
+                    <div class="preference-btn" data-value="documentary">📚 Documentary</div>
+                    <div class="preference-btn" data-value="animation">🎨 Animation</div>
+                    <div class="preference-btn" data-value="fantasy">🧙 Fantasy</div>
+                    <div class="preference-btn" data-value="mystery">🔍 Mystery</div>
+                    <div class="preference-btn" data-value="musical">🎵 Musical</div>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <div class="question-label">How do you prefer your movies?</div>
+                <div class="slider-container">
+                    <label style="color: #4a5568; margin-bottom: 10px; display: block;">Movie Length Preference</label>
+                    <input type="range" min="1" max="10" value="5" class="slider" id="lengthPreference">
+                    <div class="slider-labels">
+                        <span>Short & Sweet</span>
+                        <span>Epic Adventures</span>
+                    </div>
+                </div>
+                <div class="slider-container">
+                    <label style="color: #4a5568; margin-bottom: 10px; display: block;">Content Complexity</label>
+                    <input type="range" min="1" max="10" value="5" class="slider" id="complexityPreference">
+                    <div class="slider-labels">
+                        <span>Light Entertainment</span>
+                        <span>Deep & Thought-Provoking</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lifestyle & Mood Section -->
+        <div class="profile-section">
+            <div class="section-header">
+                <div class="section-icon">🌟</div>
+                <h2>Your Lifestyle & Moods</h2>
+            </div>
+
+            <div class="question-group">
+                <div class="question-label">When do you usually watch movies?</div>
+                <div class="time-selector" data-question="watchingTimes">
+                    <div class="time-btn" data-value="morning">🌅 Morning</div>
+                    <div class="time-btn" data-value="afternoon">☀️ Afternoon</div>
+                    <div class="time-btn" data-value="evening">🌆 Evening</div>
+                    <div class="time-btn" data-value="night">🌙 Late Night</div>
+                    <div class="time-btn" data-value="weekend">🎉 Weekends</div>
+                    <div class="time-btn" data-value="weekday">📅 Weekdays</div>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <div class="question-label">How has your week been? (Select days that match your mood)</div>
+                <div class="mood-timeline">
+                    <div class="day-mood" data-day="monday">
+                        <div style="font-weight: 600;">Mon</div>
+                        <div style="font-size: 1.5rem;">😴</div>
+                        <div>Tired</div>
+                    </div>
+                    <div class="day-mood" data-day="tuesday">
+                        <div style="font-weight: 600;">Tue</div>
+                        <div style="font-size: 1.5rem;">💪</div>
+                        <div>Motivated</div>
+                    </div>
+                    <div class="day-mood" data-day="wednesday">
+                        <div style="font-weight: 600;">Wed</div>
+                        <div style="font-size: 1.5rem;">😰</div>
+                        <div>Stressed</div>
+                    </div>
+                    <div class="day-mood" data-day="thursday">
+                        <div style="font-weight: 600;">Thu</div>
+                        <div style="font-size: 1.5rem;">😊</div>
+                        <div>Happy</div>
+                    </div>
+                    <div class="day-mood" data-day="friday">
+                        <div style="font-weight: 600;">Fri</div>
+                        <div style="font-size: 1.5rem;">🎉</div>
+                        <div>Excited</div>
+                    </div>
+                    <div class="day-mood" data-day="saturday">
+                        <div style="font-weight: 600;">Sat</div>
+                        <div style="font-size: 1.5rem;">😌</div>
+                        <div>Relaxed</div>
+                    </div>
+                    <div class="day-mood" data-day="sunday">
+                        <div style="font-weight: 600;">Sun</div>
+                        <div style="font-size: 1.5rem;">🤔</div>
+                        <div>Reflective</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question-group">
+                <div class="question-label">What activities do you enjoy? (Helps us understand your interests)</div>
+                <div class="preference-grid" data-question="interests">
+                    <div class="preference-btn" data-value="reading">📚 Reading</div>
+                    <div class="preference-btn" data-value="gaming">🎮 Gaming</div>
+                    <div class="preference-btn" data-value="music">🎵 Music</div>
+                    <div class="preference-btn" data-value="sports">⚽ Sports</div>
+                    <div class="preference-btn" data-value="travel">✈️ Travel</div>
+                    <div class="preference-btn" data-value="cooking">👨‍🍳 Cooking</div>
+                    <div class="preference-btn" data-value="art">🎨 Art</div>
+                    <div class="preference-btn" data-value="nature">🌲 Nature</div>
+                    <div class="preference-btn" data-value="technology">💻 Tech</div>
+                    <div class="preference-btn" data-value="fitness">💪 Fitness</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Personality Insights Section -->
+        <div class="profile-section">
+            <div class="section-header">
+                <div class="section-icon">🧠</div>
+                <h2>Personality Insights</h2>
+            </div>
+
+            <div class="question-group">
+                <div class="question-label">Help us understand your personality for better recommendations</div>
+                
+                <div class="personality-trait">
+                    <span class="trait-label">I prefer familiar stories vs. completely new experiences</span>
+                    <input type="range" min="1" max="10" value="5" class="slider trait-slider" id="familiarityPreference">
+                </div>
+                
+                <div class="personality-trait">
+                    <span class="trait-label">I like movies that make me think vs. pure entertainment</span>
+                    <input type="range" min="1" max="10" value="5" class="slider trait-slider" id="intellectualPreference">
+                </div>
+                
+                <div class="personality-trait">
+                    <span class="trait-label">I enjoy emotional movies vs. I prefer staying detached</span>
+                    <input type="range" min="1" max="10" value="5" class="slider trait-slider" id="emotionalPreference">
+                </div>
+                
+                <div class="personality-trait">
+                    <span class="trait-label">I love discussing movies vs. I just watch for fun</span>
+                    <input type="range" min="1" max="10" value="5" class="slider trait-slider" id="socialPreference">
+                </div>
+            </div>
+
+            <div class="question-group">
+                <div class="question-label">Tell us about your current life situation (helps with contextual recommendations)</div>
+                <textarea class="text-input" id="lifeContext" 
+                         placeholder="e.g., Recently started a new job, going through a breakup, celebrating achievements, feeling nostalgic, planning a vacation..."></textarea>
+            </div>
+        </div>
+
+        <!-- Save Profile Button -->
+        <button class="save-profile-btn" onclick="saveProfile()">
+            💾 Save My Profile
+        </button>
+
+        <!-- Profile Insights -->
+        <div class="profile-insights" id="profileInsights" style="display: none;">
+            <h3>🎯 Your Movie Personality</h3>
+            <p>Based on your preferences, we've created your unique movie profile:</p>
+            <div class="insight-tags" id="insightTags"></div>
+        </div>
+    </div>
+
+    <script>
+        const profileData = {
+            favoriteGenres: [],
+            watchingTimes: [],
+            interests: [],
+            weekMoods: [],
+            lengthPreference: 5,
+            complexityPreference: 5,
+            familiarityPreference: 5,
+            intellectualPreference: 5,
+            emotionalPreference: 5,
+            socialPreference: 5,
+            lifeContext: ''
+        };
+
+        // Handle multi-select preferences
+        document.querySelectorAll('.preference-grid').forEach(container => {
+            container.addEventListener('click', (e) => {
+                if (e.target.classList.contains('preference-btn')) {
+                    e.target.classList.toggle('selected');
+                    const question = container.dataset.question;
+                    const value = e.target.dataset.value;
+                    
+                    if (!profileData[question]) profileData[question] = [];
+                    
+                    if (e.target.classList.contains('selected')) {
+                        if (!profileData[question].includes(value)) {
+                            profileData[question].push(value);
+                        }
+                    } else {
+                        profileData[question] = profileData[question].filter(v => v !== value);
+                    }
+                    
+                    updateInsights();
+                }
+            });
+        });
+
+        // Handle time selector
+        document.querySelector('.time-selector').addEventListener('click', (e) => {
+            if (e.target.classList.contains('time-btn')) {
+                e.target.classList.toggle('selected');
+                const value = e.target.dataset.value;
+                
+                if (e.target.classList.contains('selected')) {
+                    if (!profileData.watchingTimes.includes(value)) {
+                        profileData.watchingTimes.push(value);
+                    }
+                } else {
+                    profileData.watchingTimes = profileData.watchingTimes.filter(v => v !== value);
+                }
+                
+                updateInsights();
+            }
+        });
+
+        // Handle mood timeline
+        document.querySelector('.mood-timeline').addEventListener('click', (e) => {
+            if (e.target.closest('.day-mood')) {
+                const dayMood = e.target.closest('.day-mood');
+                dayMood.classList.toggle('selected');
+                const day = dayMood.dataset.day;
+                
+                if (dayMood.classList.contains('selected')) {
+                    if (!profileData.weekMoods.includes(day)) {
+                        profileData.weekMoods.push(day);
+                    }
+                } else {
+                    profileData.weekMoods = profileData.weekMoods.filter(d => d !== day);
+                }
+                
+                updateInsights();
+            }
+        });
+
+        // Handle sliders
+        document.querySelectorAll('.slider').forEach(slider => {
+            slider.addEventListener('input', (e) => {
+                const id = e.target.id;
+                profileData[id] = parseInt(e.target.value);
+                updateInsights();
+            });
+        });
+
+        // Handle text input
+        document.getElementById('lifeContext').addEventListener('input', (e) => {
+            profileData.lifeContext = e.target.value;
+            updateInsights();
+        });
+
+        function updateInsights() {
+            const insights = document.getElementById('profileInsights');
+            const tags = document.getElementById('insightTags');
+            
+            // Generate personality insights
+            let insightsList = [];
+            
+            if (profileData.favoriteGenres.length > 0) {
+                if (profileData.favoriteGenres.includes('drama') || profileData.favoriteGenres.includes('documentary')) {
+                    insightsList.push('Deep Thinker');
+                }
+                if (profileData.favoriteGenres.includes('comedy') || profileData.favoriteGenres.includes('animation')) {
+                    insightsList.push('Fun Seeker');
+                }
+                if (profileData.favoriteGenres.includes('horror') || profileData.favoriteGenres.includes('thriller')) {
+                    insightsList.push('Thrill Seeker');
+                }
+                if (profileData.favoriteGenres.includes('romance')) {
+                    insightsList.push('Romantic');
+                }
+            }
+            
+            if (profileData.complexityPreference >= 7) {
+                insightsList.push('Intellectual Viewer');
+            } else if (profileData.complexityPreference <= 3) {
+                insightsList.push('Casual Viewer');
+            }
+            
+            if (profileData.emotionalPreference >= 7) {
+                insightsList.push('Emotionally Engaged');
+            }
+            
+            if (profileData.socialPreference >= 7) {
+                insightsList.push('Movie Discusser');
+            }
+            
+            if (profileData.weekMoods.length >= 4) {
+                insightsList.push('Mood-Aware Viewer');
+            }
+            
+            if (profileData.interests.includes('reading')) {
+                insightsList.push('Story Lover');
+            }
+            
+            if (profileData.interests.includes('travel')) {
+                insightsList.push('Culture Explorer');
+            }
+
+            // Show insights if we have enough data
+            if (insightsList.length >= 3) {
+                insights.style.display = 'block';
+                tags.innerHTML = insightsList.map(insight => 
+                    `<span class="insight-tag">${insight}</span>`
+                ).join('');
+            }
+        }
+
+        function saveProfile() {
+            console.log('Saving profile:', profileData);
+            
+            // Here you would send the profile data to your Django backend
+            /*
+            fetch('/api/update-profile/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify(profileData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Profile saved successfully! 🎉');
+            });
+            */
+            
+            alert('Profile saved successfully! Your recommendations will now be more personalized. 🎉');
+        }
+
+        // Initialize insights
+        updateInsights();
+    </script>
+</body>
+</html>
