@@ -780,7 +780,6 @@ function renderFeaturedMovies(movies) {
     const padded = movies.concat(Array(8 - movies.length).fill(null)).slice(0, 8);
     FEATURED_ROWS.innerHTML = padded.map(movie => {
         if (!movie) return `<div class="movie-card" style="visibility:hidden;"></div>`;
-        // Support both movie and TV show fields
         const isTV = movie.media_type === 'tv' || movie.first_air_date;
         const title = movie.title || movie.name || 'Untitled';
         const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
@@ -818,6 +817,7 @@ function renderFeaturedMovies(movies) {
     }).join('');
 
     // Add flip/close logic
+    const grid = FEATURED_ROWS;
     document.querySelectorAll('.movie-card').forEach(card => {
         const inner = card.querySelector('.card-inner');
         const closeBtn = card.querySelector('.close-detail');
@@ -826,11 +826,13 @@ function renderFeaturedMovies(movies) {
             if (card.classList.contains('flipped')) return;
             document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('flipped'));
             card.classList.add('flipped');
+            grid.classList.add('flipping');
             e.stopPropagation();
         };
         if (closeBtn) {
             closeBtn.onclick = e => {
                 card.classList.remove('flipped');
+                grid.classList.remove('flipping');
                 e.stopPropagation();
             };
         }
@@ -838,7 +840,10 @@ function renderFeaturedMovies(movies) {
     // Close flip on outside click
     document.body.addEventListener('click', e => {
         document.querySelectorAll('.movie-card.flipped').forEach(card => {
-            if (!card.contains(e.target)) card.classList.remove('flipped');
+            if (!card.contains(e.target)) {
+                card.classList.remove('flipped');
+                grid.classList.remove('flipping');
+            }
         });
     });
 }
@@ -853,7 +858,7 @@ FEATURED_SEARCH_INPUT.addEventListener('input', () => {
     if (lastSearchController) lastSearchController.abort();
     searchTimeout = setTimeout(async () => {
         const query = FEATURED_SEARCH_INPUT.value.trim();
-        if (!query || query.length < 10) {
+        if (!query || query.length < 2) {
             renderFeaturedMovies(allFeaturedMovies);
             return;
         }
@@ -874,7 +879,8 @@ FEATURED_SEARCH_INPUT.addEventListener('input', () => {
             renderFeaturedMovies(results);
         } catch (e) {
             if (e.name === 'AbortError') return;
-            FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--color-red);">Failed to fetch results.</div>';
+            // Silently fail - don't show error message
+            renderFeaturedMovies(allFeaturedMovies);
         }
     }, 300);
 });
@@ -899,7 +905,8 @@ mainSearchBar.addEventListener('submit', async e => {
         renderFeaturedMovies(results);
     } catch (e) {
         if (e.name === 'AbortError') return;
-        FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--color-red);">Failed to fetch results.</div>';
+        // Silently fail - don't show error message
+        renderFeaturedMovies(allFeaturedMovies);
     }
 });
 // Add a simple loading spinner style
