@@ -50,6 +50,7 @@
 
     <!-- Hero Section -->
     <section class="hero" id="home">
+        <div class="hero-bg-slider"></div>
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title" data-en="AI-Powered Movie Discovery" data-sw="Ugunduzi wa Filamu kwa Nguvu ya AI">AI-Powered Movie Discovery</h1>
@@ -157,85 +158,7 @@
                     A selection of popular and critically acclaimed films from our collection
                 </p>
             </div>
-            
-            <div class="movie-showcase">
-                <div class="movie-card">
-                    <div class="movie-poster">
-                        <div style="width:100%;height:380px;background:linear-gradient(135deg, #8B5CF6, #3B82F6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Binti</div>
-                    </div>
-                    <div class="movie-badge">New</div>
-                    <div class="movie-info">
-                        <h3 class="movie-title">Binti</h3>
-                        <div class="movie-meta">
-                            <span>2021 • 98 <span data-en="min" data-sw="dakika">min</span></span>
-                            <span class="movie-rating">
-                                <i class="fas fa-star"></i> 8.2
-                            </span>
-                        </div>
-                        <div class="genre-tags">
-                            <span class="genre-tag" data-en="Drama" data-sw="Drama">Drama</span>
-                            <span class="genre-tag" data-en="Romance" data-sw="Mapenzi">Romance</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="movie-card">
-                    <div class="movie-poster">
-                        <div style="width:100%;height:380px;background:linear-gradient(135deg, #EF4444, #F59E0B);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Dangerous Affair</div>
-                    </div>
-                    <div class="movie-info">
-                        <h3 class="movie-title">Dangerous Affair</h3>
-                        <div class="movie-meta">
-                            <span>2022 • 105 <span data-en="min" data-sw="dakika">min</span></span>
-                            <span class="movie-rating">
-                                <i class="fas fa-star"></i> 7.8
-                            </span>
-                        </div>
-                        <div class="genre-tags">
-                            <span class="genre-tag" data-en="Thriller" data-sw="Thriller">Thriller</span>
-                            <span class="genre-tag" data-en="Drama" data-sw="Drama">Drama</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="movie-card">
-                    <div class="movie-poster">
-                        <div style="width:100%;height:380px;background:linear-gradient(135deg, #F59E0B, #EF4444);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Matatizo</div>
-                    </div>
-                    <div class="movie-info">
-                        <h3 class="movie-title">Matatizo</h3>
-                        <div class="movie-meta">
-                            <span>2023 • 88 <span data-en="min" data-sw="dakika">min</span></span>
-                            <span class="movie-rating">
-                                <i class="fas fa-star"></i> 8.5
-                            </span>
-                        </div>
-                        <div class="genre-tags">
-                            <span class="genre-tag" data-en="Comedy" data-sw="Ucheshi">Comedy</span>
-                            <span class="genre-tag" data-en="Family" data-sw="Familia">Family</span>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="movie-card">
-                    <div class="movie-poster">
-                        <div style="width:100%;height:380px;background:linear-gradient(135deg, #10B981, #3B82F6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">The Forgotten Kingdom</div>
-                    </div>
-                    <div class="movie-info">
-                        <h3 class="movie-title" data-en="The Forgotten Kingdom" data-sw="Ufalme Uliosahaulika">The Forgotten Kingdom</h3>
-                        <div class="movie-meta">
-                            <span>2023 • 112 <span data-en="min" data-sw="dakika">min</span></span>
-                            <span class="movie-rating">
-                                <i class="fas fa-star"></i> 9.1
-                            </span>
-                        </div>
-                        <div class="genre-tags">
-                            <span class="genre-tag" data-en="Adventure" data-sw="Mchezo">Adventure</span>
-                            <span class="genre-tag" data-en="Drama" data-sw="Drama">Drama</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="movie-showcase" id="featuredMovies"></div>
         </div>
     </section>
 
@@ -608,16 +531,11 @@
         // Next button click handler
         nextBtn.addEventListener('click', () => {
             if (currentQuestion < totalQuestions - 1) {
-                // Animate current question out to the left
                 questions[currentQuestion].classList.remove('active');
                 questions[currentQuestion].classList.add('previous');
-                
                 currentQuestion++;
-                
-                // Animate next question in from the right
                 questions[currentQuestion].classList.remove('next');
                 questions[currentQuestion].classList.add('active');
-                
                 updateProgress();
             }
         });
@@ -625,16 +543,11 @@
         // Previous button click handler
         prevBtn.addEventListener('click', () => {
             if (currentQuestion > 0) {
-                // Animate current question out to the right
                 questions[currentQuestion].classList.remove('active');
                 questions[currentQuestion].classList.add('next');
-                
                 currentQuestion--;
-                
-                // Animate previous question in from the left
                 questions[currentQuestion].classList.remove('previous');
                 questions[currentQuestion].classList.add('active');
-                
                 updateProgress();
             }
         });
@@ -644,16 +557,10 @@
             option.addEventListener('click', () => {
                 const question = option.parentElement.getAttribute('data-question');
                 const value = option.getAttribute('data-value');
-                
-                // Remove selected class from all options in this group
                 option.parentElement.querySelectorAll('.mood-btn').forEach(btn => {
                     btn.classList.remove('selected');
                 });
-                
-                // Add selected class to clicked option
                 option.classList.add('selected');
-                
-                // Save answer
                 answers[question] = value;
             });
         });
@@ -672,16 +579,11 @@
         
         // Discover button click handler
         discoverBtn.addEventListener('click', () => {
-            // Show loading state
             recommendationPreview.style.display = 'block';
             movieMatch.style.display = 'none';
-            
-            // Simulate API call with timeout
             setTimeout(() => {
                 recommendationPreview.style.display = 'none';
                 movieMatch.classList.add('show');
-                
-                // Scroll to movie match
                 movieMatch.scrollIntoView({ behavior: 'smooth' });
             }, 2000);
         });
@@ -691,22 +593,16 @@
             currentQuestion = 0;
             showQuestion(currentQuestion);
             movieMatch.classList.remove('show');
-            
-            // Reset form
             document.querySelectorAll('.mood-btn').forEach(btn => {
                 btn.classList.remove('selected');
             });
-            
             energySlider.value = 5;
             currentThoughts.value = '';
-            
-            // Scroll to first question
             questions[0].scrollIntoView({ behavior: 'smooth' });
         });
         
         // Show question function
         function showQuestion(index) {
-            // Hide all questions except current one
             questions.forEach((question, i) => {
                 question.classList.remove('active', 'previous', 'next');
                 if (i < index) {
@@ -717,7 +613,6 @@
                     question.classList.add('active');
                 }
             });
-            
             updateProgress();
         }
         
@@ -725,20 +620,15 @@
         function updateProgress() {
             const progress = ((currentQuestion + 1) / totalQuestions) * 100;
             progressFill.style.width = `${progress}%`;
-            
-            // Update progress text
             const currentLang = document.body.getAttribute('data-lang');
             const langPrefix = currentLang === 'en' ? 'Question' : 'Swali';
             const langSuffix = currentLang === 'en' ? 'of' : 'la';
             progressText.textContent = `${langPrefix} ${currentQuestion + 1} ${langSuffix} ${totalQuestions}`;
-            
-            // Update navigation buttons
             if (currentQuestion === 0) {
                 prevBtn.style.display = 'none';
             } else {
                 prevBtn.style.display = 'inline-flex';
             }
-            
             if (currentQuestion === totalQuestions - 1) {
                 nextBtn.style.display = 'none';
                 discoverBtn.style.display = 'flex';
@@ -791,6 +681,134 @@
         
         // Trigger once on page load
         animateOnScroll();
+
+        // TMDB Hero Background Slider (daily, random, high-quality, no consecutive repeats)
+        const TMDB_API_KEY = 'b6e814a0b9ff291122e8a05a0f206cd8';
+        const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+        const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/original';
+
+        function seededRandom(seed) {
+            let t = seed += 0x6D2B79F5;
+            t = Math.imul(t ^ t >>> 15, t | 1);
+            t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+            return ((t ^ t >>> 14) >>> 0) / 4294967296;
+        }
+
+        function getTodaySeed() {
+            const now = new Date();
+            return parseInt(`${now.getFullYear()}${(now.getMonth()+1).toString().padStart(2,'0')}${now.getDate().toString().padStart(2,'0')}`);
+        }
+
+        function seededShuffle(array, seed) {
+            let m = array.length, t, i;
+            while (m) {
+                i = Math.floor(seededRandom(seed + m) * m--);
+                t = array[m];
+                array[m] = array[i];
+                array[i] = t;
+            }
+            return array;
+        }
+
+        async function loadHeroBackgrounds() {
+            try {
+                // Fetch a large pool of good movies (vote_average > 7, with poster)
+                const res = await fetch(`${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}&language=en-US&sort_by=popularity.desc&vote_count.gte=100&vote_average.gte=7&with_original_language=en&include_adult=false&page=1`);
+                const data = await res.json();
+                let movies = data.results.filter(m => m.poster_path && m.backdrop_path);
+
+                // Seeded shuffle for today
+                const todaySeed = getTodaySeed();
+                movies = seededShuffle(movies, todaySeed);
+
+                // Pick 5 for today, ensuring no consecutive repeats
+                let selected = [];
+                let lastTitle = localStorage.getItem('lastHeroMovieTitle');
+                for (let i = 0; i < movies.length && selected.length < 5; i++) {
+                    if (selected.length === 0 && movies[i].title === lastTitle) continue;
+                    selected.push(movies[i]);
+                }
+                if (selected.length < 5) selected = movies.slice(0, 5);
+
+                // Save the first movie's title to avoid repeat tomorrow
+                localStorage.setItem('lastHeroMovieTitle', selected[0]?.title || '');
+
+                // Render
+                const slider = document.querySelector('.hero-bg-slider');
+                if (!slider) return;
+                slider.innerHTML = '';
+                selected.forEach((movie, idx) => {
+                    const img = document.createElement('img');
+                    img.src = `${TMDB_IMAGE_BASE}${movie.backdrop_path}`;
+                    img.className = 'hero-bg-slide' + (idx === 0 ? ' active' : '');
+                    img.alt = movie.title;
+                    slider.appendChild(img);
+                });
+
+                // Start slider logic (10s per slide, no consecutive repeats)
+                const heroSlides = document.querySelectorAll('.hero-bg-slide');
+                let heroSlideIndex = 0;
+                setInterval(() => {
+                    heroSlides[heroSlideIndex].classList.remove('active');
+                    heroSlideIndex = (heroSlideIndex + 1) % heroSlides.length;
+                    heroSlides[heroSlideIndex].classList.add('active');
+                }, 10000); // 10 seconds
+            } catch (e) {
+                // fallback: do nothing
+            }
+        }
+        if (document.querySelector('.hero-bg-slider')) {
+            loadHeroBackgrounds();
+        }
+
+        // TMDB Featured Movies Showcase
+        const FEATURED_CONTAINER = document.getElementById('featuredMovies');
+        const TMDB_IMAGE_BASE_W780 = 'https://image.tmdb.org/t/p/w780'; // w780 for high quality
+
+        async function loadFeaturedMovies() {
+            try {
+                const res = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+                const data = await res.json();
+                const movies = data.results.slice(0, 4); // Top 4 popular movies
+
+                FEATURED_CONTAINER.innerHTML = movies.map(movie => `
+                    <div class="movie-card">
+                        <div class="movie-poster">
+                            <img src="${TMDB_IMAGE_BASE_W780}${movie.poster_path}" alt="${movie.title}" loading="lazy" />
+                        </div>
+                        <div class="movie-info">
+                            <h3 class="movie-title">${movie.title}</h3>
+                            <div class="movie-meta">
+                                <span>${movie.release_date ? movie.release_date.slice(0, 4) : ''}</span>
+                                <span class="movie-rating">
+                                    <i class="fas fa-star"></i> ${movie.vote_average}
+                                </span>
+                            </div>
+                            <div class="genre-tags">
+                                ${movie.genre_ids.map(id => `<span class="genre-tag">${getGenreName(id)}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                FEATURED_CONTAINER.innerHTML = '<p>Could not load featured movies.</p>';
+            }
+        }
+
+        // TMDB genre mapping (partial, for demo)
+        const GENRE_MAP = {
+            28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy', 80: 'Crime', 99: 'Documentary',
+            18: 'Drama', 10751: 'Family', 14: 'Fantasy', 36: 'History', 27: 'Horror', 10402: 'Music',
+            9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi', 10770: 'TV Movie', 53: 'Thriller',
+            10752: 'War', 37: 'Western'
+        };
+        function getGenreName(id) {
+            return GENRE_MAP[id] || 'Other';
+        }
+
+        if (FEATURED_CONTAINER) {
+            loadFeaturedMovies();
+        }
     </script>
 </body>
 </html>
