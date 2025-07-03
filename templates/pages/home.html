@@ -158,7 +158,13 @@
                     A selection of popular and critically acclaimed films from our collection
                 </p>
             </div>
-            <div class="movie-showcase" id="featuredMovies"></div>
+            <div class="movie-showcase" id="featuredMovies">
+                <div class="featured-search-bar" style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;justify-content:center;">
+                    <input type="text" id="featuredSearchInput" class="text-input" placeholder="Search movies..." style="max-width:320px;" />
+                    <button class="featured-search-btn" id="featuredSearchBtn"><i class="fas fa-search"></i> Search</button>
+                </div>
+                <div class="movie-grid" id="featuredRows"></div>
+            </div>
         </div>
     </section>
 
@@ -752,51 +758,56 @@
 
         // TMDB Featured Movies Showcase
         const FEATURED_CONTAINER = document.getElementById('featuredMovies');
+        const FEATURED_ROWS = document.getElementById('featuredRows');
+        const FEATURED_SEARCH_INPUT = document.getElementById('featuredSearchInput');
+        const FEATURED_SEARCH_BTN = document.getElementById('featuredSearchBtn');
         const TMDB_IMAGE_BASE_W780 = 'https://image.tmdb.org/t/p/w780'; // w780 for high quality
+let allFeaturedMovies = [];
 async function loadFeaturedMovies() {
     try {
         const res = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
         const data = await res.json();
-        const movies = data.results.slice(0, 8); // 8 movies for 2 rows
-
-        FEATURED_CONTAINER.innerHTML = movies.map(movie => `
-            <div class="movie-card" data-movie='${JSON.stringify(movie)}'>
-                <div class="card-inner">
-                    <div class="card-front" style="position:relative;">
-                        <div class="movie-poster">
-                            <img src="${TMDB_IMAGE_BASE_W780}${movie.poster_path}" alt="${movie.title}" loading="lazy" />
-                        </div>
-                        <div class="movie-info">
-                            <h3 class="movie-title">${movie.title}</h3>
-                            <div class="movie-meta">
-                                <span>${movie.release_date ? movie.release_date.slice(0, 4) : ''}</span>
-                                <span class="movie-rating">
-                                    <i class="fas fa-star"></i> ${movie.vote_average}
-                                </span>
-                            </div>
-                            <div class="genre-tags">
-                                ${movie.genre_ids.map(id => `<span class="genre-tag">${getGenreName(id)}</span>`).join('')}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-back">
-                        <button class="close-detail">&times;</button>
-                        <h3>${movie.title}</h3>
-                        <p style="font-size:0.95rem;margin-bottom:0.7rem;">${movie.overview || "No description available."}</p>
-                        <div style="font-size:0.9rem;">
-                            <strong>Release:</strong> ${movie.release_date || "N/A"}<br>
-                            <strong>Rating:</strong> ${movie.vote_average} / 10<br>
-                            <strong>Votes:</strong> ${movie.vote_count}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `).join('');
-
-        // Flip/blur logic as before...
+        allFeaturedMovies = data.results.slice(0, 8); // 8 movies for 2 rows
+        renderFeaturedMovies(allFeaturedMovies);
     } catch (e) {
-        FEATURED_CONTAINER.innerHTML = '<p>Could not load featured movies.</p>';
+        FEATURED_ROWS.innerHTML = '<p>Could not load featured movies.</p>';
     }
+}
+function renderFeaturedMovies(movies) {
+    // Always show 2 rows of 4, fill with empty slots if less than 8
+    const padded = movies.concat(Array(8 - movies.length).fill(null)).slice(0, 8);
+    FEATURED_ROWS.innerHTML = padded.map(movie => movie ? `
+        <div class="movie-card">
+            <img class="poster-image" src="${TMDB_IMAGE_BASE_W780}${movie.poster_path}" alt="${movie.title}" loading="lazy" />
+            <div class="card-meta">
+                <span class="genre">${getGenreName(movie.genre_ids[0])}</span>
+                <span class="rating">⭐ ${movie.vote_average}</span>
+                <span class="year">${movie.release_date ? movie.release_date.slice(0, 4) : ''}</span>
+            </div>
+        </div>
+    ` : `<div class="movie-card" style="visibility:hidden;"></div>`).join('');
+}
+if (FEATURED_CONTAINER) {
+    loadFeaturedMovies();
+}
+// Search functionality
+if (FEATURED_SEARCH_BTN && FEATURED_SEARCH_INPUT) {
+    FEATURED_SEARCH_BTN.addEventListener('click', () => {
+        const query = FEATURED_SEARCH_INPUT.value.trim().toLowerCase();
+        if (!query) {
+            renderFeaturedMovies(allFeaturedMovies);
+            return;
+        }
+        const filtered = allFeaturedMovies.filter(movie =>
+            movie.title.toLowerCase().includes(query)
+        );
+        // Always show 2 rows of 4, fill with empty slots if less than 8
+        const padded = filtered.concat(Array(8 - filtered.length).fill(null)).slice(0, 8);
+        renderFeaturedMovies(padded.filter(Boolean));
+    });
+    FEATURED_SEARCH_INPUT.addEventListener('keyup', e => {
+        if (e.key === 'Enter') FEATURED_SEARCH_BTN.click();
+    });
 }
         // TMDB genre mapping (partial, for demo)
         const GENRE_MAP = {
@@ -807,10 +818,6 @@ async function loadFeaturedMovies() {
         };
         function getGenreName(id) {
             return GENRE_MAP[id] || 'Other';
-        }
-
-        if (FEATURED_CONTAINER) {
-            loadFeaturedMovies();
         }
     </script>
 </body>
