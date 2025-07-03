@@ -159,7 +159,7 @@
                 </p>
             </div>
             <div class="movie-showcase" id="featuredMovies">
-                <!-- Sticky Search Bar -->
+                <!-- Glassmorphic Search Bar -->
                 <form class="sticky-search-bar" id="mainSearchBar" role="search" autocomplete="off" aria-label="Movie search">
                     <input type="text" id="featuredSearchInput" class="search-input" placeholder="Search movies..." aria-label="Search movies" />
                     <button type="submit" class="search-btn" aria-label="Search">
@@ -853,17 +853,28 @@ if (FEATURED_CONTAINER) {
 // Search functionality
 let searchTimeout;
 let lastSearchController = null;
+const searchBar = document.getElementById('mainSearchBar');
+
 FEATURED_SEARCH_INPUT.addEventListener('input', () => {
     clearTimeout(searchTimeout);
     if (lastSearchController) lastSearchController.abort();
+    
+    // Remove loading state
+    searchBar.classList.remove('loading');
+    
     searchTimeout = setTimeout(async () => {
         const query = FEATURED_SEARCH_INPUT.value.trim();
         if (!query || query.length < 2) {
             renderFeaturedMovies(allFeaturedMovies);
             return;
         }
+        
+        // Add loading state
+        searchBar.classList.add('loading');
+        
         // Show loading spinner
         FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;"><span class="loading-spinner"></span></div>';
+        
         // Fetch from TMDb search/multi
         try {
             lastSearchController = new AbortController();
@@ -881,6 +892,9 @@ FEATURED_SEARCH_INPUT.addEventListener('input', () => {
             if (e.name === 'AbortError') return;
             // Silently fail - don't show error message
             renderFeaturedMovies(allFeaturedMovies);
+        } finally {
+            // Remove loading state
+            searchBar.classList.remove('loading');
         }
     }, 300);
 });
@@ -891,6 +905,10 @@ mainSearchBar.addEventListener('submit', async e => {
         renderFeaturedMovies(allFeaturedMovies);
         return;
     }
+    
+    // Add loading state
+    searchBar.classList.add('loading');
+    
     FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;"><span class="loading-spinner"></span></div>';
     try {
         lastSearchController = new AbortController();
@@ -907,6 +925,9 @@ mainSearchBar.addEventListener('submit', async e => {
         if (e.name === 'AbortError') return;
         // Silently fail - don't show error message
         renderFeaturedMovies(allFeaturedMovies);
+    } finally {
+        // Remove loading state
+        searchBar.classList.remove('loading');
     }
 });
 // Add a simple loading spinner style

@@ -547,73 +547,149 @@
     position: relative;
 }
 
-/* === STICKY MODERN SEARCH BAR === */
+/* === GLASSMORPHIC SEARCH BAR === */
 .sticky-search-bar {
     position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--bg-secondary, rgba(15, 15, 26, 0.85));
-    backdrop-filter: blur(8px);
+    top: 20px;
+    width: 400px;
+    height: 48px;
+    margin: 0 auto 2rem auto;
     display: flex;
     align-items: center;
-    justify-content: center;
-    padding: 1rem 0.5rem;
-    box-shadow: 0 2px 12px var(--shadow-color, rgba(0,0,0,0.08));
-    border-radius: 0 0 18px 18px;
-    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 100;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
+
+.sticky-search-bar:focus-within {
+    width: 500px;
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 0 0 2px #01b4e4, 0 8px 32px rgba(1, 180, 228, 0.2);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.sticky-search-bar:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.15);
+}
+
 .search-input {
-            width: 100%;
-    max-width: 340px;
-    padding: 0.8rem 1.2rem;
+    flex: 1;
+    background: transparent;
     border: none;
-    border-radius: 8px 0 0 8px;
-    font-size: 1.1rem;
-    background: var(--bg-tertiary, rgba(255,255,255,0.08));
-    color: var(--text-primary, #fff);
+    color: rgba(137, 119, 136, 0.9);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 0 16px;
     outline: none;
-    transition: box-shadow 0.3s, background 0.3s;
-    box-shadow: 0 1px 4px var(--shadow-color, rgba(1,180,228,0.08));
+    caret-color: #01b4e4;
 }
-.search-input:focus {
-    background: var(--bg-secondary, rgba(1,180,228,0.12));
-    box-shadow: 0 2px 8px var(--color-blue, #01b4e4aa);
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    transition: opacity 0.3s ease;
 }
+
+.search-input:focus::placeholder {
+    opacity: 0;
+}
+
 .search-btn {
-    background: var(--color-blue, #3B82F6);
+    background: transparent;
     border: none;
-    border-radius: 0 8px 8px 0;
     width: 48px;
     height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-            cursor: pointer;
-    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
-    margin-left: -2px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 12px;
     outline: none;
 }
-.search-btn:focus, .search-btn:hover {
-    background: var(--color-purple, #8B5CF6);
-    box-shadow: 0 2px 8px var(--color-purple, #8B5CF6aa);
-    transform: scale(1.07);
-}
+
 .search-btn .fa-search {
-    color: var(--text-primary, #fff);
-    font-size: 1.3rem;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    transition: color 0.2s ease;
 }
-@media (max-width: 600px) {
+
+.search-btn:hover .fa-search {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Loading state */
+.sticky-search-bar.loading {
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.sticky-search-bar.loading .fa-search {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
     .sticky-search-bar {
-        padding: 0.5rem 0.2rem;
+        width: 90%;
+        max-width: 360px;
+        height: 44px;
     }
+    
+    .sticky-search-bar:focus-within {
+        width: 95%;
+        max-width: 400px;
+    }
+    
     .search-input {
-        font-size: 1rem;
-        padding: 0.7rem 1rem;
+        font-size: 15px;
+        padding: 0 14px;
     }
+    
     .search-btn {
-        width: 40px;
-        height: 40px;
-        }
+        width: 44px;
+        height: 44px;
+        padding: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sticky-search-bar {
+        width: 95%;
+        max-width: 320px;
+        height: 42px;
+    }
+    
+    .sticky-search-bar:focus-within {
+        width: 98%;
+        max-width: 360px;
+    }
+    
+    .search-input {
+        font-size: 14px;
+        padding: 0 12px;
+    }
+    
+    .search-btn {
+        width: 42px;
+        height: 42px;
+        padding: 8px;
+    }
 }
 
 /* === REFINED MOVIE CARD GRID & HOVER EFFECT === */
