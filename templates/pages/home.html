@@ -159,10 +159,13 @@
                 </p>
             </div>
             <div class="movie-showcase" id="featuredMovies">
-                <div class="featured-search-bar" style="display:flex;align-items:center;gap:1rem;margin-bottom:2rem;justify-content:center;">
-                    <input type="text" id="featuredSearchInput" class="text-input" placeholder="Search movies..." style="max-width:320px;" />
-                    <button class="featured-search-btn" id="featuredSearchBtn"><i class="fas fa-search"></i> Search</button>
-                </div>
+                <!-- Sticky Search Bar -->
+                <form class="sticky-search-bar" id="mainSearchBar" role="search" autocomplete="off" aria-label="Movie search">
+                    <input type="text" id="featuredSearchInput" class="search-input" placeholder="Search movies..." aria-label="Search movies" />
+                    <button type="submit" class="search-btn" aria-label="Search">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
                 <div class="movie-grid" id="featuredRows"></div>
             </div>
         </div>
@@ -774,51 +777,162 @@ async function loadFeaturedMovies() {
     }
 }
 function renderFeaturedMovies(movies) {
-    // Always show 2 rows of 4, fill with empty slots if less than 8
     const padded = movies.concat(Array(8 - movies.length).fill(null)).slice(0, 8);
-    FEATURED_ROWS.innerHTML = padded.map(movie => movie ? `
-        <div class="movie-card">
-            <img class="poster-image" src="${TMDB_IMAGE_BASE_W780}${movie.poster_path}" alt="${movie.title}" loading="lazy" />
-            <div class="card-meta">
-                <span class="genre">${getGenreName(movie.genre_ids[0])}</span>
-                <span class="rating">⭐ ${movie.vote_average}</span>
-                <span class="year">${movie.release_date ? movie.release_date.slice(0, 4) : ''}</span>
+    FEATURED_ROWS.innerHTML = padded.map(movie => {
+        if (!movie) return `<div class="movie-card" style="visibility:hidden;"></div>`;
+        // Support both movie and TV show fields
+        const isTV = movie.media_type === 'tv' || movie.first_air_date;
+        const title = movie.title || movie.name || 'Untitled';
+        const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
+        const poster = movie.poster_path ? `${TMDB_IMAGE_BASE_W780}${movie.poster_path}` : '/static/img/placeholder.png';
+        const genre = Array.isArray(movie.genre_ids) && movie.genre_ids.length ? getGenreName(movie.genre_ids[0]) : 'Other';
+        const rating = typeof movie.vote_average === 'number' ? movie.vote_average : 'N/A';
+        const votes = typeof movie.vote_count === 'number' ? movie.vote_count : 'N/A';
+        const lang = movie.original_language ? movie.original_language.toUpperCase() : 'N/A';
+        const overview = movie.overview || 'No description available.';
+        return `
+        <div class="movie-card" tabindex="0">
+            <div class="card-inner">
+                <div class="card-front">
+                    <img class="poster-image" src="${poster}" alt="${title}" loading="lazy" />
+                    <div class="card-meta">
+                        <span class="genre">${genre}${isTV ? ' <span class=\'tv-badge\'>TV</span>' : ''}</span>
+                        <span class="rating">⭐ ${rating}</span>
+                        <span class="year">${year}</span>
+                    </div>
+                </div>
+                <div class="card-back">
+                    <button class="close-detail" aria-label="Close">&times;</button>
+                    <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '…' : title}</h3>
+                    <div class="movie-description" style="overflow:auto;max-height:160px;">${overview}</div>
+                    <div class="movie-details-grid" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.2rem;">
+                        <div><strong>Rating:</strong> ${rating}</div>
+                        <div><strong>Year:</strong> ${year || 'N/A'}</div>
+                        <div><strong>Language:</strong> ${lang}</div>
+                        <div><strong>Votes:</strong> ${votes}</div>
+                    </div>
+                </div>
             </div>
         </div>
-    ` : `<div class="movie-card" style="visibility:hidden;"></div>`).join('');
+        `;
+    }).join('');
+
+    // Add flip/close logic
+    document.querySelectorAll('.movie-card').forEach(card => {
+        const inner = card.querySelector('.card-inner');
+        const closeBtn = card.querySelector('.close-detail');
+        if (!inner) return;
+        card.onclick = e => {
+            if (card.classList.contains('flipped')) return;
+            document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('flipped'));
+            card.classList.add('flipped');
+            e.stopPropagation();
+        };
+        if (closeBtn) {
+            closeBtn.onclick = e => {
+                card.classList.remove('flipped');
+                e.stopPropagation();
+            };
+        }
+    });
+    // Close flip on outside click
+    document.body.addEventListener('click', e => {
+        document.querySelectorAll('.movie-card.flipped').forEach(card => {
+            if (!card.contains(e.target)) card.classList.remove('flipped');
+        });
+    });
 }
 if (FEATURED_CONTAINER) {
     loadFeaturedMovies();
 }
 // Search functionality
-if (FEATURED_SEARCH_BTN && FEATURED_SEARCH_INPUT) {
-    FEATURED_SEARCH_BTN.addEventListener('click', () => {
-        const query = FEATURED_SEARCH_INPUT.value.trim().toLowerCase();
-        if (!query) {
+let searchTimeout;
+let lastSearchController = null;
+FEATURED_SEARCH_INPUT.addEventListener('input', () => {
+    clearTimeout(searchTimeout);
+    if (lastSearchController) lastSearchController.abort();
+    searchTimeout = setTimeout(async () => {
+        const query = FEATURED_SEARCH_INPUT.value.trim();
+        if (!query || query.length < 10) {
             renderFeaturedMovies(allFeaturedMovies);
             return;
         }
-        const filtered = allFeaturedMovies.filter(movie =>
-            movie.title.toLowerCase().includes(query)
-        );
-        // Always show 2 rows of 4, fill with empty slots if less than 8
-        const padded = filtered.concat(Array(8 - filtered.length).fill(null)).slice(0, 8);
-        renderFeaturedMovies(padded.filter(Boolean));
-    });
-    FEATURED_SEARCH_INPUT.addEventListener('keyup', e => {
-        if (e.key === 'Enter') FEATURED_SEARCH_BTN.click();
-    });
-}
-        // TMDB genre mapping (partial, for demo)
-        const GENRE_MAP = {
-            28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy', 80: 'Crime', 99: 'Documentary',
-            18: 'Drama', 10751: 'Family', 14: 'Fantasy', 36: 'History', 27: 'Horror', 10402: 'Music',
-            9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi', 10770: 'TV Movie', 53: 'Thriller',
-            10752: 'War', 37: 'Western'
-        };
-        function getGenreName(id) {
-            return GENRE_MAP[id] || 'Other';
+        // Show loading spinner
+        FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;"><span class="loading-spinner"></span></div>';
+        // Fetch from TMDb search/multi
+        try {
+            lastSearchController = new AbortController();
+            const res = await fetch(`${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`, { signal: lastSearchController.signal });
+            if (!res.ok) throw new Error('API error');
+            const data = await res.json();
+            // Only show movies and TV shows
+            const results = (data.results || []).filter(item => item.media_type === 'movie' || item.media_type === 'tv');
+            if (results.length === 0) {
+                FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-secondary);">No results found.</div>';
+                return;
+            }
+            renderFeaturedMovies(results);
+        } catch (e) {
+            if (e.name === 'AbortError') return;
+            FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--color-red);">Failed to fetch results.</div>';
         }
+    }, 300);
+});
+mainSearchBar.addEventListener('submit', async e => {
+    e.preventDefault();
+    const query = FEATURED_SEARCH_INPUT.value.trim();
+    if (!query || query.length < 2) {
+        renderFeaturedMovies(allFeaturedMovies);
+        return;
+    }
+    FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;"><span class="loading-spinner"></span></div>';
+    try {
+        lastSearchController = new AbortController();
+        const res = await fetch(`${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`, { signal: lastSearchController.signal });
+        if (!res.ok) throw new Error('API error');
+        const data = await res.json();
+        const results = (data.results || []).filter(item => item.media_type === 'movie' || item.media_type === 'tv');
+        if (results.length === 0) {
+            FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-secondary);">No results found.</div>';
+            return;
+        }
+        renderFeaturedMovies(results);
+    } catch (e) {
+        if (e.name === 'AbortError') return;
+        FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--color-red);">Failed to fetch results.</div>';
+    }
+});
+// Add a simple loading spinner style
+if (!document.getElementById('search-spinner-style')) {
+    const style = document.createElement('style');
+    style.id = 'search-spinner-style';
+    style.textContent = `
+    .loading-spinner {
+        display: inline-block;
+        width: 36px;
+        height: 36px;
+        border: 4px solid var(--color-blue, #3B82F6);
+        border-top: 4px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    `;
+    document.head.appendChild(style);
+}
+// TMDB genre mapping (partial, for demo)
+const GENRE_MAP = {
+    28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy', 80: 'Crime', 99: 'Documentary',
+    18: 'Drama', 10751: 'Family', 14: 'Fantasy', 36: 'History', 27: 'Horror', 10402: 'Music',
+    9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi', 10770: 'TV Movie', 53: 'Thriller',
+    10752: 'War', 37: 'Western'
+};
+function getGenreName(id) {
+    return GENRE_MAP[id] || 'Other';
+}
     </script>
 </body>
 </html>
