@@ -828,12 +828,53 @@
             margin: 0 auto;
         }
 
-        .questionnaire-card {
+         .questionnaire-card {
             background: var(--bg-tertiary);
             border-radius: 16px;
             padding: 2.5rem;
             box-shadow: 0 10px 30px var(--shadow-color);
             border: 1px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            min-height: 500px; /* Ensure consistent height */
+        }
+
+        .question-container {
+            position: relative;
+            min-height: 400px; /* Space for questions to slide */
+            overflow: hidden;
+        }
+
+        .question {
+            position: absolute;
+            width: 100%;
+            padding: 20px;
+            transition: transform 0.5s cubic-bezier(0.645, 0.045, 0.355, 1), opacity 0.5s ease;
+            opacity: 0;
+            transform: translateX(100%);
+        }
+
+        .question.active {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .question.previous {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        .question.next {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        .progress-container {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            padding: 0 2.5rem;
         }
 
         .progress-bar {
@@ -841,7 +882,7 @@
             height: 8px;
             background: var(--bg-secondary);
             border-radius: 4px;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             overflow: hidden;
         }
 
@@ -853,18 +894,17 @@
             transition: width 0.3s ease;
         }
 
-        .question {
-            margin-bottom: 2.5rem;
-            animation: fadeIn 0.5s ease;
+        .progress-text {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
         }
 
-        .question h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1.5rem;
-            color: var(--text-primary);
+        .question-navigation {
             display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            justify-content: space-between;
+            margin-top: 2rem;
         }
 
         .emoji {
@@ -1457,7 +1497,7 @@
     </section>
 
     <!-- Discover Section - Enhanced -->
-    <section class="section" id="discover">
+      <section class="section" id="discover">
         <div class="container">
             <div class="discover-section">
                 <div class="discover-container">
@@ -1471,128 +1511,136 @@
                     </div>
 
                     <div class="questionnaire-card">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill"></div>
-                        </div>
+                        <div class="question-container">
+                            <!-- Question 1: Mood -->
+                            <div class="question active" id="question1">
+                                <h3><span class="emoji">😊</span> <span data-en="How are you feeling right now?" data-sw="Unajisikiaje sasa hivi?">How are you feeling right now?</span></h3>
+                                <div class="mood-options" data-question="currentMood">
+                                    <div class="mood-btn" data-value="happy">
+                                        <span class="emoji">😄</span>
+                                        <span data-en="Happy" data-sw="Furaha">Happy</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="sad">
+                                        <span class="emoji">😢</span>
+                                        <span data-en="Sad" data-sw="Huzuni">Sad</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="excited">
+                                        <span class="emoji">🤩</span>
+                                        <span data-en="Excited" data-sw="Msisimko">Excited</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="calm">
+                                        <span class="emoji">😌</span>
+                                        <span data-en="Calm" data-sw="Tulivu">Calm</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="stressed">
+                                        <span class="emoji">😰</span>
+                                        <span data-en="Stressed" data-sw="Mkazo">Stressed</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="romantic">
+                                        <span class="emoji">💕</span>
+                                        <span data-en="Romantic" data-sw="Kimapenzi">Romantic</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="adventurous">
+                                        <span class="emoji">🚀</span>
+                                        <span data-en="Adventurous" data-sw="Mkikamili">Adventurous</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="nostalgic">
+                                        <span class="emoji">🌅</span>
+                                        <span data-en="Nostalgic" data-sw="Kumbukumbu">Nostalgic</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <!-- Question 1: Mood -->
-                        <div class="question active" id="question1">
-                            <h3><span class="emoji">😊</span> <span data-en="How are you feeling right now?" data-sw="Unajisikiaje sasa hivi?">How are you feeling right now?</span></h3>
-                            <div class="mood-options" data-question="currentMood">
-                                <div class="mood-btn" data-value="happy">
-                                    <span class="emoji">😄</span>
-                                    <span data-en="Happy" data-sw="Furaha">Happy</span>
+                            <!-- Question 2: Energy Level -->
+                            <div class="question" id="question2">
+                                <h3><span class="emoji">⚡</span> <span data-en="What's your energy level?" data-sw="Kiwango chako cha nishati ni kipi?">What's your energy level?</span></h3>
+                                <div class="slider-container">
+                                    <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" />
+                                    <div class="slider-labels">
+                                        <span data-en="Low" data-sw="Chini">Low</span>
+                                        <span data-en="High" data-sw="Juu">High</span>
+                                    </div>
                                 </div>
-                                <div class="mood-btn" data-value="sad">
-                                    <span class="emoji">😢</span>
-                                    <span data-en="Sad" data-sw="Huzuni">Sad</span>
+                            </div>
+
+                            <!-- Question 3: Thinking Level -->
+                            <div class="question" id="question3">
+                                <h3><span class="emoji">🧠</span> <span data-en="Do you want something that makes you think?" data-sw="Unataka kitu ambacho kitakufanya ufikirie?">Do you want something that makes you think?</span></h3>
+                                <div class="mood-options" data-question="thinkingLevel">
+                                    <div class="mood-btn" data-value="light">
+                                        <span class="emoji">🍿</span>
+                                        <span data-en="Light & Fun" data-sw="Mwepesi na Wa Kufurahisha">Light & Fun</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="moderate">
+                                        <span class="emoji">🤔</span>
+                                        <span data-en="Some Depth" data-sw="Kina Fulani">Some Depth</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="deep">
+                                        <span class="emoji">🧩</span>
+                                        <span data-en="Mind-Bending" data-sw="Ya Kuvuruga Akili">Mind-Bending</span>
+                                    </div>
                                 </div>
-                                <div class="mood-btn" data-value="excited">
-                                    <span class="emoji">🤩</span>
-                                    <span data-en="Excited" data-sw="Msisimko">Excited</span>
+                            </div>
+
+                            <!-- Question 4: Watching With -->
+                            <div class="question" id="question4">
+                                <h3><span class="emoji">👥</span> <span data-en="Are you watching alone or with others?" data-sw="Unaangalia peke yako au na wengine?">Are you watching alone or with others?</span></h3>
+                                <div class="mood-options" data-question="watchingWith">
+                                    <div class="mood-btn" data-value="alone">
+                                        <span class="emoji">🙋‍♀️</span>
+                                        <span data-en="Solo" data-sw="Peke Yako">Solo</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="partner">
+                                        <span class="emoji">💑</span>
+                                        <span data-en="Partner" data-sw="Mwenzi">Partner</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="friends">
+                                        <span class="emoji">👫</span>
+                                        <span data-en="Friends" data-sw="Marafiki">Friends</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="family">
+                                        <span class="emoji">👨‍👩‍👧‍👦</span>
+                                        <span data-en="Family" data-sw="Familia">Family</span>
+                                    </div>
                                 </div>
-                                <div class="mood-btn" data-value="calm">
-                                    <span class="emoji">😌</span>
-                                    <span data-en="Calm" data-sw="Tulivu">Calm</span>
+                            </div>
+
+                            <!-- Question 5: Time Available -->
+                            <div class="question" id="question5">
+                                <h3><span class="emoji">⏰</span> <span data-en="How much time do you have?" data-sw="Una muda gani?">How much time do you have?</span></h3>
+                                <div class="mood-options" data-question="timeAvailable">
+                                    <div class="mood-btn" data-value="short">
+                                        <span class="emoji">⚡</span>
+                                        <span data-en="Quick (&lt; 90 min)" data-sw="Haraka (&lt; 90 dakika)">Quick (&lt; 90 min)</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="medium">
+                                        <span class="emoji">🎬</span>
+                                        <span data-en="Standard (90-150 min)" data-sw="Kawaida (90-150 dakika)">Standard (90-150 min)</span>
+                                    </div>
+                                    <div class="mood-btn" data-value="long">
+                                        <span class="emoji">📽️</span>
+                                        <span data-en="Epic (150+ min)" data-sw="Kubwa (150+ dakika)">Epic (150+ min)</span>
+                                    </div>
                                 </div>
-                                <div class="mood-btn" data-value="stressed">
-                                    <span class="emoji">😰</span>
-                                    <span data-en="Stressed" data-sw="Mkazo">Stressed</span>
-                                </div>
-                                <div class="mood-btn" data-value="romantic">
-                                    <span class="emoji">💕</span>
-                                    <span data-en="Romantic" data-sw="Kimapenzi">Romantic</span>
-                                </div>
-                                <div class="mood-btn" data-value="adventurous">
-                                    <span class="emoji">🚀</span>
-                                    <span data-en="Adventurous" data-sw="Mkikamili">Adventurous</span>
-                                </div>
-                                <div class="mood-btn" data-value="nostalgic">
-                                    <span class="emoji">🌅</span>
-                                    <span data-en="Nostalgic" data-sw="Kumbukumbu">Nostalgic</span>
-                                </div>
+                            </div>
+
+                            <!-- Question 6: Current Thoughts -->
+                            <div class="question" id="question6">
+                                <h3><span class="emoji">💭</span> <span data-en="What's on your mind lately?" data-sw="Ni nini kilicho kwenye akili yako hivi karibuni?">What's on your mind lately?</span></h3>
+                                <input type="text" class="text-input" id="currentThoughts" 
+                                       data-en-placeholder="e.g., work stress, wanting to laugh, missing old friends..." 
+                                       data-sw-placeholder="mfano, msongo kazini, kutaka kucheka, kukumbuka rafiki wa zamani..." />
                             </div>
                         </div>
 
-                        <!-- Question 2: Energy Level -->
-                        <div class="question" id="question2">
-                            <h3><span class="emoji">⚡</span> <span data-en="What's your energy level?" data-sw="Kiwango chako cha nishati ni kipi?">What's your energy level?</span></h3>
-                            <div class="slider-container">
-                                <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" />
-                                <div class="slider-labels">
-                                    <span data-en="Low" data-sw="Chini">Low</span>
-                                    <span data-en="High" data-sw="Juu">High</span>
-                                </div>
+                        <!-- Progress Bar at Bottom -->
+                        <div class="progress-container">
+                            <div class="progress-text">
+                                <span id="progressText" data-en="Question 1 of 6" data-sw="Swali 1 la 6">Question 1 of 6</span>
                             </div>
-                        </div>
-
-                        <!-- Question 3: Thinking Level -->
-                        <div class="question" id="question3">
-                            <h3><span class="emoji">🧠</span> <span data-en="Do you want something that makes you think?" data-sw="Unataka kitu ambacho kitakufanya ufikirie?">Do you want something that makes you think?</span></h3>
-                            <div class="mood-options" data-question="thinkingLevel">
-                                <div class="mood-btn" data-value="light">
-                                    <span class="emoji">🍿</span>
-                                    <span data-en="Light & Fun" data-sw="Mwepesi na Wa Kufurahisha">Light & Fun</span>
-                                </div>
-                                <div class="mood-btn" data-value="moderate">
-                                    <span class="emoji">🤔</span>
-                                    <span data-en="Some Depth" data-sw="Kina Fulani">Some Depth</span>
-                                </div>
-                                <div class="mood-btn" data-value="deep">
-                                    <span class="emoji">🧩</span>
-                                    <span data-en="Mind-Bending" data-sw="Ya Kuvuruga Akili">Mind-Bending</span>
-                                </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
                             </div>
-                        </div>
-
-                        <!-- Question 4: Watching With -->
-                        <div class="question" id="question4">
-                            <h3><span class="emoji">👥</span> <span data-en="Are you watching alone or with others?" data-sw="Unaangalia peke yako au na wengine?">Are you watching alone or with others?</span></h3>
-                            <div class="mood-options" data-question="watchingWith">
-                                <div class="mood-btn" data-value="alone">
-                                    <span class="emoji">🙋‍♀️</span>
-                                    <span data-en="Solo" data-sw="Peke Yako">Solo</span>
-                                </div>
-                                <div class="mood-btn" data-value="partner">
-                                    <span class="emoji">💑</span>
-                                    <span data-en="Partner" data-sw="Mwenzi">Partner</span>
-                                </div>
-                                <div class="mood-btn" data-value="friends">
-                                    <span class="emoji">👫</span>
-                                    <span data-en="Friends" data-sw="Marafiki">Friends</span>
-                                </div>
-                                <div class="mood-btn" data-value="family">
-                                    <span class="emoji">👨‍👩‍👧‍👦</span>
-                                    <span data-en="Family" data-sw="Familia">Family</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Question 5: Time Available -->
-                        <div class="question" id="question5">
-                            <h3><span class="emoji">⏰</span> <span data-en="How much time do you have?" data-sw="Una muda gani?">How much time do you have?</span></h3>
-                            <div class="mood-options" data-question="timeAvailable">
-                                <div class="mood-btn" data-value="short">
-                                    <span class="emoji">⚡</span>
-                                    <span data-en="Quick (&lt; 90 min)" data-sw="Haraka (&lt; 90 dakika)">Quick (&lt; 90 min)</span>
-                                </div>
-                                <div class="mood-btn" data-value="medium">
-                                    <span class="emoji">🎬</span>
-                                    <span data-en="Standard (90-150 min)" data-sw="Kawaida (90-150 dakika)">Standard (90-150 min)</span>
-                                </div>
-                                <div class="mood-btn" data-value="long">
-                                    <span class="emoji">📽️</span>
-                                    <span data-en="Epic (150+ min)" data-sw="Kubwa (150+ dakika)">Epic (150+ min)</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Question 6: Current Thoughts -->
-                        <div class="question" id="question6">
-                            <h3><span class="emoji">💭</span> <span data-en="What's on your mind lately?" data-sw="Ni nini kilicho kwenye akili yako hivi karibuni?">What's on your mind lately?</span></h3>
-                            <input type="text" class="text-input" id="currentThoughts" 
-                                   data-en-placeholder="e.g., work stress, wanting to laugh, missing old friends..." 
-                                   data-sw-placeholder="mfano, msongo kazini, kutaka kucheka, kukumbuka rafiki wa zamani..." />
                         </div>
 
                         <!-- Navigation Buttons -->
@@ -1795,12 +1843,13 @@
             });
         }
 
-        // Discover Questionnaire Logic
+             // Discover Questionnaire Logic
         const questions = document.querySelectorAll('.question');
         const nextBtn = document.getElementById('nextBtn');
         const prevBtn = document.getElementById('prevBtn');
         const discoverBtn = document.getElementById('discoverBtn');
         const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
         const moodOptions = document.querySelectorAll('.mood-options .mood-btn');
         const recommendationPreview = document.getElementById('recommendationPreview');
         const movieMatch = document.getElementById('movieMatch');
@@ -1816,16 +1865,34 @@
         // Next button click handler
         nextBtn.addEventListener('click', () => {
             if (currentQuestion < totalQuestions - 1) {
+                // Animate current question out to the left
+                questions[currentQuestion].classList.remove('active');
+                questions[currentQuestion].classList.add('previous');
+                
                 currentQuestion++;
-                showQuestion(currentQuestion);
+                
+                // Animate next question in from the right
+                questions[currentQuestion].classList.remove('next');
+                questions[currentQuestion].classList.add('active');
+                
+                updateProgress();
             }
         });
         
         // Previous button click handler
         prevBtn.addEventListener('click', () => {
             if (currentQuestion > 0) {
+                // Animate current question out to the right
+                questions[currentQuestion].classList.remove('active');
+                questions[currentQuestion].classList.add('next');
+                
                 currentQuestion--;
-                showQuestion(currentQuestion);
+                
+                // Animate previous question in from the left
+                questions[currentQuestion].classList.remove('previous');
+                questions[currentQuestion].classList.add('active');
+                
+                updateProgress();
             }
         });
         
@@ -1896,37 +1963,47 @@
         
         // Show question function
         function showQuestion(index) {
-            // Hide all questions
-            questions.forEach(question => {
-                question.classList.remove('active');
+            // Hide all questions except current one
+            questions.forEach((question, i) => {
+                question.classList.remove('active', 'previous', 'next');
+                if (i < index) {
+                    question.classList.add('previous');
+                } else if (i > index) {
+                    question.classList.add('next');
+                } else {
+                    question.classList.add('active');
+                }
             });
             
-            // Show current question
-            questions[index].classList.add('active');
-            
-            // Update progress bar
-            const progress = ((index + 1) / totalQuestions) * 100;
+            updateProgress();
+        }
+        
+        // Update progress bar and text
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
             progressFill.style.width = `${progress}%`;
             
+            // Update progress text
+            const currentLang = document.body.getAttribute('data-lang');
+            const langPrefix = currentLang === 'en' ? 'Question' : 'Swali';
+            const langSuffix = currentLang === 'en' ? 'of' : 'la';
+            progressText.textContent = `${langPrefix} ${currentQuestion + 1} ${langSuffix} ${totalQuestions}`;
+            
             // Update navigation buttons
-            if (index === 0) {
+            if (currentQuestion === 0) {
                 prevBtn.style.display = 'none';
             } else {
                 prevBtn.style.display = 'inline-flex';
             }
             
-            if (index === totalQuestions - 1) {
+            if (currentQuestion === totalQuestions - 1) {
                 nextBtn.style.display = 'none';
                 discoverBtn.style.display = 'flex';
             } else {
                 nextBtn.style.display = 'inline-flex';
                 discoverBtn.style.display = 'none';
             }
-            
-            // Scroll to question
-            questions[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
-        
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
