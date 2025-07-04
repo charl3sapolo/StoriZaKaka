@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from djongo import models
 
 class User(AbstractUser):
     """
@@ -17,11 +18,27 @@ class Movie(models.Model):
     """
     Represents a movie.
     """
+    tmdb_id = models.IntegerField(unique=True)
     title = models.CharField(max_length=255)
-    # Add other fields as needed, e.g.:
-    # description = models.TextField(blank=True, null=True)
-    # release_date = models.DateField(blank=True, null=True)
-    # genres = models.ManyToManyField('Genre', blank=True)
+    overview = models.TextField(blank=True)
+    genres = models.JSONField(default=list)  # List of genre dicts or names
+    rating = models.FloatField(null=True, blank=True)
+    year = models.IntegerField(null=True, blank=True)
+    type = models.CharField(max_length=32, choices=[
+        ('movie', 'Movie'),
+        ('series', 'Series'),
+        ('animation', 'Animation'),
+        ('tvshow', 'TV Show'),
+    ])
+    country = models.CharField(max_length=64, blank=True)
+    language = models.CharField(max_length=32, blank=True)
+    poster_path = models.CharField(max_length=255, blank=True)
+    backdrop_path = models.CharField(max_length=255, blank=True)
+    release_date = models.CharField(max_length=32, blank=True)
+    popularity = models.FloatField(null=True, blank=True)
+    vote_count = models.IntegerField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.title
