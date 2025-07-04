@@ -223,6 +223,48 @@
             <p>Tell us how you're feeling, and we'll find the perfect movie for your mood</p>
         </div>
 
+        <!-- Discovery Search & Filter Bar -->
+        <div class="bg-white bg-opacity-90 rounded-xl shadow-md p-6 mb-8 flex flex-col gap-4 md:flex-row md:items-end" style="backdrop-filter: blur(6px);">
+            <div class="flex-1">
+                <label class="block text-gray-700 font-semibold mb-1">Search</label>
+                <input id="searchInput" type="text" placeholder="Movie title or keyword..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Genre</label>
+                <input id="genreInput" type="text" placeholder="e.g. Action" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Rating ≥</label>
+                <input id="ratingInput" type="number" min="0" max="10" step="0.1" placeholder="7.0" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Year</label>
+                <input id="yearInput" type="number" min="1900" max="2100" placeholder="2023" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Type</label>
+                <select id="typeInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                    <option value="">Any</option>
+                    <option value="movie">Movie</option>
+                    <option value="series">Series</option>
+                    <option value="animation">Animation</option>
+                    <option value="tvshow">TV Show</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Country</label>
+                <input id="countryInput" type="text" placeholder="e.g. US" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <div>
+                <label class="block text-gray-700 font-semibold mb-1">Language</label>
+                <input id="languageInput" type="text" placeholder="e.g. en" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            </div>
+            <button id="searchBtn" class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-indigo-600 hover:to-purple-600 transition">Search</button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-10"></div>
+
         <div class="questionnaire-card">
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
@@ -383,6 +425,64 @@
 
         // Initialize progress
         updateProgress();
+
+        // Discovery search logic
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsSection = document.getElementById('resultsSection');
+
+        function fetchResults() {
+            const q = document.getElementById('searchInput').value;
+            const genre = document.getElementById('genreInput').value;
+            const rating = document.getElementById('ratingInput').value;
+            const year = document.getElementById('yearInput').value;
+            const type = document.getElementById('typeInput').value;
+            const country = document.getElementById('countryInput').value;
+            const language = document.getElementById('languageInput').value;
+
+            let url = `/discovery/?q=${encodeURIComponent(q)}`;
+            if (genre) url += `&genre=${encodeURIComponent(genre)}`;
+            if (rating) url += `&rating=${encodeURIComponent(rating)}`;
+            if (year) url += `&year=${encodeURIComponent(year)}`;
+            if (type) url += `&type=${encodeURIComponent(type)}`;
+            if (country) url += `&country=${encodeURIComponent(country)}`;
+            if (language) url += `&language=${encodeURIComponent(language)}`;
+
+            resultsSection.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">Loading...</div>';
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) {
+                        resultsSection.innerHTML = `<div class='col-span-full text-center text-red-500 py-8'>${data.error}</div>`;
+                        return;
+                    }
+                    if (!data.results || data.results.length === 0) {
+                        resultsSection.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">No movies found.</div>';
+                        return;
+                    }
+                    resultsSection.innerHTML = data.results.map(movie => `
+                        <div class="bg-white bg-opacity-90 rounded-xl shadow p-4 flex flex-col h-full" style="backdrop-filter: blur(4px);">
+                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" class="rounded-lg mb-3 w-full h-64 object-cover">
+                            <h3 class="font-bold text-lg mb-1">${movie.title}</h3>
+                            <div class="text-sm text-gray-600 mb-2">${movie.year || ''} &bull; ${movie.type || ''} &bull; ${movie.language || ''}</div>
+                            <div class="text-xs text-gray-500 mb-2">${Array.isArray(movie.genres) ? movie.genres.join(', ') : movie.genres}</div>
+                            <div class="text-sm mb-2">${movie.overview ? movie.overview.substring(0, 120) + (movie.overview.length > 120 ? '...' : '') : ''}</div>
+                            <div class="mt-auto flex items-center justify-between">
+                                <span class="text-yellow-500 font-bold">★ ${movie.rating || 'N/A'}</span>
+                                <span class="text-xs text-gray-400">Votes: ${movie.vote_count || 0}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(() => {
+                    resultsSection.innerHTML = '<div class="col-span-full text-center text-red-500 py-8">Error fetching results.</div>';
+                });
+        }
+
+        searchBtn.addEventListener('click', fetchResults);
+        // Optionally, fetch on Enter key in search input
+        document.getElementById('searchInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') fetchResults();
+        });
     </script>
 </body>
 </html>
