@@ -38,6 +38,10 @@
                 <li><a href="#contact" data-en="Contact" data-sw="Mawasiliano">Contact</a></li>
             </ul>
             <div class="nav-controls">
+                <!-- Refresh Button in Nav -->
+                <button class="hero-refresh" id="heroRefreshBtn" aria-label="Refresh hero content" tabindex="0" data-tooltip="Refresh hero content">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
                 <button class="theme-toggle" id="themeToggle" title="Toggle theme">
                     <span class="theme-icon">🌙</span>
                 </button>
@@ -51,6 +55,13 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-bg-slider"></div>
+        <!-- Navigation Arrows -->
+        <button class="hero-arrow hero-arrow-left" id="heroArrowLeft" aria-label="Previous" tabindex="0">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="hero-arrow hero-arrow-right" id="heroArrowRight" aria-label="Next" tabindex="0">
+            <i class="fas fa-chevron-right"></i>
+        </button>
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title" data-en="AI-Powered Movie Discovery" data-sw="Ugunduzi wa Filamu kwa Nguvu ya AI">AI-Powered Movie Discovery</h1>
@@ -696,43 +707,39 @@
         const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
         const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/original';
 
-        // Helper to fetch popular movies and TV shows
-        async function fetchPopularMedia() {
+        let heroSlides = [];
+        let heroSlideIndex = 0;
+        let heroSlideInterval = null;
+        let heroMedia = [];
+        let heroRefreshCount = 0;
+        let heroLastRefreshes = [];
+
+        // Helper to fetch popular and high-rated movies/TV
+        async function fetchHeroMedia() {
+            // Popular movies and TV shows, sorted by rating
             const [movieRes, tvRes] = await Promise.all([
                 fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`),
                 fetch(`${TMDB_BASE_URL}/tv/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`)
             ]);
             const [movieData, tvData] = await Promise.all([movieRes.json(), tvRes.json()]);
+            let movies = movieData.results.filter(m => m.vote_average >= 7.5);
+            let tvs = tvData.results.filter(t => t.vote_average >= 7.5);
             // Tag type for later
-            const movies = movieData.results.map(m => ({...m, media_type: 'movie'}));
-            const tvs = tvData.results.map(t => ({...t, media_type: 'tv'}));
-            return [...movies, ...tvs];
+            movies = movies.map(m => ({...m, media_type: 'movie'}));
+            tvs = tvs.map(t => ({...t, media_type: 'tv'}));
+            let all = [...movies, ...tvs];
+            // Shuffle and pick 5
+            all = all.sort(() => Math.random() - 0.5).slice(0, 5);
+            return all;
         }
 
-        async function loadHeroBackgrounds() {
+        async function loadHeroBackgrounds(forceRefresh=false) {
             try {
-                // Get featured movie IDs to exclude
-                const featuredRes = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
-                const featuredData = await featuredRes.json();
-                const featuredIDs = featuredData.results.slice(0, 4).map(m => m.id);
-
-                // Get popular movies and TV shows
-                let media = await fetchPopularMedia();
-
-                // Exclude featured movies
-                media = media.filter(item => !(item.media_type === 'movie' && featuredIDs.includes(item.id)));
-
-                // Only use items with a valid backdrop
-                media = media.filter(item => item.backdrop_path);
-
-                // Pick up to 5 for the slider
-                const selected = media.slice(0, 5);
-
-                // Render
+                heroMedia = await fetchHeroMedia();
                 const slider = document.querySelector('.hero-bg-slider');
                 if (!slider) return;
                 slider.innerHTML = '';
-                selected.forEach((item, idx) => {
+                heroMedia.forEach((item, idx) => {
                     const img = document.createElement('img');
                     img.src = `${TMDB_IMAGE_BASE}${item.backdrop_path}`;
                     img.className = 'hero-bg-slide' + (idx === 0 ? ' active' : '');
@@ -742,19 +749,81 @@
                     img.style.height = '100%';
                     slider.appendChild(img);
                 });
-
-                // Start slider logic (10s per slide)
-                const heroSlides = document.querySelectorAll('.hero-bg-slide');
-                let heroSlideIndex = 0;
-                setInterval(() => {
-                    heroSlides[heroSlideIndex].classList.remove('active');
-                    heroSlideIndex = (heroSlideIndex + 1) % heroSlides.length;
-                    heroSlides[heroSlideIndex].classList.add('active');
-                }, 10000); // 10 seconds
-            } catch (e) {
-                // fallback: do nothing
-            }
+                heroSlides = document.querySelectorAll('.hero-bg-slide');
+                heroSlideIndex = 0;
+                if (heroSlideInterval) clearInterval(heroSlideInterval);
+                heroSlideInterval = setInterval(() => {
+                    goToHeroSlide((heroSlideIndex + 1) % heroSlides.length);
+                }, 10000);
+            } catch (e) {}
         }
+
+        function goToHeroSlide(idx) {
+            if (!heroSlides.length) return;
+            heroSlides[heroSlideIndex].classList.remove('active');
+            heroSlideIndex = (idx + heroSlides.length) % heroSlides.length;
+            heroSlides[heroSlideIndex].classList.add('active');
+        }
+
+        // Navigation arrow logic
+        const heroArrowLeft = document.getElementById('heroArrowLeft');
+        const heroArrowRight = document.getElementById('heroArrowRight');
+        if (heroArrowLeft && heroArrowRight) {
+            heroArrowLeft.onclick = () => {
+                goToHeroSlide(heroSlideIndex - 1);
+            };
+            heroArrowRight.onclick = () => {
+                goToHeroSlide(heroSlideIndex + 1);
+            };
+            // Keyboard navigation
+            document.addEventListener('keydown', e => {
+                if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+                if (e.key === 'ArrowLeft') heroArrowLeft.click();
+                if (e.key === 'ArrowRight') heroArrowRight.click();
+            });
+            // Touch/swipe navigation
+            let touchStartX = null;
+            document.querySelector('.hero').addEventListener('touchstart', e => {
+                touchStartX = e.touches[0].clientX;
+            });
+            document.querySelector('.hero').addEventListener('touchend', e => {
+                if (touchStartX === null) return;
+                const dx = e.changedTouches[0].clientX - touchStartX;
+                if (Math.abs(dx) > 50) {
+                    if (dx > 0) heroArrowLeft.click();
+                    else heroArrowRight.click();
+                }
+                touchStartX = null;
+            });
+        }
+
+        // Refresh button logic
+        const heroRefreshBtn = document.getElementById('heroRefreshBtn');
+        if (heroRefreshBtn) {
+            heroRefreshBtn.onclick = async () => {
+                // Animate icon spin
+                heroRefreshBtn.classList.add('spinning');
+                setTimeout(() => {
+                    heroRefreshBtn.classList.remove('spinning');
+                    heroRefreshBtn.blur(); // Remove focus so hover/focus effect disappears
+                }, 800);
+                // Track refreshes in the last hour
+                const now = Date.now();
+                heroLastRefreshes = heroLastRefreshes.filter(ts => now - ts < 3600000);
+                heroLastRefreshes.push(now);
+                heroRefreshCount = heroLastRefreshes.length;
+                // Refresh hero
+                await loadHeroBackgrounds(true);
+                // If >3 times in an hour, also refresh featured
+                if (heroRefreshCount > 3) {
+                    if (typeof loadFeaturedMovies === 'function') {
+                        await loadFeaturedMovies();
+                    }
+                }
+            };
+        }
+
+        // Initial load
         if (document.querySelector('.hero-bg-slider')) {
             loadHeroBackgrounds();
         }
