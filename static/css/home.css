@@ -321,20 +321,27 @@
         }
 
         .hero-content {
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 700px;
+            margin-left: -4vw;
+            margin-right: 24vw;
             position: relative;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .hero-title {
             font-size: 4rem;
             font-weight: 800;
+            margin-left: -5vw;
             margin-bottom: 1.5rem;
             background: var(--gradient-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             line-height: 1.1;
+            text-align: left;
         }
 
         .hero-subtitle {
@@ -342,6 +349,8 @@
             color: var(--text-secondary);
             max-width: 600px;
             margin: 0 auto 3rem;
+            text-align: left;
+            margin-left: 0;
         }
 
         /* Floating Animation */
@@ -1643,6 +1652,7 @@
     .hero-arrow-left { left: 8px; }
     .hero-arrow-right { right: 8px; }
     .nav-controls .hero-refresh { right: 12px; top: 16px; }
+    .hero-content { margin-left: 5vw; max-width: 90vw; }
 }
 @media (max-width: 600px) {
     .hero-arrow, .nav-controls .hero-refresh {
@@ -1653,4 +1663,139 @@
     .hero-arrow-left { left: 2px; }
     .hero-arrow-right { right: 2px; }
     .nav-controls .hero-refresh { right: 4px; top: 8px; }
+    .hero-content { margin-left: 2vw; max-width: 98vw; }
+}
+
+/* Hero Overlay: Dynamic Movie Info (Right, Transparent) */
+.hero-overlay {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    max-width: 40vw;
+    min-width: 220px;
+    width: 100%;
+    padding: 2.2rem 2.2rem 2.2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1.2rem;
+    background: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    pointer-events: none;
+    transition: background 0.2s, color 0.s;
+}
+.hero-title {
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    margin-bottom: 0.2rem;
+    line-height: 1.1;
+    color: #fff;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    transition: font-family 0.4s, color 0.4s;
+    text-align: right;
+}
+.hero-meta {
+    display: flex;
+    align-items: center;
+    gap: 1.1rem;
+    font-size: 1.1rem;
+    justify-content: flex-end;
+}
+.hero-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 1.2rem;
+    color: #FFD700;
+    background: rgba(0,0,0,0.18);
+    border-radius: 1.2rem;
+    padding: 0.2rem 0.9rem;
+    font-weight: 700;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+}
+.hero-rating .fa-star {
+    color: #FFD700 !important;
+    filter: drop-shadow(0 0 2px #FFD70088);
+}
+.hero-meta .hero-year, .hero-meta .hero-genre {
+    color: #fff;
+    opacity: 0.92;
+    font-size: 1.08rem;
+    margin-left: 0.7rem;
+    margin-right: 0.2rem;
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+.hero-meta .hero-genre {
+    padding: 0.1rem 0.7rem;
+    border-radius: 1rem;
+    background: rgba(255,255,255,0.08);
+    color: #FFD700;
+    font-size: 1.05rem;
+    margin-left: 0.2rem;
+    margin-right: 0.2rem;
+    font-family: inherit;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+.hero-desc-bg {
+    background: transparent;
+    border-radius: 1.2rem;
+    padding: 1.1rem 1.5rem 1.1rem 1.1rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    max-width: 100%;
+    margin-left: auto;
+}
+.hero-desc {
+    color: lavenderblush;
+    text-shadow: 0 2px 12px rgba(98, 59, 97, 0.18);
+    font-size: 1.15rem;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: right;
+}
+/* Remove genre-specific backgrounds/effects from overlay container */
+.hero-overlay[class*='genre-'] { background: none !important; box-shadow: none !important; border: none !important; }
+.hero-overlay[class*='genre-']::after, .hero-overlay[class*='genre-']::before { display: none !important; }
+/* Only keep genre-specific font/color for .hero-title */
+.hero-overlay.genre-action .hero-title { font-family: 'Oswald', Impact, 'Arial Black', sans-serif; letter-spacing: 0.04em; color: #ffb347; text-transform: uppercase; text-shadow: 0 4px 24px #ffb34755, 0 2px 12px #000a; }
+.hero-overlay.genre-romance .hero-title { font-family: 'Quicksand', 'Comic Sans MS', cursive, sans-serif; color: #ffb6c1; text-shadow: 0 2px 12px #ffb6c199, 0 1px 6px #0008; }
+.hero-overlay.genre-horror .hero-title { font-family: 'Creepster', 'Oswald', Impact, sans-serif; color: #ff4444; text-shadow: 0 0 16px #ff4444cc, 0 2px 12px #000a; letter-spacing: 0.08em; filter: drop-shadow(0 0 8px #000c); }
+.hero-overlay.genre-musical .hero-title { font-family: 'Pacifico', 'Quicksand', cursive, sans-serif; color: #ffe066; text-shadow: 0 2px 12px #ffe06699, 0 1px 6px #0008; }
+.hero-overlay.genre-noir .hero-title { font-family: 'Bebas Neue', 'Oswald', Impact, sans-serif; color: #e5e7eb; text-shadow: 0 0 0 #000, 0 0 16px #000c; filter: grayscale(1) contrast(1.2); }
+.hero-overlay.genre-family .hero-title { font-family: 'Nunito', 'Quicksand', sans-serif; color: #10B981; text-shadow: 0 2px 12px #10B98199, 0 1px 6px #0008; }
+.hero-overlay.genre-fantasy .hero-title { font-family: 'Cinzel Decorative', 'Georgia', serif; color: #a78bfa; text-shadow: 0 2px 12px #a78bfa99, 0 1px 6px #0008; }
+.hero-overlay.genre-sci-fi .hero-title { font-family: 'Orbitron', 'Oswald', sans-serif; color: #67e8f9; text-shadow: 0 0 16px #67e8f9cc, 0 2px 12px #000a; }
+.hero-overlay.genre-thriller .hero-title { font-family: 'Oswald', Impact, 'Arial Black', sans-serif; color: #f87171; text-shadow: 0 2px 12px #f8717199, 0 1px 6px #0008; }
+.hero-overlay.genre-comedy .hero-title { font-family: 'Fredoka One', 'Quicksand', sans-serif; color: #fbbf24; text-shadow: 0 2px 12px #fbbf2499, 0 1px 6px #0008; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .hero-overlay {
+        max-width: 70vw;
+        padding: 1.2rem 1.2rem 1.2rem 0;
+    }
+    .hero-title { font-size: 2rem; }
+    .hero-desc { font-size: 1rem; }
+    .hero-meta { font-size: 0.98rem; gap: 0.7rem; }
+    .hero-meta .hero-year, .hero-meta .hero-genre { font-size: 0.98rem; }
+}
+@media (max-width: 600px) {
+    .hero-overlay {
+        max-width: 100vw;
+        min-width: 0;
+        padding: 0.7rem 0.7rem 0.7rem 0;
+        border-radius: 1rem;
+        right: 0; left: 0;
+        bottom: 0;
+        align-items: flex-end;
+    }
+    .hero-title { font-size: 1.2rem; }
+    .hero-meta { font-size: 0.92rem; gap: 0.5rem; flex-wrap: wrap; }
+    .hero-meta .hero-year, .hero-meta .hero-genre { font-size: 0.92rem; }
+    .hero-desc-bg { padding: 0.5rem 0.7rem; }
 }
