@@ -94,3 +94,7 @@ def discovery(request):
 def about(request):
     """Render the about page"""
     return render(request, "pages/about.html")
+
+def profile(request):
+    """Render the profile page (under construction)"""
+    return render(request, "pages/profile.html")
