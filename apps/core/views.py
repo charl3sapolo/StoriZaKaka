@@ -90,3 +90,7 @@ def discovery(request):
         for m in movies
     ]
     return JsonResponse({'results': movie_list})
+
+def about(request):
+    """Render the about page"""
+    return render(request, "pages/about.html")

@@ -7,5 +7,6 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('discover/', views.discover, name='discover'),
     path('discovery/', views.discovery, name='discovery'),
+    path('about/', views.about, name='about'),
     # ... other routes ...
 ]
