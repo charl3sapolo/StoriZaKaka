@@ -8,5 +8,6 @@ urlpatterns = [
     path('discover/', views.discover, name='discover'),
     path('discovery/', views.discovery, name='discovery'),
     path('about/', views.about, name='about'),
+    path('profile/', views.profile, name='profile'),
     # ... other routes ...
 ]

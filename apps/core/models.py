@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from djongo import models
+# from djongo import models  # Temporarily commented out for development
 
 class User(AbstractUser):
     """
