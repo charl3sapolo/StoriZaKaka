@@ -36,7 +36,7 @@ LOCAL_APPS = [
     'apps.api',
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + ['djongo']
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -76,12 +76,8 @@ WSGI_APPLICATION = 'movierecommender.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'KakaFlix',
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': os.environ.get('MONGODB_URI'),
-        }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
