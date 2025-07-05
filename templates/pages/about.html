@@ -3,11 +3,280 @@
 {% block title %}Coming Soon - Movie Recommender{% endblock %}
 
 {% block content %}
-<div class="container" style="text-align: center; margin-top: 80px;">
-  <h1 style="font-size: 2.5rem; color: #555;">🚧 Page Under Construction</h1>
-  <p style="font-size: 1.2rem; color: #777; margin-top: 10px;">
-    The developer is still working on this page. Updates will be available soon.
-  </p>
-  <p style="font-style: italic; color: #999;">Please stay tuned...</p>
+<!-- Bubble Container -->
+<div class="bubble-container">
+  <div class="bubble bubble-1"></div>
+  <div class="bubble bubble-2"></div>
+  <div class="bubble bubble-3"></div>
+  <div class="bubble bubble-4"></div>
+  <div class="bubble bubble-5"></div>
 </div>
+
+<div class="construction-container">
+  <!-- Film Strip Effect -->
+  <div class="film-strip">
+    <div class="film-perfs"></div>
+    <div class="film-content">
+      <!-- Main Content -->
+      <div class="construction-content">
+        <div class="clapperboard">
+          <div class="clapper-top"></div>
+          <div class="clapper-bottom">
+            <h1>Feature Coming Soon!</h1>
+          </div>
+        </div>
+        
+        <div class="director-message">
+          <div class="director-icon">🎬</div>
+          <p class="scene-description">
+            <span class="scene-number">SCENE 42</span>
+            <span class="scene-action">DEVELOPER hard at work - coding furiously - camera pushes in</span>
+          </p>
+          <p class="director-note">
+            "We're currently in production on this exciting new feature!<br>
+            Please check back soon for the big premiere."
+          </p>
+        </div>
+        
+        <div class="action-call">
+          <a href="{% url 'core:home' %}" class="back-button prominent-back">
+            <i class="fas fa-home"></i> Back to Home
+          </a>
+          <div class="release-countdown">
+            <span>Estimated Release:</span>
+            <span class="countdown">Q4 2023</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="film-perfs"></div>
+  </div>
+</div>
+
+<style>
+/* Base Styles */
+.construction-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  z-index: 1;
+}
+
+/* Film Strip Effect */
+.film-strip {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(30, 41, 59, 0.95));
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  max-width: 800px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.film-perfs {
+  height: 40px;
+  background: repeating-linear-gradient(
+    to right,
+    #0f172a,
+    #0f172a 20px,
+    rgba(139, 92, 246, 0.3) 20px,
+    rgba(139, 92, 246, 0.3) 40px
+  );
+  opacity: 0.8;
+}
+
+.film-content {
+  padding: 3rem;
+}
+
+/* Clapperboard Design */
+.clapperboard {
+  width: 300px;
+  margin: 0 auto 3rem;
+  position: relative;
+  perspective: 1000px;
+}
+
+.clapper-top {
+  height: 80px;
+  background: linear-gradient(145deg, #ef4444, #b91c1c);
+  border-radius: 8px 8px 0 0;
+  transform: rotateX(15deg);
+  transform-origin: bottom;
+  box-shadow: 0 -5px 15px rgba(239, 68, 68, 0.3);
+}
+
+.clapper-bottom {
+  background: #0f172a;
+  padding: 2rem;
+  border-radius: 0 0 8px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: none;
+  text-align: center;
+}
+
+.clapperboard h1 {
+  font-size: 2rem;
+  margin: 0;
+  background: linear-gradient(to right, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+/* Director's Message */
+.director-message {
+  background: rgba(15, 23, 42, 0.7);
+  border-left: 4px solid #8B5CF6;
+  padding: 2rem;
+  margin-bottom: 3rem;
+  position: relative;
+}
+
+.director-icon {
+  position: absolute;
+  left: -30px;
+  top: -30px;
+  font-size: 3rem;
+  background: #0f172a;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid #8B5CF6;
+  box-shadow: 0 5px 15px rgba(139, 92, 246, 0.3);
+}
+
+.scene-description {
+  color: #94a3b8;
+  font-family: monospace;
+  margin-bottom: 1.5rem;
+  font-size: 1.1rem;
+}
+
+.scene-number {
+  color: #f59e0b;
+  margin-right: 1rem;
+}
+
+.scene-action {
+  color: #e2e8f0;
+  font-style: italic;
+}
+
+.director-note {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #f8fafc;
+}
+
+/* Action Call */
+.action-call {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.back-button {
+  background: linear-gradient(135deg, #8B5CF6, #3B82F6);
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.back-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+}
+
+.prominent-back {
+  background: linear-gradient(135deg, #10B981, #059669) !important;
+  font-size: 1.1rem !important;
+  padding: 1rem 2rem !important;
+  border: 2px solid #10B981 !important;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3) !important;
+}
+
+.prominent-back:hover {
+  background: linear-gradient(135deg, #059669, #047857) !important;
+  transform: translateY(-3px) !important;
+  box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4) !important;
+}
+
+.release-countdown {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.countdown {
+  color: #10B981;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+/* Bubble Animation (reuse from your existing styles) */
+.bubble-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  opacity: 0.3;
+  animation: float 25s infinite ease-in-out;
+  z-index: -1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .film-content {
+    padding: 2rem;
+  }
+  
+  .clapperboard {
+    width: 250px;
+  }
+  
+  .director-message {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .film-content {
+    padding: 1.5rem;
+  }
+  
+  .action-call {
+    flex-direction: column;
+  }
+}
+</style>
 {% endblock %}

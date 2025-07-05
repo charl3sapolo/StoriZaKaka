@@ -581,3 +581,40 @@ img {
         text-decoration: underline !important;
     }
 } 
+
+/* Loading spinner animation */
+.fa-spinner {
+  animation: spin 1s linear infinite;
+  margin-right: 8px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Button loading state */
+.btn.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+/* Responsive adjustments for about page */
+@media (max-width: 768px) {
+  .recommendation-header h1 {
+    font-size: 2rem;
+  }
+  
+  #preferences-display {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  #preferences-display {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*about pag*/
