@@ -531,7 +531,7 @@
             });
         }
 
-             // Discover Questionnaire Logic
+             // Enhanced Discover Questionnaire Logic
         const questions = document.querySelectorAll('.question');
         const nextBtn = document.getElementById('nextBtn');
         const prevBtn = document.getElementById('prevBtn');
@@ -546,19 +546,59 @@
         let currentQuestion = 0;
         const totalQuestions = questions.length;
         const answers = {};
+        let lastTap = 0; // For double-tap detection
+        
+        // Define mandatory questions (1-5, question 6 is optional)
+        const mandatoryQuestions = [0, 1, 2, 3, 4]; // Questions 1-5 (0-indexed)
         
         // Initialize first question
+        console.log('Questions found:', questions.length);
+        console.log('First question:', questions[0]);
         showQuestion(currentQuestion);
         
-        // Next button click handler
+        // Double-tap detection for mood options
+        moodOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                const now = new Date().getTime();
+                const timeDiff = now - lastTap;
+                
+                // Handle selection
+                const question = this.parentElement.getAttribute('data-question');
+                const value = this.getAttribute('data-value');
+                this.parentElement.querySelectorAll('.mood-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                answers[question] = value;
+                
+                // Check for double-tap (300ms threshold)
+                if (timeDiff < 300 && timeDiff > 0) {
+                    // Double-tap detected - auto-advance
+                    setTimeout(() => {
+                        if (validateCurrentQuestion()) {
+                            nextBtn.click();
+                        }
+                    }, 100);
+                }
+                
+                lastTap = now;
+                updateProgress();
+            });
+        });
+        
+        // Enhanced Next button click handler with validation
         nextBtn.addEventListener('click', () => {
-            if (currentQuestion < totalQuestions - 1) {
+            if (validateCurrentQuestion() && currentQuestion < totalQuestions - 1) {
                 questions[currentQuestion].classList.remove('active');
                 questions[currentQuestion].classList.add('previous');
                 currentQuestion++;
                 questions[currentQuestion].classList.remove('next');
                 questions[currentQuestion].classList.add('active');
                 updateProgress();
+                questions[currentQuestion].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (!validateCurrentQuestion()) {
+                // Show validation feedback
+                showValidationFeedback();
             }
         });
         
@@ -571,42 +611,43 @@
                 questions[currentQuestion].classList.remove('previous');
                 questions[currentQuestion].classList.add('active');
                 updateProgress();
+                questions[currentQuestion].scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
-        });
-        
-        // Mood option click handler
-        moodOptions.forEach(option => {
-            option.addEventListener('click', () => {
-                const question = option.parentElement.getAttribute('data-question');
-                const value = option.getAttribute('data-value');
-                option.parentElement.querySelectorAll('.mood-btn').forEach(btn => {
-                    btn.classList.remove('selected');
-                });
-                option.classList.add('selected');
-                answers[question] = value;
-            });
         });
         
         // Energy level slider change handler
         const energySlider = document.getElementById('energyLevel');
         energySlider.addEventListener('input', () => {
             answers.energyLevel = energySlider.value;
+            updateProgress();
         });
         
-        // Current thoughts input handler
+        // Current thoughts input handler (optional)
         const currentThoughts = document.getElementById('currentThoughts');
         currentThoughts.addEventListener('input', () => {
             answers.currentThoughts = currentThoughts.value;
+            updateProgress();
         });
         
-        // Discover button click handler
+        // Enhanced Discover button click handler
         discoverBtn.addEventListener('click', () => {
+            // Validate all mandatory questions
+            if (!validateAllMandatoryQuestions()) {
+                showValidationFeedback();
+                return;
+            }
+            
+            // Show loading state
+            discoverBtn.innerHTML = '<div class="loading-spinner"></div> <span data-en="Redirecting..." data-sw="Inaelekeza...">Redirecting...</span>';
+            discoverBtn.disabled = true;
+            
+            // Show recommendation preview briefly
             recommendationPreview.style.display = 'block';
             movieMatch.style.display = 'none';
+            
+            // After 2 seconds, redirect to about page
             setTimeout(() => {
-                recommendationPreview.style.display = 'none';
-                movieMatch.classList.add('show');
-                movieMatch.scrollIntoView({ behavior: 'smooth' });
+                window.location.href = '/about/';
             }, 2000);
         });
         
@@ -620,11 +661,78 @@
             });
             energySlider.value = 5;
             currentThoughts.value = '';
+            answers = {};
             questions[0].scrollIntoView({ behavior: 'smooth' });
         });
         
+        // Validation functions
+        function validateCurrentQuestion() {
+            const currentQuestionEl = questions[currentQuestion];
+            
+            // Check if current question is mandatory
+            if (!mandatoryQuestions.includes(currentQuestion)) {
+                return true; // Optional question
+            }
+            
+            // Validate based on question type
+            if (currentQuestion === 1) { // Energy level (slider)
+                return answers.energyLevel && answers.energyLevel !== '5';
+            } else if (currentQuestion === 5) { // Current thoughts (text input)
+                return true; // Optional
+            } else { // Mood options
+                const questionName = getQuestionName(currentQuestion);
+                return answers[questionName] !== undefined;
+            }
+        }
+        
+        function validateAllMandatoryQuestions() {
+            for (let i = 0; i < mandatoryQuestions.length; i++) {
+                const questionIndex = mandatoryQuestions[i];
+                if (questionIndex === 1) { // Energy level
+                    if (!answers.energyLevel || answers.energyLevel === '5') {
+                        return false;
+                    }
+                } else { // Mood options
+                    const questionName = getQuestionName(questionIndex);
+                    if (!answers[questionName]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        
+        function getQuestionName(questionIndex) {
+            const questionNames = ['currentMood', 'energyLevel', 'thinkingLevel', 'watchingWith', 'timeAvailable', 'currentThoughts'];
+            return questionNames[questionIndex];
+        }
+        
+        function showValidationFeedback() {
+            const currentQuestionEl = questions[currentQuestion];
+            
+            // Add shake animation
+            currentQuestionEl.classList.add('shake');
+            setTimeout(() => {
+                currentQuestionEl.classList.remove('shake');
+            }, 500);
+            
+            // Highlight unanswered options
+            if (currentQuestion !== 1 && currentQuestion !== 5) { // Not slider or text input
+                const options = currentQuestionEl.querySelectorAll('.mood-btn');
+                options.forEach(option => {
+                    if (!option.classList.contains('selected')) {
+                        option.classList.add('highlight-missing');
+                        setTimeout(() => {
+                            option.classList.remove('highlight-missing');
+                        }, 2000);
+                    }
+                });
+            }
+        }
+        
         // Show question function
         function showQuestion(index) {
+            console.log('Showing question:', index);
             questions.forEach((question, i) => {
                 question.classList.remove('active', 'previous', 'next');
                 if (i < index) {
@@ -633,30 +741,44 @@
                     question.classList.add('next');
                 } else {
                     question.classList.add('active');
+                    console.log('Question', i, 'is now active');
                 }
             });
             updateProgress();
         }
         
-        // Update progress bar and text
+        // Enhanced progress update function
         function updateProgress() {
             const progress = ((currentQuestion + 1) / totalQuestions) * 100;
             progressFill.style.width = `${progress}%`;
+            
             const currentLang = document.body.getAttribute('data-lang');
             const langPrefix = currentLang === 'en' ? 'Question' : 'Swali';
             const langSuffix = currentLang === 'en' ? 'of' : 'la';
             progressText.textContent = `${langPrefix} ${currentQuestion + 1} ${langSuffix} ${totalQuestions}`;
+            
+            // Show/hide navigation buttons
             if (currentQuestion === 0) {
                 prevBtn.style.display = 'none';
             } else {
                 prevBtn.style.display = 'inline-flex';
             }
+            
             if (currentQuestion === totalQuestions - 1) {
                 nextBtn.style.display = 'none';
                 discoverBtn.style.display = 'flex';
             } else {
                 nextBtn.style.display = 'inline-flex';
                 discoverBtn.style.display = 'none';
+            }
+            
+            // Update button states based on validation
+            if (currentQuestion < totalQuestions - 1) {
+                nextBtn.disabled = !validateCurrentQuestion();
+            }
+            
+            if (currentQuestion === totalQuestions - 1) {
+                discoverBtn.disabled = !validateAllMandatoryQuestions();
             }
         }
         // Smooth scrolling for anchor links
