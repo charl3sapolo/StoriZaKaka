@@ -1,488 +1,253 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Discover Movies - Movie Recommender</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discover - Movie Recommender</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
+      color: #2d3748;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    .container {
+      width: 100%;
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 1rem;
+    }
 
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: white;
-        }
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
 
-        .header h1 {
-            font-size: 2.8rem;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
+    .header h1 {
+      font-size: 2.5rem;
+      background: linear-gradient(to right, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      color: transparent;
+      font-weight: bold;
+    }
 
-        .header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
+    .header p {
+      color: #4a5568;
+      margin-top: 0.5rem;
+    }
 
-        .questionnaire-card {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            margin-bottom: 30px;
-        }
+    .filters {
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(6px);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+    }
 
-        .question {
-            margin-bottom: 25px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.6s ease forwards;
-        }
+    .filters input,
+    .filters select {
+      padding: 0.5rem;
+      border: 1px solid #cbd5e0;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      width: 100%;
+    }
 
-        .question:nth-child(1) { animation-delay: 0.1s; }
-        .question:nth-child(2) { animation-delay: 0.2s; }
-        .question:nth-child(3) { animation-delay: 0.3s; }
-        .question:nth-child(4) { animation-delay: 0.4s; }
-        .question:nth-child(5) { animation-delay: 0.5s; }
-        .question:nth-child(6) { animation-delay: 0.6s; }
+    .filters button {
+      background: linear-gradient(to right, #667eea, #764ba2);
+      color: white;
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
 
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    .filters button:hover {
+      transform: translateY(-2px);
+    }
 
-        .question h3 {
-            color: #4a5568;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
+    .results {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
 
-        .mood-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 10px;
-            margin-bottom: 20px;
-        }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        .mood-btn {
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 15px 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            font-size: 0.9rem;
-        }
+    .card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+    }
 
-        .mood-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
+    .card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
 
-        .mood-btn.selected {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-color: #667eea;
-        }
+    .card-content {
+      padding: 1rem;
+    }
 
-        .slider-container {
-            margin: 20px 0;
-        }
+    .card-content h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
 
-        .slider {
-            width: 100%;
-            height: 8px;
-            border-radius: 4px;
-            background: #e2e8f0;
-            outline: none;
-            -webkit-appearance: none;
-        }
+    .card-content p {
+      font-size: 0.9rem;
+      color: #718096;
+    }
 
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #667eea;
-            cursor: pointer;
-        }
+    @media (max-width: 768px) {
+      .filters {
+        grid-template-columns: 1fr;
+      }
+    }
 
-        .slider-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #718096;
-            margin-top: 5px;
-        }
+    .top-bar {
+  display: flex;
+  justify-content: flex-start;
+  padding: 1rem 2rem;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-        .text-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease;
-        }
+.back-btn {
+  color: white;
+  background: linear-gradient(135deg, #10B981, #3B82F6);
+  padding: 0.5rem 1.5rem;
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+}
 
-        .text-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+.back-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
+}
 
-        .discover-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 1.2rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: block;
-            margin: 30px auto 0;
-            min-width: 200px;
-        }
+.header-glow {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+  border-radius: 18px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.05);
+}
 
-        .discover-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .discover-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: #e2e8f0;
-            border-radius: 2px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea, #764ba2);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
-        .emoji {
-            font-size: 1.5rem;
-            margin-right: 8px;
-        }
-
-        .recommendation-preview {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            margin-top: 20px;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
-
-        .recommendation-preview.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    </style>
+  </style>
 </head>
 <body>
+    
+  
     <div class="container">
+      <div class="header-glow">
         <div class="header">
-            <h1>🎬 Discover Your Perfect Movie</h1>
-            <p>Tell us how you're feeling, and we'll find the perfect movie for your mood</p>
+          <h1>🎬 Discover Your Perfect Movie</h1>
+          <p>Tell us how you're feeling, and we'll find the perfect movie for your mood</p>
         </div>
+      </div>
 
-        <!-- Discovery Search & Filter Bar -->
-        <div class="bg-white bg-opacity-90 rounded-xl shadow-md p-6 mb-8 flex flex-col gap-4 md:flex-row md:items-end" style="backdrop-filter: blur(6px);">
-            <div class="flex-1">
-                <label class="block text-gray-700 font-semibold mb-1">Search</label>
-                <input id="searchInput" type="text" placeholder="Movie title or keyword..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold mb-1">Genre</label>
-                <input id="genreInput" type="text" placeholder="e.g. Action" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold mb-1">Rating ≥</label>
-                <input id="ratingInput" type="number" min="0" max="10" step="0.1" placeholder="7.0" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold mb-1">Year</label>
-                <input id="yearInput" type="number" min="1900" max="2100" placeholder="2023" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold mb-1">Type</label>
-                <select id="typeInput" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                    <option value="">Any</option>
-                    <option value="movie">Movie</option>
-                    <option value="series">Series</option>
-                    <option value="animation">Animation</option>
-                    <option value="tvshow">TV Show</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold mb-1">Country</label>
-                <input id="countryInput" type="text" placeholder="e.g. US" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-            </div>
-            <div>
-                <label class="block text-gray-700 font-semibold mb-1">Language</label>
-                <input id="languageInput" type="text" placeholder="e.g. en" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-            </div>
-            <button id="searchBtn" class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-bold px-6 py-2 rounded-lg shadow hover:from-indigo-600 hover:to-purple-600 transition">Search</button>
-        </div>
-
-        <!-- Results Section -->
-        <div id="resultsSection" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-10"></div>
-
-        <div class="questionnaire-card">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-
-            <div class="question">
-                <h3><span class="emoji">😊</span>How are you feeling right now?</h3>
-                <div class="mood-options" data-question="currentMood">
-                    <div class="mood-btn" data-value="happy">😄 Happy</div>
-                    <div class="mood-btn" data-value="sad">😢 Sad</div>
-                    <div class="mood-btn" data-value="excited">🤩 Excited</div>
-                    <div class="mood-btn" data-value="calm">😌 Calm</div>
-                    <div class="mood-btn" data-value="stressed">😰 Stressed</div>
-                    <div class="mood-btn" data-value="romantic">💕 Romantic</div>
-                    <div class="mood-btn" data-value="adventurous">🚀 Adventurous</div>
-                    <div class="mood-btn" data-value="nostalgic">🌅 Nostalgic</div>
-                </div>
-            </div>
-
-            <div class="question">
-                <h3><span class="emoji">⚡</span>What's your energy level?</h3>
-                <div class="slider-container">
-                    <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel">
-                    <div class="slider-labels">
-                        <span>Low Energy</span>
-                        <span>High Energy</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="question">
-                <h3><span class="emoji">🧠</span>Do you want something that makes you think?</h3>
-                <div class="mood-options" data-question="thinkingLevel">
-                    <div class="mood-btn" data-value="light">🍿 Light & Fun</div>
-                    <div class="mood-btn" data-value="moderate">🤔 Some Depth</div>
-                    <div class="mood-btn" data-value="deep">🧩 Mind-Bending</div>
-                </div>
-            </div>
-
-            <div class="question">
-                <h3><span class="emoji">👥</span>Are you watching alone or with others?</h3>
-                <div class="mood-options" data-question="watchingWith">
-                    <div class="mood-btn" data-value="alone">🙋‍♀️ Solo</div>
-                    <div class="mood-btn" data-value="partner">💑 Partner</div>
-                    <div class="mood-btn" data-value="friends">👫 Friends</div>
-                    <div class="mood-btn" data-value="family">👨‍👩‍👧‍👦 Family</div>
-                </div>
-            </div>
-
-            <div class="question">
-                <h3><span class="emoji">⏰</span>How much time do you have?</h3>
-                <div class="mood-options" data-question="timeAvailable">
-                    <div class="mood-btn" data-value="short">⚡ Quick (< 90 min)</div>
-                    <div class="mood-btn" data-value="medium">🎬 Standard (90-150 min)</div>
-                    <div class="mood-btn" data-value="long">📽️ Epic (150+ min)</div>
-                </div>
-            </div>
-
-            <div class="question">
-                <h3><span class="emoji">💭</span>What's on your mind lately?</h3>
-                <input type="text" class="text-input" id="currentThoughts" 
-                       placeholder="e.g., work stress, wanting to laugh, missing old friends...">
-            </div>
-
-            <button class="discover-btn" id="discoverBtn" onclick="generateRecommendations()">
-                <span class="emoji">🎯</span>
-                Discover My Perfect Movie
-            </button>
-
-            <div class="recommendation-preview" id="recommendationPreview">
-                <h3>🎉 Great! We're analyzing your mood...</h3>
-                <p>Based on your feelings, we'll find movies that perfectly match your current vibe!</p>
-            </div>
-        </div>
+    <div class="filters">
+      <input id="searchInput" placeholder="Search..." />
+      <input id="genreInput" placeholder="Genre" />
+      <input id="ratingInput" type="number" min="0" max="10" step="0.1" placeholder="Rating ≥ 7" />
+      <input id="yearInput" type="number" min="1900" max="2100" placeholder="Year" />
+      <select id="typeInput">
+        <option value="">Any Type</option>
+        <option value="movie">Movie</option>
+        <option value="series">Series</option>
+        <option value="animation">Animation</option>
+      </select>
+      <input id="countryInput" placeholder="Country" />
+      <input id="languageInput" placeholder="Language" />
+      <button id="searchBtn">Search</button>
     </div>
 
-    <script>
-        const answers = {};
-        let completedQuestions = 0;
-        const totalQuestions = 6;
+    <div id="resultsSection" class="results">
+      <!-- Cards will be injected here -->
+    </div>
 
-        // Handle mood button selections
-        document.querySelectorAll('.mood-options').forEach(container => {
-            container.addEventListener('click', (e) => {
-                if (e.target.classList.contains('mood-btn')) {
-                    // Clear previous selections in this group
-                    container.querySelectorAll('.mood-btn').forEach(btn => 
-                        btn.classList.remove('selected'));
-                    
-                    // Select current button
-                    e.target.classList.add('selected');
-                    
-                    // Store answer
-                    const question = container.dataset.question;
-                    answers[question] = e.target.dataset.value;
-                    
-                    updateProgress();
-                }
-            });
+    <div class="actions">
+        <a href="{% url 'core:home' %}" class="btn-primary">
+          <i class="fas fa-home"></i>
+          Back to Home
+        </a>
+  </div>
+
+  <script>
+    const searchBtn = document.getElementById('searchBtn');
+    const resultsSection = document.getElementById('resultsSection');
+
+    searchBtn.addEventListener('click', fetchResults);
+
+    function fetchResults() {
+      const q = document.getElementById('searchInput').value;
+      const genre = document.getElementById('genreInput').value;
+      const rating = document.getElementById('ratingInput').value;
+      const year = document.getElementById('yearInput').value;
+      const type = document.getElementById('typeInput').value;
+      const country = document.getElementById('countryInput').value;
+      const language = document.getElementById('languageInput').value;
+
+      let url = `/discovery/?q=${encodeURIComponent(q)}`;
+      if (genre) url += `&genre=${encodeURIComponent(genre)}`;
+      if (rating) url += `&rating=${encodeURIComponent(rating)}`;
+      if (year) url += `&year=${encodeURIComponent(year)}`;
+      if (type) url += `&type=${encodeURIComponent(type)}`;
+      if (country) url += `&country=${encodeURIComponent(country)}`;
+      if (language) url += `&language=${encodeURIComponent(language)}`;
+
+      resultsSection.innerHTML = '<div style="grid-column: span 3; text-align:center; color: gray">Loading...</div>';
+
+      fetch(url)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.results || data.results.length === 0) {
+            resultsSection.innerHTML = '<div style="grid-column: span 3; text-align:center; color: gray">No results found.</div>';
+            return;
+          }
+
+          resultsSection.innerHTML = data.results.map(movie => `
+            <div class="card">
+              <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
+              <div class="card-content">
+                <h3>${movie.title}</h3>
+                <p>${movie.overview ? movie.overview.substring(0, 100) + '...' : ''}</p>
+              </div>
+            </div>
+          `).join('');
+        })
+        .catch(err => {
+          resultsSection.innerHTML = '<div style="grid-column: span 3; text-align:center; color: red">Error loading results.</div>';
         });
-
-        // Handle slider
-        document.getElementById('energyLevel').addEventListener('input', (e) => {
-            answers.energyLevel = e.target.value;
-            updateProgress();
-        });
-
-        // Handle text input
-        document.getElementById('currentThoughts').addEventListener('input', (e) => {
-            answers.currentThoughts = e.target.value;
-            updateProgress();
-        });
-
-        function updateProgress() {
-            completedQuestions = 0;
-            
-            // Count completed questions
-            if (answers.currentMood) completedQuestions++;
-            if (answers.energyLevel) completedQuestions++;
-            if (answers.thinkingLevel) completedQuestions++;
-            if (answers.watchingWith) completedQuestions++;
-            if (answers.timeAvailable) completedQuestions++;
-            if (answers.currentThoughts && answers.currentThoughts.length > 0) completedQuestions++;
-            
-            const progress = (completedQuestions / totalQuestions) * 100;
-            document.getElementById('progressFill').style.width = progress + '%';
-            
-            // Enable/disable discover button
-            const discoverBtn = document.getElementById('discoverBtn');
-            if (completedQuestions >= 4) { // Require at least 4 questions answered
-                discoverBtn.disabled = false;
-            } else {
-                discoverBtn.disabled = true;
-            }
-        }
-
-        function generateRecommendations() {
-            // Show preview
-            const preview = document.getElementById('recommendationPreview');
-            preview.classList.add('show');
-            
-            // Log answers for debugging
-            console.log('User answers:', answers);
-            
-            // Here you would typically send the data to your Django backend
-            // For demo purposes, we'll show a success message
-            setTimeout(() => {
-                preview.innerHTML = `
-                    <h3>🎬 Perfect Match Found!</h3>
-                    <p>Based on your ${answers.currentMood || 'current'} mood and preferences, 
-                    we've found some amazing recommendations just for you!</p>
-                `;
-            }, 2000);
-            
-            // In a real implementation, you would redirect to results or update the page
-            // window.location.href = '/discover/results/';
-        }
-
-        // Initialize progress
-        updateProgress();
-
-        // Discovery search logic
-        const searchBtn = document.getElementById('searchBtn');
-        const resultsSection = document.getElementById('resultsSection');
-
-        function fetchResults() {
-            const q = document.getElementById('searchInput').value;
-            const genre = document.getElementById('genreInput').value;
-            const rating = document.getElementById('ratingInput').value;
-            const year = document.getElementById('yearInput').value;
-            const type = document.getElementById('typeInput').value;
-            const country = document.getElementById('countryInput').value;
-            const language = document.getElementById('languageInput').value;
-
-            let url = `/discovery/?q=${encodeURIComponent(q)}`;
-            if (genre) url += `&genre=${encodeURIComponent(genre)}`;
-            if (rating) url += `&rating=${encodeURIComponent(rating)}`;
-            if (year) url += `&year=${encodeURIComponent(year)}`;
-            if (type) url += `&type=${encodeURIComponent(type)}`;
-            if (country) url += `&country=${encodeURIComponent(country)}`;
-            if (language) url += `&language=${encodeURIComponent(language)}`;
-
-            resultsSection.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">Loading...</div>';
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    if (data.error) {
-                        resultsSection.innerHTML = `<div class='col-span-full text-center text-red-500 py-8'>${data.error}</div>`;
-                        return;
-                    }
-                    if (!data.results || data.results.length === 0) {
-                        resultsSection.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">No movies found.</div>';
-                        return;
-                    }
-                    resultsSection.innerHTML = data.results.map(movie => `
-                        <div class="bg-white bg-opacity-90 rounded-xl shadow p-4 flex flex-col h-full" style="backdrop-filter: blur(4px);">
-                            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" class="rounded-lg mb-3 w-full h-64 object-cover">
-                            <h3 class="font-bold text-lg mb-1">${movie.title}</h3>
-                            <div class="text-sm text-gray-600 mb-2">${movie.year || ''} &bull; ${movie.type || ''} &bull; ${movie.language || ''}</div>
-                            <div class="text-xs text-gray-500 mb-2">${Array.isArray(movie.genres) ? movie.genres.join(', ') : movie.genres}</div>
-                            <div class="text-sm mb-2">${movie.overview ? movie.overview.substring(0, 120) + (movie.overview.length > 120 ? '...' : '') : ''}</div>
-                            <div class="mt-auto flex items-center justify-between">
-                                <span class="text-yellow-500 font-bold">★ ${movie.rating || 'N/A'}</span>
-                                <span class="text-xs text-gray-400">Votes: ${movie.vote_count || 0}</span>
-                            </div>
-                        </div>
-                    `).join('');
-                })
-                .catch(() => {
-                    resultsSection.innerHTML = '<div class="col-span-full text-center text-red-500 py-8">Error fetching results.</div>';
-                });
-        }
-
-        searchBtn.addEventListener('click', fetchResults);
-        // Optionally, fetch on Enter key in search input
-        document.getElementById('searchInput').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') fetchResults();
-        });
-    </script>
+    }
+  </script>
 </body>
 </html>
