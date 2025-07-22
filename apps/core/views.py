@@ -96,5 +96,5 @@ def about(request):
     return render(request, "pages/about.html")
 
 def profile(request):
-    """Render the profile page (under construction)"""
+    """Render the profile page (under construction UI)"""
     return render(request, "pages/profile.html")

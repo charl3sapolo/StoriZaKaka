@@ -4,43 +4,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Discover - Movie Recommender</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
       color: #2d3748;
-      min-height: 100vh;
+            min-height: 100vh;
       display: flex;
       flex-direction: column;
-    }
+        }
 
-    .container {
+        .container {
       width: 100%;
       max-width: 1000px;
       margin: 2rem auto;
       padding: 1rem;
-    }
+        }
 
-    .header {
-      text-align: center;
+        .header {
+            text-align: center;
       margin-bottom: 2rem;
-    }
+        }
 
-    .header h1 {
+        .header h1 {
       font-size: 2.5rem;
       background: linear-gradient(to right, #667eea, #764ba2);
       -webkit-background-clip: text;
       color: transparent;
       font-weight: bold;
-    }
+        }
 
-    .header p {
+        .header p {
       color: #4a5568;
       margin-top: 0.5rem;
     }
@@ -82,14 +82,14 @@
     }
 
     .results {
-      display: grid;
+            display: grid;
       grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
       gap: 1.5rem;
-    }
+        }
 
     .card {
       background: white;
-      border-radius: 12px;
+            border-radius: 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
       overflow: hidden;
       display: flex;
@@ -138,18 +138,18 @@
 }
 
 .back-btn {
-  color: white;
+            color: white;
   background: linear-gradient(135deg, #10B981, #3B82F6);
   padding: 0.5rem 1.5rem;
   border-radius: 999px;
   text-decoration: none;
-  font-weight: 600;
-  transition: all 0.3s ease;
+            font-weight: 600;
+            transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-}
+        }
 
 .back-btn:hover {
-  transform: translateY(-2px);
+            transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
 }
 
@@ -161,7 +161,7 @@
   box-shadow: 0 8px 20px rgba(255, 255, 255, 0.05);
 }
 
-  </style>
+    </style>
 </head>
 <body>
     
@@ -169,10 +169,10 @@
     <div class="container">
       <div class="header-glow">
         <div class="header">
-          <h1>🎬 Discover Your Perfect Movie</h1>
-          <p>Tell us how you're feeling, and we'll find the perfect movie for your mood</p>
+            <h1>🎬 Discover Your Perfect Movie</h1>
+            <p>Tell us how you're feeling, and we'll find the perfect movie for your mood</p>
         </div>
-      </div>
+            </div>
 
     <div class="filters">
       <input id="searchInput" placeholder="Search..." />
@@ -181,78 +181,78 @@
       <input id="yearInput" type="number" min="1900" max="2100" placeholder="Year" />
       <select id="typeInput">
         <option value="">Any Type</option>
-        <option value="movie">Movie</option>
-        <option value="series">Series</option>
-        <option value="animation">Animation</option>
-      </select>
+                    <option value="movie">Movie</option>
+                    <option value="series">Series</option>
+                    <option value="animation">Animation</option>
+                </select>
       <input id="countryInput" placeholder="Country" />
       <input id="languageInput" placeholder="Language" />
       <button id="searchBtn">Search</button>
-    </div>
+        </div>
 
     <div id="resultsSection" class="results">
       <!-- Cards will be injected here -->
-    </div>
+            </div>
 
     <div class="message-box">
         <h1>🚧 Page Under Construction</h1>
         <p>We’re still working on this section. Please check back later!</p>
-    </div>
+            </div>
 
     <div class="actions">
         <a href="{% url 'core:home' %}" class="btn-primary">
           <i class="fas fa-home"></i>
           Back to Home
         </a>
-  </div>
+    </div>
 
-  <script>
-    const searchBtn = document.getElementById('searchBtn');
-    const resultsSection = document.getElementById('resultsSection');
+    <script>
+        const searchBtn = document.getElementById('searchBtn');
+        const resultsSection = document.getElementById('resultsSection');
 
     searchBtn.addEventListener('click', fetchResults);
 
-    function fetchResults() {
-      const q = document.getElementById('searchInput').value;
-      const genre = document.getElementById('genreInput').value;
-      const rating = document.getElementById('ratingInput').value;
-      const year = document.getElementById('yearInput').value;
-      const type = document.getElementById('typeInput').value;
-      const country = document.getElementById('countryInput').value;
-      const language = document.getElementById('languageInput').value;
+        function fetchResults() {
+            const q = document.getElementById('searchInput').value;
+            const genre = document.getElementById('genreInput').value;
+            const rating = document.getElementById('ratingInput').value;
+            const year = document.getElementById('yearInput').value;
+            const type = document.getElementById('typeInput').value;
+            const country = document.getElementById('countryInput').value;
+            const language = document.getElementById('languageInput').value;
 
-      let url = `/discovery/?q=${encodeURIComponent(q)}`;
-      if (genre) url += `&genre=${encodeURIComponent(genre)}`;
-      if (rating) url += `&rating=${encodeURIComponent(rating)}`;
-      if (year) url += `&year=${encodeURIComponent(year)}`;
-      if (type) url += `&type=${encodeURIComponent(type)}`;
-      if (country) url += `&country=${encodeURIComponent(country)}`;
-      if (language) url += `&language=${encodeURIComponent(language)}`;
+            let url = `/discovery/?q=${encodeURIComponent(q)}`;
+            if (genre) url += `&genre=${encodeURIComponent(genre)}`;
+            if (rating) url += `&rating=${encodeURIComponent(rating)}`;
+            if (year) url += `&year=${encodeURIComponent(year)}`;
+            if (type) url += `&type=${encodeURIComponent(type)}`;
+            if (country) url += `&country=${encodeURIComponent(country)}`;
+            if (language) url += `&language=${encodeURIComponent(language)}`;
 
       resultsSection.innerHTML = '<div style="grid-column: span 3; text-align:center; color: gray">Loading...</div>';
 
-      fetch(url)
-        .then(res => res.json())
-        .then(data => {
-          if (!data.results || data.results.length === 0) {
+            fetch(url)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.results || data.results.length === 0) {
             resultsSection.innerHTML = '<div style="grid-column: span 3; text-align:center; color: gray">No results found.</div>';
-            return;
-          }
+                        return;
+                    }
 
-          resultsSection.innerHTML = data.results.map(movie => `
+                    resultsSection.innerHTML = data.results.map(movie => `
             <div class="card">
               <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
               <div class="card-content">
                 <h3>${movie.title}</h3>
                 <p>${movie.overview ? movie.overview.substring(0, 100) + '...' : ''}</p>
-              </div>
-            </div>
-          `).join('');
-        })
+                            </div>
+                        </div>
+                    `).join('');
+                })
         .catch(err => {
           resultsSection.innerHTML = '<div style="grid-column: span 3; text-align:center; color: red">Error loading results.</div>';
         });
     }
-  </script>
+    </script>
 </body>
 </html>
