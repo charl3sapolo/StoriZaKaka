@@ -66,11 +66,11 @@
         <div class="hero-overlay" id="heroOverlay"></div>
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title" data-en="AI-Powered Movie Discovery" data-sw="Ugunduzi wa Filamu kwa Nguvu ya AI">AI-Powered Movie Discovery</h1>
-                <p class="hero-subtitle" 
-                   data-en="Find your perfect movie match with our intelligent recommendation system that understands your mood, preferences, and taste."
-                   data-sw="Pata filamu yako kamili kwa mfumo wetu wa mapendekezo wa akili bandia unaoelewa hali yako, mapendeleo na ladha.">
-                    Find your perfect movie match with our intelligent recommendation system that understands your mood, preferences, and taste.
+                <h1 class="hero-title" id="heroHeadline" data-en="Hey there! Stori za Kaka here—your movie matchmaker." data-sw="Hujambo! Stori za Kaka hapa—mchumba wako wa filamu.">Hey there! Stori za Kaka here—your movie matchmaker.</h1>
+                <p class="hero-subtitle" id="heroSubtext"
+                   data-en="Can’t decide what to watch? Just tell me your mood, and I’ll handpick a film you’ll love. Ready to discover your next favorite movie together?"
+                   data-sw="Hauwezi kuamua uangalie nini? Niambie tu hali yako, nitakuchagulia filamu utakayopenda. Tuko tayari kugundua filamu yako mpya unayopenda pamoja?">
+                    Can’t decide what to watch? Just tell me your mood, and I’ll handpick a film you’ll love. Ready to discover your next favorite movie together?
                 </p>
                 <div class="hero-actions">
                     <a href="#discover" class="btn btn-primary" data-en="Find My Movie" data-sw="Tafuta Filamu Yangu">
@@ -937,6 +937,11 @@
             heroSlideIndex = (idx + heroSlides.length) % heroSlides.length;
             heroSlides[heroSlideIndex].classList.add('active');
             updateHeroOverlay(heroSlideIndex);
+            setTimeout(setHeroOverlayTextContrast, 300);
+        }
+        // Also call after initial load
+        if (document.querySelector('.hero-bg-slider')) {
+            setTimeout(setHeroOverlayTextContrast, 1200);
         }
         // Initial overlay update after loading backgrounds
         async function loadHeroBackgrounds(forceRefresh=false) {
@@ -1229,6 +1234,81 @@
         };
         function getGenreName(id) {
             return GENRE_MAP[id] || 'Other';
+        }
+
+        // === DYNAMIC HERO OVERLAY TEXT COLOR BASED ON BACKGROUND ===
+        // Utility: Get contrast color (YIQ)
+        function getContrastYIQ(hexcolor) {
+            hexcolor = hexcolor.replace('#', '');
+            if (hexcolor.length === 3) {
+                hexcolor = hexcolor[0]+hexcolor[0]+hexcolor[1]+hexcolor[1]+hexcolor[2]+hexcolor[2];
+            }
+            var r = parseInt(hexcolor.substr(0,2),16);
+            var g = parseInt(hexcolor.substr(2,2),16);
+            var b = parseInt(hexcolor.substr(4,2),16);
+            var yiq = ((r*299)+(g*587)+(b*114))/1000;
+            return (yiq >= 128) ? 'black' : 'white';
+        }
+        // Use Color Thief to get dominant color from hero background image
+        // (Color Thief CDN)
+        if (!window.ColorThief) {
+            var colorThiefScript = document.createElement('script');
+            colorThiefScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js';
+            document.head.appendChild(colorThiefScript);
+        }
+        function setHeroOverlayTextContrast() {
+            const overlay = document.getElementById('heroOverlay');
+            const headline = document.getElementById('heroHeadline');
+            const subtext = document.getElementById('heroSubtext');
+            const activeImg = document.querySelector('.hero-bg-slide.active');
+            if (!overlay || !headline || !subtext || !activeImg) return;
+            // Wait for Color Thief to load
+            if (!window.ColorThief || !activeImg.complete) {
+                setTimeout(setHeroOverlayTextContrast, 200);
+                return;
+            }
+            try {
+                const colorThief = new window.ColorThief();
+                let rgb = colorThief.getColor(activeImg);
+                let hex = '#' + rgb.map(x => x.toString(16).padStart(2, '0')).join('');
+                let contrast = getContrastYIQ(hex);
+                if (contrast === 'white') {
+                    overlay.style.color = '#fff';
+                    headline.style.color = '#fff';
+                    subtext.style.color = '#fff';
+                    overlay.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+                    headline.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+                    subtext.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+                } else {
+                    overlay.style.color = '#18181b';
+                    headline.style.color = '#18181b';
+                    subtext.style.color = '#18181b';
+                    overlay.style.textShadow = '0 2px 8px rgba(255,255,255,0.85)';
+                    headline.style.textShadow = '0 2px 8px rgba(255,255,255,0.85)';
+                    subtext.style.textShadow = '0 2px 8px rgba(255,255,255,0.85)';
+                }
+            } catch (e) {
+                // fallback: always white
+                overlay.style.color = '#fff';
+                headline.style.color = '#fff';
+                subtext.style.color = '#fff';
+                overlay.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+                headline.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+                subtext.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+            }
+        }
+        // Call on hero slide change
+        function goToHeroSlide(idx) {
+            if (!heroSlides.length) return;
+            heroSlides[heroSlideIndex].classList.remove('active');
+            heroSlideIndex = (idx + heroSlides.length) % heroSlides.length;
+            heroSlides[heroSlideIndex].classList.add('active');
+            updateHeroOverlay(heroSlideIndex);
+            setTimeout(setHeroOverlayTextContrast, 300);
+        }
+        // Also call after initial load
+        if (document.querySelector('.hero-bg-slider')) {
+            setTimeout(setHeroOverlayTextContrast, 1200);
         }
     </script>
 </body>
