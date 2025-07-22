@@ -28,7 +28,7 @@
         <nav class="nav">
             <div class="logo">
                 <span class="logo-icon">🎬</span>
-                <span>KakaFlix</span>
+                <span>Stori za Kaka</span>
             </div>
             <ul class="nav-center">
                 <li><a href="#home" data-en="Home" data-sw="Nyumbani">Home</a></li>
@@ -188,209 +188,207 @@
       <section class="section" id="discover">
         <div class="container">
             <div class="discover-section">
-                <div class="discover-container">
-                    <div class="discover-header">
-                        <h2 class="discover-title" data-en="Discover Your Perfect Movie" data-sw="Gundua Filamu Yako Kamili">Discover Your Perfect Movie</h2>
-                        <p class="discover-subtitle"
-                           data-en="Answer a few questions about your current mood and preferences, and we'll find the ideal film for you"
-                           data-sw="Jibu maswali machache kuhusu hali yako ya sasa na mapendeleo, na tutakupatia filamu bora kwako">
-                            Answer a few questions about your current mood and preferences, and we'll find the ideal film for you
+                <div class="discover-header">
+                    <h2 class="discover-title" data-en="Discover Your Perfect Movie" data-sw="Gundua Filamu Yako Kamili">Discover Your Perfect Movie</h2>
+                    <p class="discover-subtitle"
+                       data-en="Answer a few questions about your current mood and preferences, and we'll find the ideal film for you"
+                       data-sw="Jibu maswali machache kuhusu hali yako ya sasa na mapendeleo, na tutakupatia filamu bora kwako">
+                        Answer a few questions about your current mood and preferences, and we'll find the ideal film for you
+                    </p>
+                </div>
+
+                <div class="questionnaire-card">
+                    <div class="question-container">
+                        <!-- Question 1: Mood -->
+                        <div class="question active" id="question1">
+                            <h3><span class="emoji">😊</span> <span data-en="How are you feeling right now?" data-sw="Unajisikiaje sasa hivi?">How are you feeling right now?</span></h3>
+                            <div class="mood-options" data-question="currentMood">
+                                <div class="mood-btn" data-value="happy">
+                                    <span class="emoji">😄</span>
+                                    <span data-en="Happy" data-sw="Furaha">Happy</span>
+                                </div>
+                                <div class="mood-btn" data-value="sad">
+                                    <span class="emoji">😢</span>
+                                    <span data-en="Sad" data-sw="Huzuni">Sad</span>
+                                </div>
+                                <div class="mood-btn" data-value="excited">
+                                    <span class="emoji">🤩</span>
+                                    <span data-en="Excited" data-sw="Msisimko">Excited</span>
+                                </div>
+                                <div class="mood-btn" data-value="calm">
+                                    <span class="emoji">😌</span>
+                                    <span data-en="Calm" data-sw="Tulivu">Calm</span>
+                                </div>
+                                <div class="mood-btn" data-value="stressed">
+                                    <span class="emoji">😰</span>
+                                    <span data-en="Stressed" data-sw="Mkazo">Stressed</span>
+                                </div>
+                                <div class="mood-btn" data-value="romantic">
+                                    <span class="emoji">💕</span>
+                                    <span data-en="Romantic" data-sw="Kimapenzi">Romantic</span>
+                                </div>
+                                <div class="mood-btn" data-value="adventurous">
+                                    <span class="emoji">🚀</span>
+                                    <span data-en="Adventurous" data-sw="Mkikamili">Adventurous</span>
+                                </div>
+                                <div class="mood-btn" data-value="nostalgic">
+                                    <span class="emoji">🌅</span>
+                                    <span data-en="Nostalgic" data-sw="Kumbukumbu">Nostalgic</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 2: Energy Level -->
+                        <div class="question" id="question2">
+                            <h3><span class="emoji">⚡</span> <span data-en="What's your energy level?" data-sw="Kiwango chako cha nishati ni kipi?">What's your energy level?</span></h3>
+                            <div class="slider-container">
+                                <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" />
+                                <div class="slider-labels">
+                                    <span data-en="Low" data-sw="Chini">Low</span>
+                                    <span data-en="High" data-sw="Juu">High</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 3: Thinking Level -->
+                        <div class="question" id="question3">
+                            <h3><span class="emoji">🧠</span> <span data-en="Do you want something that makes you think?" data-sw="Unataka kitu ambacho kitakufanya ufikirie?">Do you want something that makes you think?</span></h3>
+                            <div class="mood-options" data-question="thinkingLevel">
+                                <div class="mood-btn" data-value="light">
+                                    <span class="emoji">🍿</span>
+                                    <span data-en="Light & Fun" data-sw="Mwepesi na Wa Kufurahisha">Light & Fun</span>
+                                </div>
+                                <div class="mood-btn" data-value="moderate">
+                                    <span class="emoji">🤔</span>
+                                    <span data-en="Some Depth" data-sw="Kina Fulani">Some Depth</span>
+                                </div>
+                                <div class="mood-btn" data-value="deep">
+                                    <span class="emoji">🧩</span>
+                                    <span data-en="Mind-Bending" data-sw="Ya Kuvuruga Akili">Mind-Bending</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 4: Watching With -->
+                        <div class="question" id="question4">
+                            <h3><span class="emoji">👥</span> <span data-en="Are you watching alone or with others?" data-sw="Unaangalia peke yako au na wengine?">Are you watching alone or with others?</span></h3>
+                            <div class="mood-options" data-question="watchingWith">
+                                <div class="mood-btn" data-value="alone">
+                                    <span class="emoji">🙋‍♀️</span>
+                                    <span data-en="Solo" data-sw="Peke Yako">Solo</span>
+                                </div>
+                                <div class="mood-btn" data-value="partner">
+                                    <span class="emoji">💑</span>
+                                    <span data-en="Partner" data-sw="Mwenzi">Partner</span>
+                                </div>
+                                <div class="mood-btn" data-value="friends">
+                                    <span class="emoji">👫</span>
+                                    <span data-en="Friends" data-sw="Marafiki">Friends</span>
+                                </div>
+                                <div class="mood-btn" data-value="family">
+                                    <span class="emoji">👨‍👩‍👧‍👦</span>
+                                    <span data-en="Family" data-sw="Familia">Family</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 5: Time Available -->
+                        <div class="question" id="question5">
+                            <h3><span class="emoji">⏰</span> <span data-en="How much time do you have?" data-sw="Una muda gani?">How much time do you have?</span></h3>
+                            <div class="mood-options" data-question="timeAvailable">
+                                <div class="mood-btn" data-value="short">
+                                    <span class="emoji">⚡</span>
+                                    <span data-en="Quick (&lt; 90 min)" data-sw="Haraka (&lt; 90 dakika)">Quick (&lt; 90 min)</span>
+                                </div>
+                                <div class="mood-btn" data-value="medium">
+                                    <span class="emoji">🎬</span>
+                                    <span data-en="Standard (90-150 min)" data-sw="Kawaida (90-150 dakika)">Standard (90-150 min)</span>
+                                </div>
+                                <div class="mood-btn" data-value="long">
+                                    <span class="emoji">📽️</span>
+                                    <span data-en="Epic (150+ min)" data-sw="Kubwa (150+ dakika)">Epic (150+ min)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 6: Current Thoughts -->
+                        <div class="question" id="question6">
+                            <h3><span class="emoji">💭</span> <span data-en="What's on your mind lately?" data-sw="Ni nini kilicho kwenye akili yako hivi karibuni?">What's on your mind lately?</span></h3>
+                            <input type="text" class="text-input" id="currentThoughts" 
+                                   data-en-placeholder="e.g., work stress, wanting to laugh, missing old friends..." 
+                                   data-sw-placeholder="mfano, msongo kazini, kutaka kucheka, kukumbuka rafiki wa zamani..." />
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar at Bottom -->
+                    <div class="progress-container">
+                        <div class="progress-text">
+                            <span id="progressText" data-en="Question 1 of 6" data-sw="Swali 1 la 6">Question 1 of 6</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="question-navigation">
+                        <button class="btn btn-secondary" id="prevBtn" style="display: none;">
+                            <i class="fas fa-arrow-left"></i> <span data-en="Previous" data-sw="Iliyopita">Previous</span>
+                        </button>
+                        <button class="btn btn-primary" id="nextBtn">
+                            <span data-en="Next" data-sw="Inayofuata">Next</span> <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Discover Button (shown on last question) -->
+                    <button class="discover-btn" id="discoverBtn" style="display: none;">
+                        <span class="emoji">🎯</span> <span data-en="Discover My Perfect Movie" data-sw="Gundua Filamu Yangu Kamili">Discover My Perfect Movie</span>
+                    </button>
+
+                    <!-- Recommendation Preview -->
+                    <div class="recommendation-preview" id="recommendationPreview">
+                        <h3><span class="emoji">🎉</span> <span data-en="Great! We're analyzing your mood..." data-sw="Vizuri! Tunachambua hali yako...">Great! We're analyzing your mood...</span></h3>
+                        <p data-en="Based on your feelings, we'll find movies that perfectly match your current vibe!"
+                           data-sw="Kulingana na hisia zako, tutapata filamu zinazolingana kabisa na hali yako ya sasa!">
+                            Based on your feelings, we'll find movies that perfectly match your current vibe!
                         </p>
                     </div>
 
-                    <div class="questionnaire-card">
-                        <div class="question-container">
-                            <!-- Question 1: Mood -->
-                            <div class="question active" id="question1">
-                                <h3><span class="emoji">😊</span> <span data-en="How are you feeling right now?" data-sw="Unajisikiaje sasa hivi?">How are you feeling right now?</span></h3>
-                                <div class="mood-options" data-question="currentMood">
-                                    <div class="mood-btn" data-value="happy">
-                                        <span class="emoji">😄</span>
-                                        <span data-en="Happy" data-sw="Furaha">Happy</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="sad">
-                                        <span class="emoji">😢</span>
-                                        <span data-en="Sad" data-sw="Huzuni">Sad</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="excited">
-                                        <span class="emoji">🤩</span>
-                                        <span data-en="Excited" data-sw="Msisimko">Excited</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="calm">
-                                        <span class="emoji">😌</span>
-                                        <span data-en="Calm" data-sw="Tulivu">Calm</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="stressed">
-                                        <span class="emoji">😰</span>
-                                        <span data-en="Stressed" data-sw="Mkazo">Stressed</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="romantic">
-                                        <span class="emoji">💕</span>
-                                        <span data-en="Romantic" data-sw="Kimapenzi">Romantic</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="adventurous">
-                                        <span class="emoji">🚀</span>
-                                        <span data-en="Adventurous" data-sw="Mkikamili">Adventurous</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="nostalgic">
-                                        <span class="emoji">🌅</span>
-                                        <span data-en="Nostalgic" data-sw="Kumbukumbu">Nostalgic</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Question 2: Energy Level -->
-                            <div class="question" id="question2">
-                                <h3><span class="emoji">⚡</span> <span data-en="What's your energy level?" data-sw="Kiwango chako cha nishati ni kipi?">What's your energy level?</span></h3>
-                                <div class="slider-container">
-                                    <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" />
-                                    <div class="slider-labels">
-                                        <span data-en="Low" data-sw="Chini">Low</span>
-                                        <span data-en="High" data-sw="Juu">High</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Question 3: Thinking Level -->
-                            <div class="question" id="question3">
-                                <h3><span class="emoji">🧠</span> <span data-en="Do you want something that makes you think?" data-sw="Unataka kitu ambacho kitakufanya ufikirie?">Do you want something that makes you think?</span></h3>
-                                <div class="mood-options" data-question="thinkingLevel">
-                                    <div class="mood-btn" data-value="light">
-                                        <span class="emoji">🍿</span>
-                                        <span data-en="Light & Fun" data-sw="Mwepesi na Wa Kufurahisha">Light & Fun</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="moderate">
-                                        <span class="emoji">🤔</span>
-                                        <span data-en="Some Depth" data-sw="Kina Fulani">Some Depth</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="deep">
-                                        <span class="emoji">🧩</span>
-                                        <span data-en="Mind-Bending" data-sw="Ya Kuvuruga Akili">Mind-Bending</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Question 4: Watching With -->
-                            <div class="question" id="question4">
-                                <h3><span class="emoji">👥</span> <span data-en="Are you watching alone or with others?" data-sw="Unaangalia peke yako au na wengine?">Are you watching alone or with others?</span></h3>
-                                <div class="mood-options" data-question="watchingWith">
-                                    <div class="mood-btn" data-value="alone">
-                                        <span class="emoji">🙋‍♀️</span>
-                                        <span data-en="Solo" data-sw="Peke Yako">Solo</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="partner">
-                                        <span class="emoji">💑</span>
-                                        <span data-en="Partner" data-sw="Mwenzi">Partner</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="friends">
-                                        <span class="emoji">👫</span>
-                                        <span data-en="Friends" data-sw="Marafiki">Friends</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="family">
-                                        <span class="emoji">👨‍👩‍👧‍👦</span>
-                                        <span data-en="Family" data-sw="Familia">Family</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Question 5: Time Available -->
-                            <div class="question" id="question5">
-                                <h3><span class="emoji">⏰</span> <span data-en="How much time do you have?" data-sw="Una muda gani?">How much time do you have?</span></h3>
-                                <div class="mood-options" data-question="timeAvailable">
-                                    <div class="mood-btn" data-value="short">
-                                        <span class="emoji">⚡</span>
-                                        <span data-en="Quick (&lt; 90 min)" data-sw="Haraka (&lt; 90 dakika)">Quick (&lt; 90 min)</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="medium">
-                                        <span class="emoji">🎬</span>
-                                        <span data-en="Standard (90-150 min)" data-sw="Kawaida (90-150 dakika)">Standard (90-150 min)</span>
-                                    </div>
-                                    <div class="mood-btn" data-value="long">
-                                        <span class="emoji">📽️</span>
-                                        <span data-en="Epic (150+ min)" data-sw="Kubwa (150+ dakika)">Epic (150+ min)</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Question 6: Current Thoughts -->
-                            <div class="question" id="question6">
-                                <h3><span class="emoji">💭</span> <span data-en="What's on your mind lately?" data-sw="Ni nini kilicho kwenye akili yako hivi karibuni?">What's on your mind lately?</span></h3>
-                                <input type="text" class="text-input" id="currentThoughts" 
-                                       data-en-placeholder="e.g., work stress, wanting to laugh, missing old friends..." 
-                                       data-sw-placeholder="mfano, msongo kazini, kutaka kucheka, kukumbuka rafiki wa zamani..." />
-                            </div>
+                    <!-- Movie Match Result -->
+                    <div class="movie-match" id="movieMatch">
+                        <div class="movie-match-header">
+                            <h4 data-en="Your Perfect Match" data-sw="Mechi Yako Kamili">Your Perfect Match</h4>
+                            <span class="match-percentage">92% Match</span>
                         </div>
-
-                        <!-- Progress Bar at Bottom -->
-                        <div class="progress-container">
-                            <div class="progress-text">
-                                <span id="progressText" data-en="Question 1 of 6" data-sw="Swali 1 la 6">Question 1 of 6</span>
+                        <div class="movie-match-content">
+                            <div class="movie-match-poster">
+                                <div style="width:150px;height:225px;background:linear-gradient(135deg, #8B5CF6, #3B82F6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Binti</div>
                             </div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="progressFill"></div>
-                            </div>
-                        </div>
-
-                        <!-- Navigation Buttons -->
-                        <div class="question-navigation">
-                            <button class="btn btn-secondary" id="prevBtn" style="display: none;">
-                                <i class="fas fa-arrow-left"></i> <span data-en="Previous" data-sw="Iliyopita">Previous</span>
-                            </button>
-                            <button class="btn btn-primary" id="nextBtn">
-                                <span data-en="Next" data-sw="Inayofuata">Next</span> <i class="fas fa-arrow-right"></i>
-                            </button>
-                        </div>
-
-                        <!-- Discover Button (shown on last question) -->
-                        <button class="discover-btn" id="discoverBtn" style="display: none;">
-                            <span class="emoji">🎯</span> <span data-en="Discover My Perfect Movie" data-sw="Gundua Filamu Yangu Kamili">Discover My Perfect Movie</span>
-                        </button>
-
-                        <!-- Recommendation Preview -->
-                        <div class="recommendation-preview" id="recommendationPreview">
-                            <h3><span class="emoji">🎉</span> <span data-en="Great! We're analyzing your mood..." data-sw="Vizuri! Tunachambua hali yako...">Great! We're analyzing your mood...</span></h3>
-                            <p data-en="Based on your feelings, we'll find movies that perfectly match your current vibe!"
-                               data-sw="Kulingana na hisia zako, tutapata filamu zinazolingana kabisa na hali yako ya sasa!">
-                                Based on your feelings, we'll find movies that perfectly match your current vibe!
-                            </p>
-                        </div>
-
-                        <!-- Movie Match Result -->
-                        <div class="movie-match" id="movieMatch">
-                            <div class="movie-match-header">
-                                <h4 data-en="Your Perfect Match" data-sw="Mechi Yako Kamili">Your Perfect Match</h4>
-                                <span class="match-percentage">92% Match</span>
-                            </div>
-                            <div class="movie-match-content">
-                                <div class="movie-match-poster">
-                                    <div style="width:150px;height:225px;background:linear-gradient(135deg, #8B5CF6, #3B82F6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Binti</div>
+                            <div class="movie-match-details">
+                                <h4>Binti</h4>
+                                <div class="movie-match-meta">
+                                    <span>2021 • 98 <span data-en="min" data-sw="dakika">min</span></span>
+                                    <span class="movie-match-rating">
+                                        <i class="fas fa-star"></i> 8.2
+                                    </span>
+                                    <span>Tanzania</span>
                                 </div>
-                                <div class="movie-match-details">
-                                    <h4>Binti</h4>
-                                    <div class="movie-match-meta">
-                                        <span>2021 • 98 <span data-en="min" data-sw="dakika">min</span></span>
-                                        <span class="movie-match-rating">
-                                            <i class="fas fa-star"></i> 8.2
-                                        </span>
-                                        <span>Tanzania</span>
-                                    </div>
-                                    <p class="movie-match-description" data-en="A heartwarming coming-of-age story about a young Tanzanian woman navigating love, family expectations, and her dreams in modern Dar es Salaam."
-                                       data-sw="Hadithi ya kuvutia ya ukuaji wa msichana wa Kitanzania anayepambana na mapenzi, matarajio ya familia, na ndoto zake katika Dar es Salaam ya kisasa.">
-                                        A heartwarming coming-of-age story about a young Tanzanian woman navigating love, family expectations, and her dreams in modern Dar es Salaam.
-                                    </p>
-                                    <div class="movie-match-tags">
-                                        <span class="match-tag" data-en="Emotional" data-sw="Ya Kihisia">Emotional</span>
-                                        <span class="match-tag" data-en="Uplifting" data-sw="Ya Kukuza">Uplifting</span>
-                                        <span class="match-tag" data-en="Cultural" data-sw="Ya Kitamaduni">Cultural</span>
-                                    </div>
-                                    <div class="movie-match-actions">
-                                        <a href="#" class="watch-now-btn">
-                                            <i class="fas fa-play"></i> <span data-en="Watch Now" data-sw="Angalia Sasa">Watch Now</span>
-                                        </a>
-                                        <a href="#" class="try-again-btn" id="tryAgainBtn">
-                                            <i class="fas fa-redo"></i> <span data-en="Try Again" data-sw="Jaribu Tena">Try Again</span>
-                                        </a>
-                                    </div>
+                                <p class="movie-match-description" data-en="A heartwarming coming-of-age story about a young Tanzanian woman navigating love, family expectations, and her dreams in modern Dar es Salaam."
+                                   data-sw="Hadithi ya kuvutia ya ukuaji wa msichana wa Kitanzania anayepambana na mapenzi, matarajio ya familia, na ndoto zake katika Dar es Salaam ya kisasa.">
+                                    A heartwarming coming-of-age story about a young Tanzanian woman navigating love, family expectations, and her dreams in modern Dar es Salaam.
+                                </p>
+                                <div class="movie-match-tags">
+                                    <span class="match-tag" data-en="Emotional" data-sw="Ya Kihisia">Emotional</span>
+                                    <span class="match-tag" data-en="Uplifting" data-sw="Ya Kukuza">Uplifting</span>
+                                    <span class="match-tag" data-en="Cultural" data-sw="Ya Kitamaduni">Cultural</span>
+                                </div>
+                                <div class="movie-match-actions">
+                                    <a href="#" class="watch-now-btn">
+                                        <i class="fas fa-play"></i> <span data-en="Watch Now" data-sw="Angalia Sasa">Watch Now</span>
+                                    </a>
+                                    <a href="#" class="try-again-btn" id="tryAgainBtn">
+                                        <i class="fas fa-redo"></i> <span data-en="Try Again" data-sw="Jaribu Tena">Try Again</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -1310,6 +1308,230 @@
         if (document.querySelector('.hero-bg-slider')) {
             setTimeout(setHeroOverlayTextContrast, 1200);
         }
+
+        // === CAROUSEL LOGIC FOR TRENDING MOVIES & TV SHOWS ===
+        const CAROUSEL_CARD_WIDTH = {
+          desktop: 19.5, // 100/5.5
+          tablet: 28.5,  // 100/3.5
+          mobile: 45.5   // 100/2.2
+        };
+        function getCarouselCardWidth() {
+          if (window.innerWidth < 600) return CAROUSEL_CARD_WIDTH.mobile;
+          if (window.innerWidth < 1024) return CAROUSEL_CARD_WIDTH.tablet;
+          return CAROUSEL_CARD_WIDTH.desktop;
+        }
+        function createCarousel(cards, carouselId) {
+          const carousel = document.getElementById(carouselId);
+          if (!carousel) return;
+          carousel.innerHTML = '';
+          // Duplicate first/last for infinite loop
+          const items = [cards[cards.length-1], ...cards, cards[0]];
+          items.forEach((card, i) => {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'carousel-card';
+            cardDiv.innerHTML = card;
+            carousel.appendChild(cardDiv);
+          });
+          // Set scroll snap and width
+          const cardWidth = getCarouselCardWidth();
+          carousel.style.gridTemplateColumns = `repeat(${items.length}, ${cardWidth}vw)`;
+        }
+        // Fetch trending movies/TV and render carousels
+        async function loadTrendingCarousels() {
+          // Use TMDB API as in hero section
+          const TMDB_API_KEY = 'b6e814a0b9ff291122e8a05a0f206cd8';
+          const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+          const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+          // Movies
+          const movieRes = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+          const movieData = await movieRes.json();
+          const movieCards = (movieData.results || []).map(movie => renderMovieCard(movie, TMDB_IMAGE_BASE));
+          createCarousel(movieCards, 'trendingMoviesCarousel');
+          // TV Shows
+          const tvRes = await fetch(`${TMDB_BASE_URL}/tv/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+          const tvData = await tvRes.json();
+          const tvCards = (tvData.results || []).map(tv => renderMovieCard(tv, TMDB_IMAGE_BASE));
+          createCarousel(tvCards, 'trendingTVCarousel');
+        }
+        function renderMovieCard(item, imgBase) {
+          // Use existing card HTML structure, lazy load images
+          const title = item.title || item.name || 'Untitled';
+          const year = (item.release_date || item.first_air_date || '').slice(0, 4);
+          const poster = item.poster_path ? `${imgBase}${item.poster_path}` : '/static/img/placeholder.png';
+          const rating = typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : 'N/A';
+          return `
+            <div class="movie-card" tabindex="0">
+              <div class="card-inner">
+                <div class="card-front">
+                  <img class="poster-image" src="${poster}" alt="${title}" loading="lazy" />
+                  <div class="card-meta">
+                    <span class="rating">⭐ ${rating}</span>
+                    <span class="year">${year}</span>
+                  </div>
+                </div>
+                <div class="card-back">
+                  <button class="close-detail" aria-label="Close">&times;</button>
+                  <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '…' : title}</h3>
+                  <div class="movie-description" style="overflow:auto;max-height:160px;">${item.overview || 'No description available.'}</div>
+                  <div class="movie-details-grid" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.2rem;">
+                    <div><strong>Rating:</strong> ${rating}</div>
+                    <div><strong>Year:</strong> ${year || 'N/A'}</div>
+                    <div><strong>Language:</strong> ${(item.original_language || '').toUpperCase()}</div>
+                    <div><strong>Votes:</strong> ${item.vote_count || 'N/A'}</div>
+                  </div>
+                  <div class="movie-match-actions">
+                    <a href="#" class="watch-now-btn">
+                      <i class="fas fa-play"></i> <span>Watch Now</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+        window.addEventListener('DOMContentLoaded', loadTrendingCarousels);
+
+        // Carousel Navigation
+        const trendingMoviesCarousel = document.getElementById('trendingMoviesCarousel');
+        const trendingTVCarousel = document.getElementById('trendingTVCarousel');
+        const trendingMoviesLeftArrow = document.querySelector('.carousel-arrow.left');
+        const trendingMoviesRightArrow = document.querySelector('.carousel-arrow.right');
+        const trendingTVLeftArrow = document.querySelector('.carousel-arrow.left');
+        const trendingTVRightArrow = document.querySelector('.carousel-arrow.right');
+
+        function scrollCarousel(carousel, direction) {
+            const scrollAmount = carousel.scrollWidth / carousel.children.length;
+            if (direction === 'left') {
+                carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
+        }
+
+        trendingMoviesCarousel.addEventListener('scroll', () => {
+            if (trendingMoviesCarousel.scrollLeft === 0) {
+                trendingMoviesCarousel.scrollBy({ left: trendingMoviesCarousel.scrollWidth / 2, behavior: 'smooth' });
+            } else if (trendingMoviesCarousel.scrollLeft >= trendingMoviesCarousel.scrollWidth - trendingMoviesCarousel.clientWidth) {
+                trendingMoviesCarousel.scrollBy({ left: -trendingMoviesCarousel.scrollWidth / 2, behavior: 'smooth' });
+            }
+        });
+
+        trendingTVCarousel.addEventListener('scroll', () => {
+            if (trendingTVCarousel.scrollLeft === 0) {
+                trendingTVCarousel.scrollBy({ left: trendingTVCarousel.scrollWidth / 2, behavior: 'smooth' });
+            } else if (trendingTVCarousel.scrollLeft >= trendingTVCarousel.scrollWidth - trendingTVCarousel.clientWidth) {
+                trendingTVCarousel.scrollBy({ left: -trendingTVCarousel.scrollWidth / 2, behavior: 'smooth' });
+            }
+        });
+
+        if (trendingMoviesLeftArrow) {
+            trendingMoviesLeftArrow.onclick = () => scrollCarousel(trendingMoviesCarousel, 'left');
+        }
+        if (trendingMoviesRightArrow) {
+            trendingMoviesRightArrow.onclick = () => scrollCarousel(trendingMoviesCarousel, 'right');
+        }
+        if (trendingTVLeftArrow) {
+            trendingTVLeftArrow.onclick = () => scrollCarousel(trendingTVCarousel, 'left');
+        }
+        if (trendingTVRightArrow) {
+            trendingTVRightArrow.onclick = () => scrollCarousel(trendingTVCarousel, 'right');
+        }
+
+        // Keyboard navigation for carousels
+        trendingMoviesCarousel.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                scrollCarousel(trendingMoviesCarousel, 'left');
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                scrollCarousel(trendingMoviesCarousel, 'right');
+            }
+        });
+        trendingTVCarousel.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                scrollCarousel(trendingTVCarousel, 'left');
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                scrollCarousel(trendingTVCarousel, 'right');
+            }
+        });
+
+        // Touch/swipe navigation for carousels
+        let trendingMoviesTouchStartX = null;
+        trendingMoviesCarousel.addEventListener('touchstart', (e) => {
+            trendingMoviesTouchStartX = e.touches[0].clientX;
+        });
+        trendingMoviesCarousel.addEventListener('touchend', (e) => {
+            if (trendingMoviesTouchStartX === null) return;
+            const dx = e.changedTouches[0].clientX - trendingMoviesTouchStartX;
+            if (Math.abs(dx) > 50) {
+                if (dx > 0) scrollCarousel(trendingMoviesCarousel, 'left');
+                else scrollCarousel(trendingMoviesCarousel, 'right');
+            }
+            trendingMoviesTouchStartX = null;
+        });
+
+        let trendingTVTouchStartX = null;
+        trendingTVCarousel.addEventListener('touchstart', (e) => {
+            trendingTVTouchStartX = e.touches[0].clientX;
+        });
+        trendingTVCarousel.addEventListener('touchend', (e) => {
+            if (trendingTVTouchStartX === null) return;
+            const dx = e.changedTouches[0].clientX - trendingTVTouchStartX;
+            if (Math.abs(dx) > 50) {
+                if (dx > 0) scrollCarousel(trendingTVCarousel, 'left');
+                else scrollCarousel(trendingTVCarousel, 'right');
+            }
+            trendingTVTouchStartX = null;
+        });
+
+        // Auto-scroll for carousels (pause on hover)
+        let trendingMoviesScrollInterval = null;
+        let trendingTVScrollInterval = null;
+
+        function startAutoScroll(carousel, interval) {
+            if (interval) clearInterval(interval);
+            interval = setInterval(() => {
+                scrollCarousel(carousel, 'right');
+            }, 5000); // Scroll every 5 seconds
+        }
+
+        function stopAutoScroll(interval) {
+            if (interval) clearInterval(interval);
+        }
+
+        trendingMoviesCarousel.addEventListener('mouseenter', () => stopAutoScroll(trendingMoviesScrollInterval));
+        trendingMoviesCarousel.addEventListener('mouseleave', () => startAutoScroll(trendingMoviesCarousel, trendingMoviesScrollInterval));
+        trendingTVCarousel.addEventListener('mouseenter', () => stopAutoScroll(trendingTVScrollInterval));
+        trendingTVCarousel.addEventListener('mouseleave', () => startAutoScroll(trendingTVCarousel, trendingTVScrollInterval));
+
+        // Initial auto-scroll on load
+        startAutoScroll(trendingMoviesCarousel, trendingMoviesScrollInterval);
+        startAutoScroll(trendingTVCarousel, trendingTVScrollInterval);
+
+        // Add focus states for accessibility
+        document.querySelectorAll('.carousel-card').forEach(card => {
+            card.addEventListener('focus', () => card.classList.add('focused'));
+            card.addEventListener('blur', () => card.classList.remove('focused'));
+        });
+
+        // Add momentum scrolling for smoother scrolling on touch devices
+        trendingMoviesCarousel.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            trendingMoviesCarousel.scrollBy({
+                left: e.deltaX,
+                behavior: 'auto'
+            });
+        });
+        trendingTVCarousel.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            trendingTVCarousel.scrollBy({
+                left: e.deltaX,
+                behavior: 'auto'
+            });
+        });
+
     </script>
 </body>
 </html>

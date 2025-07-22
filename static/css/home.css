@@ -2001,6 +2001,40 @@
     .hero-desc-bg { padding: 0.5rem 0.7rem; }
 }
 
+/* === MINIMAL COLOR UPDATE FOR STORI ZA KAKA === */
+
+/* 1. Primary Accent: Golden Yellow */
+:root {
+    --color-red: #F5B823;
+    --color-purple: #F5B823;
+    --color-orange: #F5B823;
+    --color-green: #10B981;
+    --color-blue: #3B82F6;
+    --gradient-primary: linear-gradient(135deg, #F5B823, #F5B823);
+    --gradient-secondary: linear-gradient(135deg, #F5B823, #F5B823);
+    --gradient-blue: linear-gradient(135deg, #F5B823, #F5B823);
+    --bg-primary: #000000;
+    --bg-secondary: rgba(255, 255, 255, 0.05);
+    --bg-tertiary: rgba(0, 0, 0, 0.3);
+    --text-primary: #FFFFFF;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --border-color: #1A1A1A;
+    --border-hover: #1A1A1A;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --header-bg: rgba(0, 0, 0, 0.95);
+}
+
+/* 2. Backgrounds */
+body {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+.card-front, .card-back, .feature-card, .tech-card, .cta-section, .stats-section, .questionnaire-card {
+    border: 1px solid #1A1A1A !important;
+}
+
+/* 3. Primary Buttons & Accents */
 .btn-primary, .btn, .discover-btn, .featured-search-btn, .watch-now-btn {
     background: #F5B823 !important;
     color: #000 !important;
@@ -2012,13 +2046,32 @@
     color: #F5B823 !important;
     border: 1px solid #F5B823 !important;
 }
+
+/* 4. Section Titles & Accents */
 .section-title::after, .discover-title::after {
     background: #F5B823 !important;
 }
 .feature-icon, .match-tag, .movie-match-rating, .card-meta .rating {
     color: #F5B823 !important;
+    text-shadow: 0 0 1px #181818, 0 1px 1px #181818; /* 1px dark stroke for contrast */
+}
+
+/* 5. Poster overlays: Maintain current treatment, but ensure gold accent is visible */
+.card-meta .rating, .hero-meta .hero-rating, .hero-meta .hero-genre {
+    color: #F5B823 !important;
     text-shadow: 0 0 1px #181818, 0 1px 1px #181818;
 }
+
+/* 6. Borders */
 .card-front, .card-back, .feature-card, .tech-card, .cta-section, .stats-section, .questionnaire-card {
     border: 1px solid #1A1A1A !important;
 }
+
+/* 7. Text: Keep white for primary text */
+.hero-title, .section-title, .discover-title, .feature-title, .stat-number, .movie-match-details h4 {
+    color: #FFFFFF !important;
+}
+
+/* 8. Responsive and dynamic elements: No change to shapes, spacing, or animation */
+
+/* --- END MINIMAL COLOR UPDATE --- */
