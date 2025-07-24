@@ -513,6 +513,10 @@ async function fetchMoviesByGenre(genreId) {
 function displayGenreMovies(movies) {
   const row = document.getElementById('genreMovieRow');
   row.innerHTML = '';
+  if (!movies || movies.length === 0) {
+    row.innerHTML = '<div style="padding:2rem;text-align:center;width:100%;color:var(--text-secondary);font-size:1.1rem;">No movies or dramas found for this combination.</div>';
+    return;
+  }
   movies.forEach(movie => {
     const card = createMediaCard(movie, 'movie');
     row.appendChild(card);
@@ -533,6 +537,125 @@ function setupGenreDropdown() {
     title.textContent = `${GENRE_MAP[genreId] || 'Genre'} Movies`;
     const movies = await fetchMoviesByGenre(genreId);
     displayGenreMovies(movies);
+  });
+}
+
+// --- Explore Dropdowns: Populate and Handle All Filters ---
+const YEAR_START = 1970;
+const YEAR_END = new Date().getFullYear();
+const LANGUAGE_API_URL = `${TMDB_BASE_URL}/configuration/languages?api_key=${TMDB_API_KEY}`;
+
+async function populateYearDropdown() {
+  const select = document.getElementById('yearSelect');
+  for (let y = YEAR_END; y >= YEAR_START; y--) {
+    const option = document.createElement('option');
+    option.value = y;
+    option.textContent = y;
+    select.appendChild(option);
+  }
+}
+
+// --- Populate Language Dropdown with Common Movie-Producing Countries Only ---
+const COMMON_LANGUAGES = [
+  { code: 'en', name: 'English' },
+  { code: 'fr', name: 'French' },
+  { code: 'de', name: 'German' },
+  { code: 'es', name: 'Spanish' },
+  { code: 'it', name: 'Italian' },
+  { code: 'sw', name: 'Swedish' },
+  { code: 'pt', name: 'Portuguese' },
+  { code: 'ru', name: 'Russian' },
+  { code: 'zh', name: 'Chinese' },
+  { code: 'ja', name: 'Japanese' },
+  { code: 'ko', name: 'Korean' },
+  { code: 'ar', name: 'Arabic' }
+];
+
+async function populateLanguageDropdown() {
+  const select = document.getElementById('languageSelect');
+  try {
+    const res = await fetch(LANGUAGE_API_URL);
+    const data = await res.json();
+    data.forEach(l => {
+      const option = document.createElement('option');
+      option.value = l.iso_639_1;
+      option.textContent = l.english_name;
+      select.appendChild(option);
+    });
+  } catch (e) {
+    // fallback
+    COMMON_LANGUAGES.forEach(l => {
+      const option = document.createElement('option');
+      option.value = l.code;
+      option.textContent = l.name;
+      select.appendChild(option);
+    });
+  }
+}
+
+// --- Fetch Movies by All Explore Filters (with Drama Type) ---
+async function fetchMoviesByExploreFilters() {
+  const genreId = document.getElementById('genreSelect').value;
+  const year = document.getElementById('yearSelect').value;
+  const language = document.getElementById('languageSelect').value;
+  const dramaType = document.getElementById('dramaTypeSelect').value;
+  let url = `${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}&sort_by=popularity.desc`;
+  if (genreId) url += `&with_genres=${genreId}`;
+  if (year) url += `&primary_release_year=${year}`;
+  if (language) url += `&with_original_language=${language}`;
+  // Drama type logic
+  if (dramaType) {
+    if (dramaType === 'kdrama') {
+      url += `&with_original_language=ko&region=KR`;
+    } else if (dramaType === 'cdrama') {
+      url += `&with_original_language=zh&region=CN`;
+    } else if (dramaType === 'jdrama') {
+      url += `&with_original_language=ja&region=JP`;
+    } else if (dramaType === 'thaidrama') {
+      url += `&with_original_language=th&region=TH`;
+    } else if (dramaType === 'turkishdrama') {
+      url += `&with_original_language=tr&region=TR`;
+    }
+    // 'other' = no extra filter
+  }
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.results || [];
+}
+
+function setupExploreDropdowns() {
+  const selects = [
+    document.getElementById('genreSelect'),
+    document.getElementById('yearSelect'),
+    document.getElementById('languageSelect'),
+    document.getElementById('dramaTypeSelect')
+  ];
+  const section = document.getElementById('selectedGenreSection');
+  const title = document.getElementById('genreTitle');
+  selects.forEach(sel => {
+    sel.addEventListener('change', async () => {
+      // If all are empty, hide section
+      if (selects.every(s => !s.value)) {
+        section.style.display = 'none';
+        return;
+      }
+      section.style.display = 'block';
+      // Compose title
+      let t = [];
+      if (selects[3].value) {
+        // Drama type label
+        const dramaMap = {
+          kdrama: 'K-Drama', cdrama: 'C-Drama', jdrama: 'J-Drama', thaidrama: 'Thai Drama', turkishdrama: 'Turkish Drama', other: 'Other Drama'
+        };
+        t.push(dramaMap[selects[3].value] || 'Drama');
+      }
+      if (selects[0].value) t.push(GENRE_MAP[selects[0].value] || 'Genre');
+      if (selects[1].value) t.push(selects[1].value);
+      if (selects[2].value) t.push(selects[2].options[selects[2].selectedIndex].textContent);
+      title.textContent = t.length ? t.join(' / ') + ' Movies' : 'Explore Movies';
+      const movies = await fetchMoviesByExploreFilters();
+      displayGenreMovies(movies);
+    });
   });
 }
 
@@ -558,7 +681,9 @@ window.moodAnalysis = { completed: false };
 document.addEventListener('DOMContentLoaded', function() {
   setupMoodSelection();
   populateGenreDropdown();
-  setupGenreDropdown();
+  populateYearDropdown();
+  populateLanguageDropdown();
+  setupExploreDropdowns();
   fillTrendingRows('movie', 'moviesRow1', 'moviesRow2', 'moviesLoading1', 'moviesLoading2');
   fillTrendingRows('tv', 'tvRow1', 'tvRow2', 'tvLoading1', 'tvLoading2');
   setupGlobalUnflip();
