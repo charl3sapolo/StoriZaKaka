@@ -70,8 +70,47 @@
       </button>
     </div>
 
-    <!-- Curated For You Section -->
-    <section class="curated-section hidden" id="curatedSection">
+    <!-- Explore Selector (always visible) -->
+    <section class="genre-selector-section">
+      <div class="explore-selector-grid">
+        <div class="explore-selector-item">
+          <label for="genreSelect">Genre:</label>
+          <select id="genreSelect">
+            <option value="">Select a genre...</option>
+            <!-- JS will populate the rest -->
+          </select>
+        </div>
+        <div class="explore-selector-item">
+          <label for="yearSelect">Year:</label>
+          <select id="yearSelect">
+            <option value=""> year</option>
+            <!-- JS will populate -->
+          </select>
+        </div>
+        <div class="explore-selector-item">
+          <label for="languageSelect">Language:</label>
+          <select id="languageSelect">
+            <option value="">Language</option>
+            <!-- JS will populate -->
+          </select>
+        </div>
+        <div class="explore-selector-item">
+          <label for="dramaTypeSelect">Drama Type:</label>
+          <select id="dramaTypeSelect">
+            <option value="">Any</option>
+            <option value="kdrama">K-Drama</option>
+            <option value="cdrama">C-Drama</option>
+            <option value="jdrama">J-Drama</option>
+            <option value="thaidrama">Thai Drama</option>
+            <option value="turkishdrama">Turkish Drama</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Curated For You Section (hidden by default, JS will show/hide) -->
+    <section class="curated-section" id="curatedSection" style="display: none;">
       <div class="curated-header">
         <h2 class="section-title"><i class="fas fa-star"></i> Curated For You</h2>
         <button class="refresh-btn" id="refreshCurated">
@@ -80,6 +119,14 @@
       </div>
       <div class="media-grid" id="curatedGrid">
         <!-- Content will be loaded here -->
+      </div>
+    </section>
+
+    <!-- Selected Genre Section (hidden by default, JS will show/hide) -->
+    <section class="selected-genre-section" id="selectedGenreSection" style="display: none;">
+      <h2 id="genreTitle">Genre Movies</h2>
+      <div class="movie-row" id="genreMovieRow">
+        <!-- Genre-specific movies here -->
       </div>
     </section>
 
@@ -93,7 +140,7 @@
       </div>
       <div class="movie-row" id="moviesRow2">
         <div class="loading-indicator hidden" id="moviesLoading2">
-          <div class="spinner"></div>
+        <div class="spinner"></div>
         </div>
       </div>
     </section>
@@ -108,7 +155,7 @@
       </div>
       <div class="movie-row" id="tvRow2">
         <div class="loading-indicator hidden" id="tvLoading2">
-          <div class="spinner"></div>
+        <div class="spinner"></div>
         </div>
       </div>
     </section>
