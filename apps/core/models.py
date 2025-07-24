@@ -1,6 +1,5 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from djongo import models
 
 class User(AbstractUser):
     """
@@ -18,10 +17,10 @@ class Movie(models.Model):
     """
     Represents a movie.
     """
-    tmdb_id = models.IntegerField(unique=True)
-    title = models.CharField(max_length=255)
-    overview = models.TextField(blank=True)
-    genres = models.JSONField(default=list)  # List of genre dicts or names
+    tmdb_id = models.IntegerField(unique=True, null=True, blank=True)
+    title = models.CharField(max_length=255, null=True, blank=True)
+    overview = models.TextField(blank=True, null=True)
+    genres = models.JSONField(default=list, blank=True, null=True)  # List of genre dicts or names
     rating = models.FloatField(null=True, blank=True)
     year = models.IntegerField(null=True, blank=True)
     type = models.CharField(max_length=32, choices=[
@@ -29,16 +28,16 @@ class Movie(models.Model):
         ('series', 'Series'),
         ('animation', 'Animation'),
         ('tvshow', 'TV Show'),
-    ])
-    country = models.CharField(max_length=64, blank=True)
-    language = models.CharField(max_length=32, blank=True)
-    poster_path = models.CharField(max_length=255, blank=True)
-    backdrop_path = models.CharField(max_length=255, blank=True)
-    release_date = models.CharField(max_length=32, blank=True)
+    ], null=True, blank=True)
+    country = models.CharField(max_length=64, blank=True, null=True)
+    language = models.CharField(max_length=32, blank=True, null=True)
+    poster_path = models.CharField(max_length=255, blank=True, null=True)
+    backdrop_path = models.CharField(max_length=255, blank=True, null=True)
+    release_date = models.CharField(max_length=32, blank=True, null=True)
     popularity = models.FloatField(null=True, blank=True)
     vote_count = models.IntegerField(null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     def __str__(self):
         return self.title
@@ -73,7 +72,7 @@ class RecommendationSession(models.Model):
     Represents a recommendation session for a user.
     """
     user = models.ForeignKey('User', on_delete=models.CASCADE)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     # Add fields as needed, e.g. session data, results, etc.
 
     def __str__(self):
