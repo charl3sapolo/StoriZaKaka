@@ -3,256 +3,995 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Discover - Movie Recommender</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
-      color: #2d3748;
-            min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-        }
-
-        .container {
-      width: 100%;
-      max-width: 1000px;
-      margin: 2rem auto;
-      padding: 1rem;
-        }
-
-        .header {
-            text-align: center;
-      margin-bottom: 2rem;
-        }
-
-        .header h1 {
-      font-size: 2.5rem;
-      background: linear-gradient(to right, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      color: transparent;
-      font-weight: bold;
-        }
-
-        .header p {
-      color: #4a5568;
-      margin-top: 0.5rem;
+  <title>Stori za Kaka - Mood-Based Movie Recommender</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #F5B823;
+      --dark: #0A0A0A;
+      --darker: #000000;
+      --light: #FFFFFF;
+      --gray: #1A1A1A;
+      --soft-gray: #2D2D2D;
+      --text-primary: #F5F5F5;
+      --text-secondary: #B3B3B3;
+      --success: #10B981;
+      --gradient-bg: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
     }
 
-    .filters {
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(6px);
-      padding: 1.5rem;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', 'Segoe UI', sans-serif;
+      background: var(--darker);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    /* Header Section */
+    .header {
+      text-align: center;
+      margin: 1.5rem 0 2rem;
+      position: relative;
+    }
+
+    .back-button {
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: var(--gray);
+      border: none;
+      color: var(--text-primary);
+      padding: 0.75rem;
       border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .back-button:hover {
+      background: var(--primary);
+      color: var(--dark);
+      transform: translateY(-2px);
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      color: var(--light);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .header p {
+      color: var(--text-secondary);
+      font-size: 1rem;
+      max-width: 90%;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Mood Selector */
+    .mood-selector {
+      background: var(--gray);
+      border-radius: 16px;
+      padding: 1.5rem;
       margin-bottom: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .mood-selector h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      color: var(--light);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mood-selector h2 i {
+      color: var(--primary);
+    }
+
+    .mood-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
       gap: 1rem;
     }
 
-    .filters input,
-    .filters select {
-      padding: 0.5rem;
-      border: 1px solid #cbd5e0;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      width: 100%;
-    }
-
-    .filters button {
-      background: linear-gradient(to right, #667eea, #764ba2);
-      color: white;
-      padding: 0.6rem 1rem;
-      border: none;
-      border-radius: 8px;
-      font-weight: 600;
+    .mood-option {
+      background: var(--soft-gray);
+      border: 2px solid transparent;
+      border-radius: 16px;
+      padding: 1rem;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      transition: all 0.3s ease;
+      position: relative;
+      text-align: center;
     }
 
-    .filters button:hover {
+    .mood-option:hover {
+      background: var(--gray);
+      border-color: var(--primary);
       transform: translateY(-2px);
     }
 
-    .results {
-            display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 1.5rem;
-        }
+    .mood-option.selected {
+      background: var(--primary);
+      color: var(--dark);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+    }
 
-    .card {
-      background: white;
-            border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    .mood-icon {
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .mood-option.selected .mood-icon {
+      color: var(--dark);
+    }
+
+    .mood-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+    }
+
+    .mood-description {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+
+    .mood-option.selected .mood-description {
+      color: var(--dark);
+    }
+
+    /* Get Recommendations Button */
+    .get-recommendations {
+      background: var(--primary);
+      color: var(--dark);
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 1.5rem auto 0;
+      display: block;
+      width: 100%;
+      max-width: 300px;
+    }
+
+    .get-recommendations:hover {
+      background: #e0a91d;
+      transform: translateY(-2px);
+    }
+
+    .get-recommendations:disabled {
+      background: var(--soft-gray);
+      color: var(--text-secondary);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Carousel Sections */
+    .carousel-section {
+      margin-bottom: 3rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      color: var(--light);
+      position: relative;
+      padding-left: 15px;
+    }
+
+    .section-title::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 5px;
+      height: 80%;
+      width: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+    }
+
+    .carousel-nav {
+      display: flex;
+      gap: 8px;
+    }
+
+    .carousel-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gray);
+      border: none;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-btn:hover {
+      background: var(--primary);
+      color: var(--dark);
+    }
+
+    .carousel {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      padding: 0.5rem 0 1rem;
+    }
+
+    .carousel::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .carousel::-webkit-scrollbar-track {
+      background: var(--gray);
+      border-radius: 10px;
+    }
+
+    .carousel::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 10px;
+    }
+
+    /* Movie Cards - Mobile First */
+    .movie-card {
+      scroll-snap-align: start;
+      flex: 0 0 180px;
+      perspective: 1200px;
+      cursor: pointer;
+    }
+
+    .card-inner {
+      width: 100%;
+      height: 280px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .movie-card.flipped .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 12px;
       overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-back {
+      background: var(--gray);
+      transform: rotateY(180deg);
+      padding: 1rem;
       display: flex;
       flex-direction: column;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
-    .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 15px 35px rgba(102, 126, 234, 0.2);
+    .movie-card:hover {
+      transform: translateY(-5px);
     }
 
-    .card img {
+    .movie-poster {
       width: 100%;
-      height: 300px;
+      height: 220px;
       object-fit: cover;
     }
 
-    .card-content {
-      padding: 1rem;
+    .movie-info {
+      padding: 0.75rem;
+      background: var(--gray);
+      flex-grow: 1;
     }
 
-    .card-content h3 {
-      font-size: 1.1rem;
-      margin-bottom: 0.5rem;
+    .movie-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 0.3rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .card-content p {
+    .movie-meta {
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      align-items: center;
+    }
+
+    .movie-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      color: var(--primary);
+    }
+
+    /* Back of card content */
+    .card-back .movie-title {
       font-size: 0.9rem;
-      color: #718096;
+      margin-bottom: 0.5rem;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: initial;
     }
 
-    @media (max-width: 768px) {
-      .filters {
-        grid-template-columns: 1fr;
+    .movie-overview {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+      margin-bottom: 1rem;
+      flex-grow: 1;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 6;
+      -webkit-box-orient: vertical;
+    }
+
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      background: var(--primary);
+      color: var(--dark);
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.3rem;
+    }
+
+    .action-btn:hover {
+      background: #e0a91d;
+    }
+
+    .action-btn.secondary {
+      background: transparent;
+      color: var(--text-secondary);
+      border: 1px solid var(--text-secondary);
+    }
+
+    .action-btn.secondary:hover {
+      background: var(--soft-gray);
+      color: var(--text-primary);
+      border-color: var(--text-primary);
+    }
+
+    /* Loading States */
+    .loading-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--gray);
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Stats Section */
+    .stats-section {
+      background: var(--gray);
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      margin: 3rem 0;
+      text-align: center;
+    }
+
+    .stats-title {
+      font-size: 1.3rem;
+      color: var(--light);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Responsive Design */
+    @media (min-width: 480px) {
+      .movie-card {
+        flex: 0 0 200px;
+      }
+      
+      .card-inner {
+        height: 320px;
+      }
+      
+      .movie-poster {
+        height: 250px;
+      }
+      
+      .mood-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
       }
     }
 
-    .top-bar {
-  display: flex;
-  justify-content: flex-start;
-  padding: 1rem 2rem;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
+    @media (min-width: 768px) {
+      .container {
+        padding: 1.5rem 2rem;
+      }
+      
+      .header h1 {
+        font-size: 3rem;
+      }
+      
+      .header p {
+        font-size: 1.1rem;
+        max-width: 600px;
+      }
+      
+      .movie-card {
+        flex: 0 0 220px;
+      }
+      
+      .card-inner {
+        height: 350px;
+      }
+      
+      .movie-poster {
+        height: 280px;
+      }
+      
+      .mood-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      }
+      
+      .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
 
-.back-btn {
-            color: white;
-  background: linear-gradient(135deg, #10B981, #3B82F6);
-  padding: 0.5rem 1.5rem;
-  border-radius: 999px;
-  text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-        }
+    @media (min-width: 1024px) {
+      .container {
+        max-width: 1200px;
+        padding: 2rem;
+      }
+      
+      .movie-card {
+        flex: 0 0 240px;
+      }
+      
+      .card-inner {
+        height: 380px;
+      }
+      
+      .movie-poster {
+        height: 300px;
+      }
+    }
 
-.back-btn:hover {
-            transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5);
-}
+    /* Hidden class for initial state */
+    .hidden {
+      display: none;
+    }
 
-.header-glow {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-  border-radius: 18px;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  box-shadow: 0 8px 20px rgba(255, 255, 255, 0.05);
-}
-
-    </style>
+    /* Error States */
+    .error-message {
+      background: #DC2626;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin: 1rem 0;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    
-  
-    <div class="container">
-      <div class="header-glow">
-        <div class="header">
-            <h1>🎬 Discover Your Perfect Movie</h1>
-            <p>Tell us how you're feeling, and we'll find the perfect movie for your mood</p>
-        </div>
-            </div>
-
-    <div class="filters">
-      <input id="searchInput" placeholder="Search..." />
-      <input id="genreInput" placeholder="Genre" />
-      <input id="ratingInput" type="number" min="0" max="10" step="0.1" placeholder="Rating ≥ 7" />
-      <input id="yearInput" type="number" min="1900" max="2100" placeholder="Year" />
-      <select id="typeInput">
-        <option value="">Any Type</option>
-                    <option value="movie">Movie</option>
-                    <option value="series">Series</option>
-                    <option value="animation">Animation</option>
-                </select>
-      <input id="countryInput" placeholder="Country" />
-      <input id="languageInput" placeholder="Language" />
-      <button id="searchBtn">Search</button>
-        </div>
-
-    <div id="resultsSection" class="results">
-      <!-- Cards will be injected here -->
-            </div>
-
-    <div class="message-box">
-        <h1>🚧 Page Under Construction</h1>
-        <p>We’re still working on this section. Please check back later!</p>
-            </div>
-
-    <div class="actions">
-        <a href="{% url 'core:home' %}" class="btn-primary">
-          <i class="fas fa-home"></i>
-          Back to Home
-        </a>
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header">
+      <button class="back-button" onclick="goHome()">
+        <i class="fas fa-arrow-left"></i>
+        <span>Home</span>
+      </button>
+      <h1>Stori za Kaka</h1>
+      <p>How are you feeling today? Tell us your mood and we'll find the perfect movie for you from our TMDB collection.</p>
     </div>
 
-    <script>
-        const searchBtn = document.getElementById('searchBtn');
-        const resultsSection = document.getElementById('resultsSection');
+    <!-- Mood Selector -->
+    <div class="mood-selector">
+      <h2><i class="fas fa-heart"></i> Select Your Moods</h2>
+      <div class="mood-grid">
+        <div class="mood-option" data-mood="comedy">
+          <i class="mood-icon fas fa-laugh-beam"></i>
+          <div class="mood-name">Happy</div>
+          <div class="mood-description">Feel-good comedies</div>
+        </div>
+        <div class="mood-option" data-mood="drama">
+          <i class="mood-icon fas fa-sad-tear"></i>
+          <div class="mood-name">Emotional</div>
+          <div class="mood-description">Deep dramas</div>
+        </div>
+        <div class="mood-option" data-mood="action">
+          <i class="mood-icon fas fa-bolt"></i>
+          <div class="mood-name">Excited</div>
+          <div class="mood-description">Action-packed</div>
+        </div>
+        <div class="mood-option" data-mood="romance">
+          <i class="mood-icon fas fa-heart"></i>
+          <div class="mood-name">Romantic</div>
+          <div class="mood-description">Love stories</div>
+        </div>
+        <div class="mood-option" data-mood="adventure">
+          <i class="mood-icon fas fa-mountain"></i>
+          <div class="mood-name">Adventurous</div>
+          <div class="mood-description">Epic journeys</div>
+        </div>
+        <div class="mood-option" data-mood="thriller">
+          <i class="mood-icon fas fa-brain"></i>
+          <div class="mood-name">Thoughtful</div>
+          <div class="mood-description">Mind-bending</div>
+        </div>
+        <div class="mood-option" data-mood="family">
+          <i class="mood-icon fas fa-history"></i>
+          <div class="mood-name">Nostalgic</div>
+          <div class="mood-description">Family classics</div>
+        </div>
+        <div class="mood-option" data-mood="horror">
+          <i class="mood-icon fas fa-ghost"></i>
+          <div class="mood-name">Thrilled</div>
+          <div class="mood-description">Horror & suspense</div>
+        </div>
+      </div>
+      <button class="get-recommendations" id="getRecommendations" disabled>
+        <i class="fas fa-magic"></i> Get My Recommendations
+      </button>
+    </div>
 
-    searchBtn.addEventListener('click', fetchResults);
+    <!-- Curated Recommendations Section -->
+    <div class="carousel-section hidden" id="curatedSection">
+      <div class="section-header">
+        <h2 class="section-title">Your Curated Picks</h2>
+        <div class="carousel-nav">
+          <button class="carousel-btn prev-btn" data-carousel="curated"><i class="fas fa-chevron-left"></i></button>
+          <button class="carousel-btn next-btn" data-carousel="curated"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="carousel curated-carousel" id="curatedCarousel">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </div>
 
-        function fetchResults() {
-            const q = document.getElementById('searchInput').value;
-            const genre = document.getElementById('genreInput').value;
-            const rating = document.getElementById('ratingInput').value;
-            const year = document.getElementById('yearInput').value;
-            const type = document.getElementById('typeInput').value;
-            const country = document.getElementById('countryInput').value;
-            const language = document.getElementById('languageInput').value;
+    <!-- Trending Movies Carousel -->
+    <div class="carousel-section">
+      <div class="section-header">
+        <h2 class="section-title">Trending Movies</h2>
+        <div class="carousel-nav">
+          <button class="carousel-btn prev-btn" data-carousel="trending-movies"><i class="fas fa-chevron-left"></i></button>
+          <button class="carousel-btn next-btn" data-carousel="trending-movies"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="carousel trending-movies-carousel" id="trendingMovies">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </div>
 
-            let url = `/discovery/?q=${encodeURIComponent(q)}`;
-            if (genre) url += `&genre=${encodeURIComponent(genre)}`;
-            if (rating) url += `&rating=${encodeURIComponent(rating)}`;
-            if (year) url += `&year=${encodeURIComponent(year)}`;
-            if (type) url += `&type=${encodeURIComponent(type)}`;
-            if (country) url += `&country=${encodeURIComponent(country)}`;
-            if (language) url += `&language=${encodeURIComponent(language)}`;
+    <!-- Trending TV Shows Carousel -->
+    <div class="carousel-section">
+      <div class="section-header">
+        <h2 class="section-title">Trending TV Shows</h2>
+        <div class="carousel-nav">
+          <button class="carousel-btn prev-btn" data-carousel="trending-shows"><i class="fas fa-chevron-left"></i></button>
+          <button class="carousel-btn next-btn" data-carousel="trending-shows"><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+      <div class="carousel trending-shows-carousel" id="trendingShows">
+        <div class="loading-container">
+          <div class="loading-spinner"></div>
+        </div>
+      </div>
+    </div>
 
-      resultsSection.innerHTML = '<div style="grid-column: span 3; text-align:center; color: gray">Loading...</div>';
+    <!-- Stats Section -->
+    <div class="stats-section">
+      <h2 class="stats-title">
+        <i class="fas fa-chart-bar"></i>
+        Platform Statistics
+      </h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <span class="stat-number">50K+</span>
+          <span class="stat-label">Movies</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">10K+</span>
+          <span class="stat-label">TV Shows</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">8</span>
+          <span class="stat-label">Mood Types</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-number">AI</span>
+          <span class="stat-label">Powered</span>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    if (!data.results || data.results.length === 0) {
-            resultsSection.innerHTML = '<div style="grid-column: span 3; text-align:center; color: gray">No results found.</div>';
-                        return;
-                    }
+  <script>
+    // TMDB API Configuration
+    const TMDB_API_KEY = 'YOUR_TMDB_API_KEY'; // Replace with your actual API key
+    const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+    const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
 
-                    resultsSection.innerHTML = data.results.map(movie => `
-            <div class="card">
-              <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" />
-              <div class="card-content">
-                <h3>${movie.title}</h3>
-                <p>${movie.overview ? movie.overview.substring(0, 100) + '...' : ''}</p>
-                            </div>
-                        </div>
-                    `).join('');
-                })
-        .catch(err => {
-          resultsSection.innerHTML = '<div style="grid-column: span 3; text-align:center; color: red">Error loading results.</div>';
+    // Genre mapping for moods to TMDB genre IDs
+    const MOOD_TO_GENRE = {
+      comedy: [35], // Comedy
+      drama: [18], // Drama
+      action: [28], // Action
+      romance: [10749], // Romance
+      adventure: [12], // Adventure
+      thriller: [53, 9648], // Thriller, Mystery
+      family: [10751], // Family
+      horror: [27] // Horror
+    };
+
+    // State management
+    let selectedMoods = [];
+    let currentPage = 1;
+
+    // DOM Elements
+    const moodOptions = document.querySelectorAll('.mood-option');
+    const getRecommendationsBtn = document.getElementById('getRecommendations');
+    const curatedSection = document.getElementById('curatedSection');
+
+    // Initialize the app
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeMoodSelection();
+      initializeCarouselNavigation();
+      loadTrendingContent();
+    });
+
+    // Mood selection functionality
+    function initializeMoodSelection() {
+      moodOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const mood = this.dataset.mood;
+          
+          if (this.classList.contains('selected')) {
+            // Deselect
+            this.classList.remove('selected');
+            selectedMoods = selectedMoods.filter(m => m !== mood);
+          } else {
+            // Select
+            this.classList.add('selected');
+            selectedMoods.push(mood);
+          }
+          
+          // Enable/disable recommendations button
+          getRecommendationsBtn.disabled = selectedMoods.length === 0;
         });
+      });
+
+      // Get recommendations button
+      getRecommendationsBtn.addEventListener('click', function() {
+        if (selectedMoods.length > 0) {
+          getCuratedRecommendations();
+        }
+      });
     }
-    </script>
+
+    // Carousel navigation
+    function initializeCarouselNavigation() {
+      document.querySelectorAll('.carousel-section').forEach(section => {
+        const carousel = section.querySelector('.carousel');
+        const prevBtn = section.querySelector('.prev-btn');
+        const nextBtn = section.querySelector('.next-btn');
+        
+        if (prevBtn && nextBtn && carousel) {
+          const scrollAmount = window.innerWidth < 768 ? 200 : 260;
+          
+          prevBtn.addEventListener('click', () => {
+            carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+          });
+          
+          nextBtn.addEventListener('click', () => {
+            carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+          });
+        }
+      });
+    }
+
+    // Movie card flip functionality
+    function addFlipFunctionality(card) {
+      card.addEventListener('click', function(e) {
+        // Don't flip if clicking on action buttons
+        if (e.target.closest('.action-btn')) return;
+        this.classList.toggle('flipped');
+      });
+    }
+
+    // Create movie card HTML
+    function createMovieCard(movie, type = 'movie') {
+      const title = movie.title || movie.name;
+      const releaseDate = movie.release_date || movie.first_air_date;
+      const year = releaseDate ? new Date(releaseDate).getFullYear() : 'N/A';
+      const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
+      const overview = movie.overview || 'No description available.';
+      
+      const card = document.createElement('div');
+      card.className = 'movie-card';
+      card.innerHTML = `
+        <div class="card-inner">
+          <div class="card-front">
+            <img src="${movie.poster_path ? TMDB_IMAGE_BASE + movie.poster_path : 'https://via.placeholder.com/500x750/1A1A1A/B3B3B3?text=No+Poster'}" 
+                 alt="${title}" 
+                 class="movie-poster" 
+                 onerror="this.src='https://via.placeholder.com/500x750/1A1A1A/B3B3B3?text=No+Poster'">
+            <div class="movie-info">
+              <h3 class="movie-title">${title}</h3>
+              <div class="movie-meta">
+                <span>${year}</span>
+                <div class="movie-rating">
+                  <i class="fas fa-star"></i>
+                  <span>${rating}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card-back">
+            <h3 class="movie-title">${title}</h3>
+            <p class="movie-overview">${overview}</p>
+            <div class="card-actions">
+              <button class="action-btn" onclick="watchTrailer(${movie.id}, '${type}')">
+                <i class="fas fa-play"></i> Trailer
+              </button>
+              <button class="action-btn secondary" onclick="saveToWatchlist(${movie.id}, '${type}')">
+                <i class="fas fa-bookmark"></i> Save
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      addFlipFunctionality(card);
+      return card;
+    }
+
+    // API Functions
+    async function fetchFromTMDB(endpoint) {
+      try {
+        const response = await fetch(`${TMDB_BASE_URL}${endpoint}?api_key=${TMDB_API_KEY}`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return await response.json();
+      } catch (error) {
+        console.error('TMDB API Error:', error);
+        return null;
+      }
+    }
+
+    // Get curated recommendations based on selected moods
+    async function getCuratedRecommendations() {
+      const curatedCarousel = document.getElementById('curatedCarousel');
+      curatedSection.classList.remove('hidden');
+      
+      // Show loading
+      curatedCarousel.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div></div>';
+      
+      try {
+        const allGenres = selectedMoods.flatMap(mood => MOOD_TO_GENRE[mood] || []);
+        const uniqueGenres = [...new Set(allGenres)];
+        
+        if (uniqueGenres.length === 0) {
+          throw new Error('No genres found for selected moods');
+        }
+        
+        const genreQuery = uniqueGenres.join(',');
+        const data = await fetchFromTMDB(`/discover/movie?with_genres=${genreQuery}&sort_by=popularity.desc&page=1`);
+        
+        if (data && data.results) {
+          populateCarousel(curatedCarousel, data.results, 'movie');
+        } else {
+          throw new Error('No recommendations found');
+        }
+      } catch (error) {
+        console.error('Error fetching curated recommendations:', error);
+        curatedCarousel.innerHTML = '<div class="error-message">Failed to load recommendations. Please try again.</div>';
+      }
+    }
+
+    // Load trending content
+    async function loadTrendingContent() {
+      // Load trending movies
+      try {
+        const trendingMoviesData = await fetchFromTMDB('/trending/movie/week');
+        if (trendingMoviesData && trendingMoviesData.results) {
+          populateCarousel(document.getElementById('trendingMovies'), trendingMoviesData.results, 'movie');
+        }
+      } catch (error) {
+        console.error('Error loading trending movies:', error);
+        document.getElementById('trendingMovies').innerHTML = '<div class="error-message">Failed to load trending movies.</div>';
+      }
+
+      // Load trending TV shows
+      try {
+        const trendingShowsData = await fetchFromTMDB('/trending/tv/week');
+        if (trendingShowsData && trendingShowsData.results) {
+          populateCarousel(document.getElementById('trendingShows'), trendingShowsData.results, 'tv');
+        }
+      } catch (error) {
+        console.error('Error loading trending shows:', error);
+        document.getElementById('trendingShows').innerHTML = '<div class="error-message">Failed to load trending shows.</div>';
+      }
+    }
+
+    // Populate carousel with movies/shows
+    function populateCarousel(carousel, items, type = 'movie') {
+      carousel.innerHTML = '';
+      
+      if (!items || items.length === 0) {
+        carousel.innerHTML = '<div class="error-message">No content available.</div>';
+        return;
+      }
+      
+      items.forEach(item => {
+        const card = createMovieCard(item, type);
+        carousel.appendChild(card);
+      });
+    }
+
+    // Action button functions
+    function watchTrailer(id, type) {
+      // Implement trailer functionality
+      console.log(`Watch trailer for ${type} ID: ${id}`);
+      // You can integrate with YouTube API or TMDB videos endpoint
+      alert(`Trailer functionality for ${type} ID: ${id} - To be implemented`);
+    }
+
+    function saveToWatchlist(id, type) {
+      // Implement save to watchlist functionality
+      console.log(`Save ${type} ID: ${id} to watchlist`);
+      // You can save to localStorage or send to your backend
+      alert(`Saved ${type} ID: ${id} to watchlist - To be implemented`);
+    }
+
+    // Navigation function
+    function goHome() {
+      // Reset the page state
+      selectedMoods = [];
+      moodOptions.forEach(option => {
+        option.classList.remove('selected');
+      });
+      getRecommendationsBtn.disabled = true;
+      curatedSection.classList.add('hidden');
+      
+      // Scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Touch/swipe support for mobile
+    let startX = 0;
+    let scrollLeft = 0;
+
+    document.querySelectorAll('.carousel').forEach(carousel => {
+      carousel.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
+      });
+
+      carousel.addEventListener('touchmove', (e) => {
+        if (!startX) return;
+        e.preventDefault();
+        const x = e.touches[0].pageX - carousel.offsetLeft;
+        const walk = (x - startX) * 2;
+        carousel.scrollLeft = scrollLeft - walk;
+      });
+
+      carousel.addEventListener('touchend', () => {
+        startX = 0;
+      });
+    });
+  </script>
 </body>
 </html>
