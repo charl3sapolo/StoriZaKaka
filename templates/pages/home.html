@@ -1,1073 +1,1538 @@
-<!DOCTYPE html>
+
+             <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Stori za Kaka - Mood-Based Movie Recommender</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary: #F5B823;
-      --dark: #0A0A0A;
-      --darker: #000000;
-      --light: #FFFFFF;
-      --gray: #1A1A1A;
-      --soft-gray: #2D2D2D;
-      --text-primary: #F5F5F5;
-      --text-secondary: #B3B3B3;
-      --success: #10B981;
-      --gradient-bg: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Poppins', 'Segoe UI', sans-serif;
-      background: var(--darker);
-      color: var(--text-primary);
-      min-height: 100vh;
-      line-height: 1.6;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 100%;
-      margin: 0 auto;
-      padding: 1rem;
-    }
-
-    /* Header Section */
-    .header {
-      text-align: center;
-      margin: 1.5rem 0 2rem;
-      position: relative;
-    }
-
-    .back-button {
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: var(--gray);
-      border: none;
-      color: var(--text-primary);
-      padding: 0.75rem;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-size: 1.1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .back-button:hover {
-      background: var(--primary);
-      color: var(--dark);
-      transform: translateY(-2px);
-    }
-
-    .header h1 {
-      font-size: 2.5rem;
-      color: var(--light);
-      font-weight: 700;
-      margin-bottom: 1rem;
-      position: relative;
-      display: inline-block;
-    }
-
-    .header h1::after {
-      content: '';
-      position: absolute;
-      bottom: -8px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 80px;
-      height: 4px;
-      background: var(--primary);
-      border-radius: 2px;
-    }
-
-    .header p {
-      color: var(--text-secondary);
-      font-size: 1rem;
-      max-width: 90%;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-
-    /* Mood Selector */
-    .mood-selector {
-      background: var(--gray);
-      border-radius: 16px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .mood-selector h2 {
-      font-size: 1.3rem;
-      margin-bottom: 1.5rem;
-      color: var(--light);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .mood-selector h2 i {
-      color: var(--primary);
-    }
-
-    .mood-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 1rem;
-    }
-
-    .mood-option {
-      background: var(--soft-gray);
-      border: 2px solid transparent;
-      border-radius: 16px;
-      padding: 1rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      position: relative;
-      text-align: center;
-    }
-
-    .mood-option:hover {
-      background: var(--gray);
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-
-    .mood-option.selected {
-      background: var(--primary);
-      color: var(--dark);
-      border-color: var(--primary);
-      transform: translateY(-2px);
-    }
-
-    .mood-icon {
-      font-size: 1.5rem;
-      color: var(--primary);
-      margin-bottom: 0.5rem;
-      display: block;
-    }
-
-    .mood-option.selected .mood-icon {
-      color: var(--dark);
-    }
-
-    .mood-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-    }
-
-    .mood-description {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      line-height: 1.3;
-    }
-
-    .mood-option.selected .mood-description {
-      color: var(--dark);
-    }
-
-    /* Get Recommendations Button */
-    .get-recommendations {
-      background: var(--primary);
-      color: var(--dark);
-      border: none;
-      border-radius: 12px;
-      padding: 1rem 2rem;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      margin: 1.5rem auto 0;
-      display: block;
-      width: 100%;
-      max-width: 300px;
-    }
-
-    .get-recommendations:hover {
-      background: #e0a91d;
-      transform: translateY(-2px);
-    }
-
-    .get-recommendations:disabled {
-      background: var(--soft-gray);
-      color: var(--text-secondary);
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    /* Carousel Sections */
-    .carousel-section {
-      margin-bottom: 3rem;
-    }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      color: var(--light);
-      position: relative;
-      padding-left: 15px;
-    }
-
-    .section-title::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 5px;
-      height: 80%;
-      width: 4px;
-      background: var(--primary);
-      border-radius: 2px;
-    }
-
-    .carousel-nav {
-      display: flex;
-      gap: 8px;
-    }
-
-    .carousel-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: var(--gray);
-      border: none;
-      color: var(--text-primary);
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .carousel-btn:hover {
-      background: var(--primary);
-      color: var(--dark);
-    }
-
-    .carousel {
-      display: flex;
-      gap: 1rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-behavior: smooth;
-      -webkit-overflow-scrolling: touch;
-      padding: 0.5rem 0 1rem;
-    }
-
-    .carousel::-webkit-scrollbar {
-      height: 4px;
-    }
-
-    .carousel::-webkit-scrollbar-track {
-      background: var(--gray);
-      border-radius: 10px;
-    }
-
-    .carousel::-webkit-scrollbar-thumb {
-      background: var(--primary);
-      border-radius: 10px;
-    }
-
-    /* Movie Cards - Mobile First */
-    .movie-card {
-      scroll-snap-align: start;
-      flex: 0 0 180px;
-      perspective: 1200px;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-
-    .movie-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .card-inner {
-      width: 100%;
-      height: 280px;
-      position: relative;
-      transform-style: preserve-3d;
-      transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .movie-card.flipped .card-inner {
-      transform: rotateY(180deg);
-    }
-
-    .card-front, .card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      backface-visibility: hidden;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-    }
-
-    .card-front {
-      background: var(--gray);
-    }
-
-    .card-back {
-      background: var(--gray);
-      transform: rotateY(180deg);
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .movie-poster {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-    }
-
-    .movie-info {
-      padding: 0.75rem;
-      background: var(--gray);
-      flex-grow: 1;
-    }
-
-    .movie-title {
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 0.3rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .movie-meta {
-      display: flex;
-      justify-content: space-between;
-      color: var(--text-secondary);
-      font-size: 0.75rem;
-      align-items: center;
-    }
-
-    .movie-rating {
-      display: flex;
-      align-items: center;
-      gap: 0.2rem;
-      color: var(--primary);
-    }
-
-    /* Back of card content */
-    .card-back .movie-title {
-      font-size: 0.9rem;
-      margin-bottom: 0.5rem;
-      white-space: normal;
-      overflow: visible;
-      text-overflow: initial;
-    }
-
-    .movie-overview {
-      font-size: 0.75rem;
-      color: var(--text-secondary);
-      line-height: 1.4;
-      margin-bottom: 1rem;
-      flex-grow: 1;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 6;
-      -webkit-box-orient: vertical;
-    }
-
-    .card-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .action-btn {
-      background: var(--primary);
-      color: var(--dark);
-      border: none;
-      border-radius: 8px;
-      padding: 0.5rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.3rem;
-    }
-
-    .action-btn:hover {
-      background: #e0a91d;
-    }
-
-    .action-btn.secondary {
-      background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--text-secondary);
-    }
-
-    .action-btn.secondary:hover {
-      background: var(--soft-gray);
-      color: var(--text-primary);
-      border-color: var(--text-primary);
-    }
-
-    .close-detail {
-      position: absolute;
-      top: 0.5rem;
-      right: 0.5rem;
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-      font-size: 1.2rem;
-      cursor: pointer;
-      z-index: 10;
-    }
-
-    .close-detail:hover {
-      color: var(--text-primary);
-    }
-
-    /* Loading States */
-    .loading-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-    }
-
-    .loading-spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid var(--gray);
-      border-top: 3px solid var(--primary);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Stats Section */
-    .stats-section {
-      background: var(--gray);
-      border-radius: 16px;
-      padding: 2rem 1.5rem;
-      margin: 3rem 0;
-      text-align: center;
-    }
-
-    .stats-title {
-      font-size: 1.3rem;
-      color: var(--light);
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 1.5rem;
-    }
-
-    .stat-item {
-      text-align: center;
-    }
-
-    .stat-number {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--primary);
-      display: block;
-    }
-
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    /* Responsive Design */
-    @media (min-width: 480px) {
-      .movie-card {
-        flex: 0 0 200px;
-      }
-      
-      .card-inner {
-        height: 320px;
-      }
-      
-      .movie-poster {
-        height: 250px;
-      }
-      
-      .mood-grid {
-        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      }
-    }
-
-    @media (min-width: 768px) {
-      .container {
-        padding: 1.5rem 2rem;
-      }
-      
-      .header h1 {
-        font-size: 3rem;
-      }
-      
-      .header p {
-        font-size: 1.1rem;
-        max-width: 600px;
-      }
-      
-      .movie-card {
-        flex: 0 0 220px;
-      }
-      
-      .card-inner {
-        height: 350px;
-      }
-      
-      .movie-poster {
-        height: 280px;
-      }
-      
-      .mood-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      }
-      
-      .stats-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-    }
-
-    @media (min-width: 1024px) {
-      .container {
-        max-width: 1200px;
-        padding: 2rem;
-      }
-      
-      .movie-card {
-        flex: 0 0 240px;
-      }
-      
-      .card-inner {
-        height: 380px;
-      }
-      
-      .movie-poster {
-        height: 300px;
-      }
-    }
-
-    /* Hidden class for initial state */
-    .hidden {
-      display: none;
-    }
-
-    /* Error States */
-    .error-message {
-      background: #DC2626;
-      color: white;
-      padding: 1rem;
-      border-radius: 8px;
-      margin: 1rem 0;
-      text-align: center;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KakaFlix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/home.css">
+    
 </head>
-<body>
-  <div class="container">
-    <!-- Header Section -->
-    <div class="header">
-      <button class="back-button" onclick="goHome()">
-        <i class="fas fa-arrow-left"></i>
-        <span>Home</span>
-      </button>
-      <h1>Stori za Kaka</h1>
-      <p>How are you feeling today? Tell us your mood and we'll find the perfect movie for you from our TMDB collection.</p>
+<body data-theme="dark" data-lang="en">
+    <!-- Majestic Floating Gradient Bubbles -->
+    <div class="bubble-container">
+        <div class="bubble bubble-1"></div>
+        <div class="bubble bubble-2"></div>
+        <div class="bubble bubble-3"></div>
+        <div class="bubble bubble-4"></div>
+        <div class="bubble bubble-5"></div>
+        <div class="bubble bubble-6"></div>
+        <div class="bubble bubble-7"></div>
     </div>
+    
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
 
-    <!-- Mood Selector -->
-    <div class="mood-selector">
-      <h2><i class="fas fa-heart"></i> Select Your Moods</h2>
-      <div class="mood-grid">
-        <div class="mood-option" data-mood="comedy">
-          <i class="mood-icon fas fa-laugh-beam"></i>
-          <div class="mood-name">Happy</div>
-          <div class="mood-description">Feel-good comedies</div>
-        </div>
-        <div class="mood-option" data-mood="drama">
-          <i class="mood-icon fas fa-sad-tear"></i>
-          <div class="mood-name">Emotional</div>
-          <div class="mood-description">Deep dramas</div>
-        </div>
-        <div class="mood-option" data-mood="action">
-          <i class="mood-icon fas fa-bolt"></i>
-          <div class="mood-name">Excited</div>
-          <div class="mood-description">Action-packed</div>
-        </div>
-        <div class="mood-option" data-mood="romance">
-          <i class="mood-icon fas fa-heart"></i>
-          <div class="mood-name">Romantic</div>
-          <div class="mood-description">Love stories</div>
-        </div>
-        <div class="mood-option" data-mood="adventure">
-          <i class="mood-icon fas fa-mountain"></i>
-          <div class="mood-name">Adventurous</div>
-          <div class="mood-description">Epic journeys</div>
-        </div>
-        <div class="mood-option" data-mood="thriller">
-          <i class="mood-icon fas fa-brain"></i>
-          <div class="mood-name">Thoughtful</div>
-          <div class="mood-description">Mind-bending</div>
-        </div>
-        <div class="mood-option" data-mood="family">
-          <i class="mood-icon fas fa-history"></i>
-          <div class="mood-name">Nostalgic</div>
-          <div class="mood-description">Family classics</div>
-        </div>
-        <div class="mood-option" data-mood="horror">
-          <i class="mood-icon fas fa-ghost"></i>
-          <div class="mood-name">Thrilled</div>
-          <div class="mood-description">Horror & suspense</div>
-        </div>
-      </div>
-      <button class="get-recommendations" id="getRecommendations" disabled>
-        <i class="fas fa-magic"></i> Get My Recommendations
-      </button>
-    </div>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <span class="logo-icon">🎬</span>
+                <span>Stori za Kaka</span>
+            </div>
+            <ul class="nav-center">
+                <li><a href="#home" data-en="Home" data-sw="Nyumbani">Home</a></li>
+                <li><a href="#features" data-en="Features" data-sw="Vipengele">Features</a></li>
+                <li><a href="#showcase" data-en="Showcase" data-sw="Maonesho">Showcase</a></li>
+                <li><a href="#discover" data-en="Discover" data-sw="Gundua">Discover</a></li>
+                <li><a href="#contact" data-en="Contact" data-sw="Mawasiliano">Contact</a></li>
+            </ul>
+            <div class="nav-controls">
+                <!-- Refresh Button in Nav -->
+                <button class="hero-refresh" id="heroRefreshBtn" aria-label="Refresh hero content" tabindex="0" data-tooltip="Refresh Movie content">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button class="language-toggle" id="languageToggle">
+                    <span data-en="SW" data-sw="EN">SW</span>
+                </button>
+            </div>
+        </nav>
+    </header>
 
-    <!-- Curated Recommendations Section -->
-    <div class="carousel-section hidden" id="curatedSection">
-      <div class="section-header">
-        <h2 class="section-title">Your Curated Picks</h2>
-        <div class="carousel-nav">
-          <button class="carousel-btn prev-btn" data-carousel="curated"><i class="fas fa-chevron-left"></i></button>
-          <button class="carousel-btn next-btn" data-carousel="curated"><i class="fas fa-chevron-right"></i></button>
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-bg-slider"></div>
+        <!-- Navigation Arrows -->
+        <button class="hero-arrow hero-arrow-left" id="heroArrowLeft" aria-label="Previous" tabindex="0">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="hero-arrow hero-arrow-right" id="heroArrowRight" aria-label="Next" tabindex="0">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        <!-- Dynamic Movie Overlay -->
+        <div class="hero-overlay" id="heroOverlay"></div>
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title" id="heroHeadline" data-en="Hey there! Stori za Kaka here—your movie matchmaker." data-sw="Hujambo! Stori za Kaka hapa—mchumba wako wa filamu.">Hey there! Stori za Kaka here—your movie matchmaker.</h1>
+                <p class="hero-subtitle" id="heroSubtext"
+                   data-en="Can't decide what to watch? Just tell me your mood, and I'll handpick a film you'll love. Ready to discover your next favorite movie together?"
+                   data-sw="Hauwezi kuamua uangalie nini? Niambie tu hali yako, nitakuchagulia filamu utakayopenda. Tuko tayari kugundua filamu yako mpya unayopenda pamoja?">
+                    Can't decide what to watch? Just tell me your mood, and I'll handpick a film you'll love. Ready to discover your next favorite movie together?
+                </p>
+                <div class="hero-actions">
+                    <a href="#discover" class="btn btn-primary" data-en="Find My Movie" data-sw="Tafuta Filamu Yangu">
+                        <i class="fas fa-play"></i> Find My Movie
+                    </a>
+                    <a href="#showcase" class="btn btn-secondary" data-en="Browse Movies" data-sw="Vinjari Filamu">
+                        <i class="fas fa-film"></i> Browse Movies
+                    </a>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="carousel curated-carousel" id="curatedCarousel">
-        <div class="loading-container">
-          <div class="loading-spinner"></div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-en="Why Choose CineMatch?" data-sw="Kwa Nini Kuchagua CineMatch?">Why Choose CineMatch?</h2>
+                <p class="section-subtitle"
+                   data-en="Our unique approach to movie recommendations sets us apart from traditional platforms"
+                   data-sw="Mbinu yetu ya kipekee ya mapendekezo ya filamu inatufanya tuwe tofauti na majukwaa ya kawaida">
+                    Our unique approach to movie recommendations sets us apart from traditional platforms
+                </p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">🧠</span>
+                    <h3 class="feature-title" data-en="Mood Recognition" data-sw="Utambuzi wa Hali">Mood Recognition</h3>
+                    <p class="feature-description"
+                       data-en="Our AI detects subtle emotional cues from your interactions to suggest movies that match your current state of mind."
+                       data-sw="AI yetu hugundua ishara za kihisia kutoka kwa mwingiliano wako kupendekeza filamu zinazolingana na hali yako ya sasa ya akili.">
+                        Our AI detects subtle emotional cues from your interactions to suggest movies that match your current state of mind.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🎯</span>
+                    <h3 class="feature-title" data-en="Precision Matching" data-sw="Ulinganifu Sahihi">Precision Matching</h3>
+                    <p class="feature-description"
+                       data-en="We analyze thousands of data points to find films with the perfect combination of themes, pacing, and emotional impact for you."
+                       data-sw="Tunachambua maelfu ya data kupata filamu zenye mchanganyiko kamili wa mada, mwendo, na athari za kihisia kwako.">
+                        We analyze thousands of data points to find films with the perfect combination of themes, pacing, and emotional impact for you.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🌍</span>
+                    <h3 class="feature-title" data-en="Global Cinema" data-sw="Sinema ya Kimataifa">Global Cinema</h3>
+                    <p class="feature-description"
+                       data-en="From Hollywood blockbusters to Tanzanian gems and international arthouse films, we celebrate diverse cinematic voices."
+                       data-sw="Kutoka kwa filamu kubwa za Hollywood hadi vito vya Kitanzania na filamu za kimataifa za sanaa, tunasisitiza sauti mbalimbali za sinema.">
+                        From Hollywood blockbusters to Tanzanian gems and international arthouse films, we celebrate diverse cinematic voices.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🔄</span>
+                    <h3 class="feature-title" data-en="Adaptive Learning" data-sw="Kujifunza Kukabiliana">Adaptive Learning</h3>
+                    <p class="feature-description"
+                       data-en="The more you use CineMatch, the better it understands your evolving tastes and preferences over time."
+                       data-sw="Kadiri unavyotumia CineMatch, ndivyo inavyoelewa vyema ladha na mapendeleo yako yanayobadilika kwa muda.">
+                        The more you use CineMatch, the better it understands your evolving tastes and preferences over time.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">🎭</span>
+                    <h3 class="feature-title" data-en="Character Analysis" data-sw="Uchambuzi wa Wahusika">Character Analysis</h3>
+                    <p class="feature-description"
+                       data-en="We match you with films based on the personality types of characters you've connected with in the past."
+                       data-sw="Tunakufananisha na filamu kulingana na aina za tabia za wahusika ambao umeshirikiana nao hapo awali.">
+                        We match you with films based on the personality types of characters you've connected with in the past.
+                    </p>
+                </div>
+                
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3 class="feature-title" data-en="Cultural Context" data-sw="Muktadha wa Kitamaduni">Cultural Context</h3>
+                    <p class="feature-description"
+                       data-en="Our recommendations consider cultural relevance, ensuring films resonate with your background and experiences."
+                       data-sw="Mapendekezo yetu yanazingatia umuhimu wa kitamaduni, kuhakikisha filamu zinahusiana na asili yako na uzoefu wako.">
+                        Our recommendations consider cultural relevance, ensuring films resonate with your background and experiences.
+                    </p>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
+    </section>
 
-    <!-- Trending Movies Carousel -->
-    <div class="carousel-section">
-      <div class="section-header">
-        <h2 class="section-title">Trending Movies</h2>
-        <div class="carousel-nav">
-          <button class="carousel-btn prev-btn" data-carousel="trending-movies"><i class="fas fa-chevron-left"></i></button>
-          <button class="carousel-btn next-btn" data-carousel="trending-movies"><i class="fas fa-chevron-right"></i></button>
+    <!-- Movie Showcase Section -->
+    <section class="section" id="showcase">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title" data-en="Featured Movies" data-sw="Filamu Maalum">Featured Movies</h2>
+                <p class="section-subtitle"
+                   data-en="A selection of popular and critically acclaimed films from our collection"
+                   data-sw="Uteuzi wa filamu maarufu na zilizosifiwa kutoka kwenye mkusanyiko wetu">
+                    A selection of popular and critically acclaimed films from our collection
+                </p>
+            </div>
+            <div class="movie-showcase" id="featuredMovies">
+                <!-- Glassmorphic Search Bar -->
+                <form class="sticky-search-bar" id="mainSearchBar" role="search" autocomplete="off" aria-label="Movie search">
+                    <input type="text" id="featuredSearchInput" class="search-input" placeholder="Search movies..." aria-label="Search movies" />
+                    <button type="submit" class="search-btn" aria-label="Search">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </form>
+                <div class="movie-grid" id="featuredRows"></div>
+            </div>
         </div>
-      </div>
-      <div class="carousel trending-movies-carousel" id="trendingMovies">
-        <div class="loading-container">
-          <div class="loading-spinner"></div>
+    </section>
+
+    <!-- Discover Section - Enhanced -->
+      <section class="section" id="discover">
+        <div class="container">
+            <div class="discover-section">
+                <div class="discover-header">
+                    <h2 class="discover-title" data-en="Discover Your Perfect Movie" data-sw="Gundua Filamu Yako Kamili">Discover Your Perfect Movie</h2>
+                    <p class="discover-subtitle"
+                       data-en="Answer a few questions about your current mood and preferences, and we'll find the ideal film for you"
+                       data-sw="Jibu maswali machache kuhusu hali yako ya sasa na mapendeleo, na tutakupatia filamu bora kwako">
+                        Answer a few questions about your current mood and preferences, and we'll find the ideal film for you
+                    </p>
+                </div>
+
+                <div class="questionnaire-card">
+                    <div class="question-container">
+                        <!-- Question 1: Mood -->
+                        <div class="question active" id="question1">
+                            <h3><span class="emoji">😊</span> <span data-en="How are you feeling right now?" data-sw="Unajisikiaje sasa hivi?">How are you feeling right now?</span></h3>
+                            <div class="mood-options" data-question="currentMood">
+                                <div class="mood-btn" data-value="happy">
+                                    <span class="emoji">😄</span>
+                                    <span data-en="Happy" data-sw="Furaha">Happy</span>
+                                </div>
+                                <div class="mood-btn" data-value="sad">
+                                    <span class="emoji">😢</span>
+                                    <span data-en="Sad" data-sw="Huzuni">Sad</span>
+                                </div>
+                                <div class="mood-btn" data-value="excited">
+                                    <span class="emoji">🤩</span>
+                                    <span data-en="Excited" data-sw="Msisimko">Excited</span>
+                                </div>
+                                <div class="mood-btn" data-value="calm">
+                                    <span class="emoji">😌</span>
+                                    <span data-en="Calm" data-sw="Tulivu">Calm</span>
+                                </div>
+                                <div class="mood-btn" data-value="stressed">
+                                    <span class="emoji">😰</span>
+                                    <span data-en="Stressed" data-sw="Mkazo">Stressed</span>
+                                </div>
+                                <div class="mood-btn" data-value="romantic">
+                                    <span class="emoji">💕</span>
+                                    <span data-en="Romantic" data-sw="Kimapenzi">Romantic</span>
+                                </div>
+                                <div class="mood-btn" data-value="adventurous">
+                                    <span class="emoji">🚀</span>
+                                    <span data-en="Adventurous" data-sw="Mkikamili">Adventurous</span>
+                                </div>
+                                <div class="mood-btn" data-value="nostalgic">
+                                    <span class="emoji">🌅</span>
+                                    <span data-en="Nostalgic" data-sw="Kumbukumbu">Nostalgic</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 2: Energy Level -->
+                        <div class="question" id="question2">
+                            <h3><span class="emoji">⚡</span> <span data-en="What's your energy level?" data-sw="Kiwango chako cha nishati ni kipi?">What's your energy level?</span></h3>
+                            <div class="slider-container">
+                                <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" />
+                                <div class="slider-labels">
+                                    <span data-en="Low" data-sw="Chini">Low</span>
+                                    <span data-en="High" data-sw="Juu">High</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 3: Thinking Level -->
+                        <div class="question" id="question3">
+                            <h3><span class="emoji">🧠</span> <span data-en="Do you want something that makes you think?" data-sw="Unataka kitu ambacho kitakufanya ufikirie?">Do you want something that makes you think?</span></h3>
+                            <div class="mood-options" data-question="thinkingLevel">
+                                <div class="mood-btn" data-value="light">
+                                    <span class="emoji">🍿</span>
+                                    <span data-en="Light & Fun" data-sw="Mwepesi na Wa Kufurahisha">Light & Fun</span>
+                                </div>
+                                <div class="mood-btn" data-value="moderate">
+                                    <span class="emoji">🤔</span>
+                                    <span data-en="Some Depth" data-sw="Kina Fulani">Some Depth</span>
+                                </div>
+                                <div class="mood-btn" data-value="deep">
+                                    <span class="emoji">🧩</span>
+                                    <span data-en="Mind-Bending" data-sw="Ya Kuvuruga Akili">Mind-Bending</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 4: Watching With -->
+                        <div class="question" id="question4">
+                            <h3><span class="emoji">👥</span> <span data-en="Are you watching alone or with others?" data-sw="Unaangalia peke yako au na wengine?">Are you watching alone or with others?</span></h3>
+                            <div class="mood-options" data-question="watchingWith">
+                                <div class="mood-btn" data-value="alone">
+                                    <span class="emoji">🙋‍♀️</span>
+                                    <span data-en="Solo" data-sw="Peke Yako">Solo</span>
+                                </div>
+                                <div class="mood-btn" data-value="partner">
+                                    <span class="emoji">💑</span>
+                                    <span data-en="Partner" data-sw="Mwenzi">Partner</span>
+                                </div>
+                                <div class="mood-btn" data-value="friends">
+                                    <span class="emoji">👫</span>
+                                    <span data-en="Friends" data-sw="Marafiki">Friends</span>
+                                </div>
+                                <div class="mood-btn" data-value="family">
+                                    <span class="emoji">👨‍👩‍👧‍👦</span>
+                                    <span data-en="Family" data-sw="Familia">Family</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 5: Time Available -->
+                        <div class="question" id="question5">
+                            <h3><span class="emoji">⏰</span> <span data-en="How much time do you have?" data-sw="Una muda gani?">How much time do you have?</span></h3>
+                            <div class="mood-options" data-question="timeAvailable">
+                                <div class="mood-btn" data-value="short">
+                                    <span class="emoji">⚡</span>
+                                    <span data-en="Quick (&lt; 90 min)" data-sw="Haraka (&lt; 90 dakika)">Quick (&lt; 90 min)</span>
+                                </div>
+                                <div class="mood-btn" data-value="medium">
+                                    <span class="emoji">🎬</span>
+                                    <span data-en="Standard (90-150 min)" data-sw="Kawaida (90-150 dakika)">Standard (90-150 min)</span>
+                                </div>
+                                <div class="mood-btn" data-value="long">
+                                    <span class="emoji">📽️</span>
+                                    <span data-en="Epic (150+ min)" data-sw="Kubwa (150+ dakika)">Epic (150+ min)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Question 6: Current Thoughts -->
+                        <div class="question" id="question6">
+                            <h3><span class="emoji">💭</span> <span data-en="What's on your mind lately?" data-sw="Ni nini kilicho kwenye akili yako hivi karibuni?">What's on your mind lately?</span></h3>
+                            <input type="text" class="text-input" id="currentThoughts" 
+                                   data-en-placeholder="e.g., work stress, wanting to laugh, missing old friends..." 
+                                   data-sw-placeholder="mfano, msongo kazini, kutaka kucheka, kukumbuka rafiki wa zamani..." />
+                        </div>
+                    </div>
+
+                    <!-- Progress Bar at Bottom -->
+                    <div class="progress-container">
+                        <div class="progress-text">
+                            <span id="progressText" data-en="Question 1 of 6" data-sw="Swali 1 la 6">Question 1 of 6</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="question-navigation">
+                        <button class="btn btn-secondary" id="prevBtn" style="display: none;">
+                            <i class="fas fa-arrow-left"></i> <span data-en="Previous" data-sw="Iliyopita">Previous</span>
+                        </button>
+                        <button class="btn btn-primary" id="nextBtn">
+                            <span data-en="Next" data-sw="Inayofuata">Next</span> <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Discover Button (shown on last question) -->
+                    <button class="discover-btn" id="discoverBtn" style="display: none;">
+                        <span class="emoji">🎯</span> <span data-en="Discover My Perfect Movie" data-sw="Gundua Filamu Yangu Kamili">Discover My Perfect Movie</span>
+                    </button>
+
+                    <!-- Recommendation Preview -->
+                    <div class="recommendation-preview" id="recommendationPreview">
+                        <h3><span class="emoji">🎉</span> <span data-en="Great! We're analyzing your mood..." data-sw="Vizuri! Tunachambua hali yako...">Great! We're analyzing your mood...</span></h3>
+                        <p data-en="Based on your feelings, we'll find movies that perfectly match your current vibe!"
+                           data-sw="Kulingana na hisia zako, tutapata filamu zinazolingana kabisa na hali yako ya sasa!">
+                            Based on your feelings, we'll find movies that perfectly match your current vibe!
+                        </p>
+                    </div>
+
+                    <!-- Movie Match Result -->
+                    <div class="movie-match" id="movieMatch">
+                        <div class="movie-match-header">
+                            <h4 data-en="Your Perfect Match" data-sw="Mechi Yako Kamili">Your Perfect Match</h4>
+                            <span class="match-percentage">92% Match</span>
+                        </div>
+                        <div class="movie-match-content">
+                            <div class="movie-match-poster">
+                                <div style="width:150px;height:225px;background:linear-gradient(135deg, #8B5CF6, #3B82F6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Binti</div>
+                            </div>
+                            <div class="movie-match-details">
+                                <h4>Binti</h4>
+                                <div class="movie-match-meta">
+                                    <span>2021 • 98 <span data-en="min" data-sw="dakika">min</span></span>
+                                    <span class="movie-match-rating">
+                                        <i class="fas fa-star"></i> 8.2
+                                    </span>
+                                    <span>Tanzania</span>
+                                </div>
+                                <p class="movie-match-description" data-en="A heartwarming coming-of-age story about a young Tanzanian woman navigating love, family expectations, and her dreams in modern Dar es Salaam."
+                                   data-sw="Hadithi ya kuvutia ya ukuaji wa msichana wa Kitanzania anayepambana na mapenzi, matarajio ya familia, na ndoto zake katika Dar es Salaam ya kisasa.">
+                                    A heartwarming coming-of-age story about a young Tanzanian woman navigating love, family expectations, and her dreams in modern Dar es Salaam.
+                                </p>
+                                <div class="movie-match-tags">
+                                    <span class="match-tag" data-en="Emotional" data-sw="Ya Kihisia">Emotional</span>
+                                    <span class="match-tag" data-en="Uplifting" data-sw="Ya Kukuza">Uplifting</span>
+                                    <span class="match-tag" data-en="Cultural" data-sw="Ya Kitamaduni">Cultural</span>
+                                </div>
+                                <div class="movie-match-actions">
+                                    <a href="#" class="watch-now-btn">
+                                        <i class="fas fa-play"></i> <span data-en="Watch Now" data-sw="Angalia Sasa">Watch Now</span>
+                                    </a>
+                                    <a href="#" class="try-again-btn" id="tryAgainBtn">
+                                        <i class="fas fa-redo"></i> <span data-en="Try Again" data-sw="Jaribu Tena">Try Again</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
+    </section>
 
-    <!-- Trending TV Shows Carousel -->
-    <div class="carousel-section">
-      <div class="section-header">
-        <h2 class="section-title">Trending TV Shows</h2>
-        <div class="carousel-nav">
-          <button class="carousel-btn prev-btn" data-carousel="trending-shows"><i class="fas fa-chevron-left"></i></button>
-          <button class="carousel-btn next-btn" data-carousel="trending-shows"><i class="fas fa-chevron-right"></i></button>
+    <!-- Statistics Section -->
+    <section class="section">
+        <div class="container">
+            <div class="stats-section">
+                <div class="section-header">
+                    <h2 class="section-title" data-en="By The Numbers" data-sw="Kwa Nambari">By The Numbers</h2>
+                    <p class="section-subtitle" 
+                       data-en="Our platform in statistics that showcase our growing community"
+                       data-sw="Jukwaa letu katika takwimu zinazoonyesha ukuaji wa jumuiya yetu">Our platform in statistics that showcase our growing community</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">10,000+</span>
+                        <span class="stat-label" data-en="Movies Available" data-sw="Filamu Zinazopatikana">Movies Available</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">25+</span>
+                        <span class="stat-label" data-en="Genres Covered" data-sw="Aina za Filamu">Genres Covered</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">150K+</span>
+                        <span class="stat-label" data-en="Happy Users" data-sw="Watumiaji Wenye Furaha">Happy Users</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">97%</span>
+                        <span class="stat-label" data-en="Satisfaction Rate" data-sw="Kiwango cha Kuridhika">Satisfaction Rate</span>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="carousel trending-shows-carousel" id="trendingShows">
-        <div class="loading-container">
-          <div class="loading-spinner"></div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <h2 class="cta-title" data-en="Ready for Your Perfect Movie Match?" data-sw="Uko Tayari kwa Mechi Yako Kamili ya Filamu?">Ready for Your Perfect Movie Match?</h2>
+            <p class="cta-description"
+               data-en="Join thousands of movie lovers who discover their next favorite film with CineMatch every day."
+               data-sw="Jiunge na maelfu ya wapenzi wa filamu wanaogundua filamu yao inayofuata kupenda na CineMatch kila siku.">
+                Join thousands of movie lovers who discover their next favorite film with CineMatch every day.
+            </p>
+            <a href="#discover" class="btn btn-primary" data-en="Get Started" data-sw="Anza Sasa">
+                <i class="fas fa-rocket"></i> Get Started
+            </a>
+            <a href="/accounts/login/" class="btn btn-secondary" data-en="Login" data-sw="Ingia">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
         </div>
-      </div>
-    </div>
+    </section>
 
-    <!-- Stats Section -->
-    <div class="stats-section">
-      <h2 class="stats-title">
-        <i class="fas fa-chart-bar"></i>
-        Platform Statistics
-      </h2>
-      <div class="stats-grid">
-        <div class="stat-item">
-          <span class="stat-number">50K+</span>
-          <span class="stat-label">Movies</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">10K+</span>
-          <span class="stat-label">TV Shows</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">8</span>
-          <span class="stat-label">Mood Types</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">AI</span>
-          <span class="stat-label">Powered</span>
-        </div>
-      </div>
-    </div>
-  </div>
+    <!-- JavaScript -->
+    <script>
+        // Scroll to top on page load
+        window.onload = function() {
+            window.scrollTo(0, 0);
+        };
 
-  <script>
-    // TMDB API Configuration
-    const TMDB_API_KEY = import.meta.env.VITE_TMDB_API_KEY; // Changed to use env variable
-    const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-    const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
-    const TMDB_IMAGE_BASE_W780 = 'https://image.tmdb.org/t/p/w780';
+        // Theme Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const langToggle = document.getElementById('languageToggle');
+        const rootElement = document.body;
 
-    // Genre mapping for moods to TMDB genre IDs
-    const MOOD_TO_GENRE = {
-      comedy: [35], // Comedy
-      drama: [18], // Drama
-      action: [28], // Action
-      romance: [10749], // Romance
-      adventure: [12], // Adventure
-      thriller: [53, 9648], // Thriller, Mystery
-      family: [10751], // Family
-      horror: [27] // Horror
-    };
-
-    // Genre ID to name mapping
-    const GENRE_MAP = {
-      28: 'Action',
-      12: 'Adventure',
-      16: 'Animation',
-      35: 'Comedy',
-      80: 'Crime',
-      99: 'Documentary',
-      18: 'Drama',
-      10751: 'Family',
-      14: 'Fantasy',
-      36: 'History',
-      27: 'Horror',
-      10402: 'Music',
-      9648: 'Mystery',
-      10749: 'Romance',
-      878: 'Science Fiction',
-      10770: 'TV Movie',
-      53: 'Thriller',
-      10752: 'War',
-      37: 'Western'
-    };
-
-    // State management
-    let selectedMoods = [];
-    let currentPage = 1;
-
-    // DOM Elements
-    const moodOptions = document.querySelectorAll('.mood-option');
-    const getRecommendationsBtn = document.getElementById('getRecommendations');
-    const curatedSection = document.getElementById('curatedSection');
-
-    // Initialize the app
-    document.addEventListener('DOMContentLoaded', function() {
-      initializeMoodSelection();
-      initializeCarouselNavigation();
-      loadTrendingContent();
-    });
-
-    // Mood selection functionality
-    function initializeMoodSelection() {
-      moodOptions.forEach(option => {
-        option.addEventListener('click', function() {
-          const mood = this.dataset.mood;
-          
-          if (this.classList.contains('selected')) {
-            // Deselect
-            this.classList.remove('selected');
-            selectedMoods = selectedMoods.filter(m => m !== mood);
-          } else {
-            // Select
-            this.classList.add('selected');
-            selectedMoods.push(mood);
-          }
-          
-          // Enable/disable recommendations button
-          getRecommendationsBtn.disabled = selectedMoods.length === 0;
+        themeToggle.addEventListener('click', () => {
+            const newTheme = rootElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            rootElement.setAttribute('data-theme', newTheme);
+            themeToggle.querySelector('.theme-icon').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+            
+            // Save preference to localStorage
+            localStorage.setItem('theme', newTheme);
         });
-      });
 
-      // Get recommendations button
-      getRecommendationsBtn.addEventListener('click', function() {
-        if (selectedMoods.length > 0) {
-          getCuratedRecommendations();
+        // Language Toggle
+        langToggle.addEventListener('click', () => {
+            const currentLang = rootElement.getAttribute('data-lang');
+            const newLang = currentLang === 'en' ? 'sw' : 'en';
+            rootElement.setAttribute('data-lang', newLang);
+            langToggle.querySelector('span').textContent = newLang === 'en' ? 'SW' : 'EN';
+
+            // Update all elements with data-en and data-sw attributes
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const attr = `data-${newLang}`;
+                if (el.hasAttribute(attr)) {
+                    el.textContent = el.getAttribute(attr);
+                    
+                    // Handle placeholders for input fields
+                    if (el.tagName === 'INPUT' && el.hasAttribute(`${attr}-placeholder`)) {
+                        el.placeholder = el.getAttribute(`${attr}-placeholder`);
+                    }
+                }
+            });
+            
+            // Save preference to localStorage
+            localStorage.setItem('language', newLang);
+        });
+
+        // Scroll Progress
+        window.addEventListener('scroll', () => {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const progress = (window.scrollY / totalHeight) * 100;
+            scrollProgress.style.width = `${progress}%`;
+        });
+
+        // Check for saved theme preference
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            rootElement.setAttribute('data-theme', savedTheme);
+            themeToggle.querySelector('.theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
         }
-      });
-    }
 
-    // Carousel navigation
-    function initializeCarouselNavigation() {
-      document.querySelectorAll('.carousel-section').forEach(section => {
-        const carousel = section.querySelector('.carousel');
-        const prevBtn = section.querySelector('.prev-btn');
-        const nextBtn = section.querySelector('.next-btn');
+        // Check for saved language preference
+        const savedLang = localStorage.getItem('language');
+        if (savedLang) {
+            rootElement.setAttribute('data-lang', savedLang);
+            langToggle.querySelector('span').textContent = savedLang === 'en' ? 'SW' : 'EN';
+            
+            // Update all elements with data-en and data-sw attributes
+            document.querySelectorAll('[data-en]').forEach(el => {
+                const attr = `data-${savedLang}`;
+                if (el.hasAttribute(attr)) {
+                    el.textContent = el.getAttribute(attr);
+                    
+                    // Handle placeholders for input fields
+                    if (el.tagName === 'INPUT' && el.hasAttribute(`${attr}-placeholder`)) {
+                        el.placeholder = el.getAttribute(`${attr}-placeholder`);
+                    }
+                }
+            });
+        }
+
+             // Enhanced Discover Questionnaire Logic
+        const questions = document.querySelectorAll('.question');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const discoverBtn = document.getElementById('discoverBtn');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const moodOptions = document.querySelectorAll('.mood-options .mood-btn');
+        const recommendationPreview = document.getElementById('recommendationPreview');
+        const movieMatch = document.getElementById('movieMatch');
+        const tryAgainBtn = document.getElementById('tryAgainBtn');
         
-        if (prevBtn && nextBtn && carousel) {
-          const scrollAmount = window.innerWidth < 768 ? 200 : 260;
-          
-          prevBtn.addEventListener('click', () => {
-            carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-          });
-          
-          nextBtn.addEventListener('click', () => {
-            carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-          });
+        let currentQuestion = 0;
+        const totalQuestions = questions.length;
+        const answers = {};
+        let lastTap = 0; // For double-tap detection
+        
+        // Define mandatory questions (1-5, question 6 is optional)
+        const mandatoryQuestions = [0, 1, 2, 3, 4]; // Questions 1-5 (0-indexed)
+        
+        // Initialize first question
+        console.log('Questions found:', questions.length);
+        console.log('First question:', questions[0]);
+        showQuestion(currentQuestion);
+        
+        // Double-tap detection for mood options
+        moodOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                const now = new Date().getTime();
+                const timeDiff = now - lastTap;
+                
+                // Handle selection
+                const question = this.parentElement.getAttribute('data-question');
+                const value = this.getAttribute('data-value');
+                this.parentElement.querySelectorAll('.mood-btn').forEach(btn => {
+                    btn.classList.remove('selected');
+                });
+                this.classList.add('selected');
+                answers[question] = value;
+                
+                // Check for double-tap (300ms threshold)
+                if (timeDiff < 300 && timeDiff > 0) {
+                    // Double-tap detected - auto-advance
+                    setTimeout(() => {
+                        if (validateCurrentQuestion()) {
+                            nextBtn.click();
+                        }
+                    }, 100);
+                }
+                
+                lastTap = now;
+                updateProgress();
+            });
+        });
+        
+        // Enhanced Next button click handler with validation
+        nextBtn.addEventListener('click', () => {
+            if (validateCurrentQuestion() && currentQuestion < totalQuestions - 1) {
+                questions[currentQuestion].classList.remove('active');
+                questions[currentQuestion].classList.add('previous');
+                currentQuestion++;
+                questions[currentQuestion].classList.remove('next');
+                questions[currentQuestion].classList.add('active');
+                updateProgress();
+                questions[currentQuestion].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else if (!validateCurrentQuestion()) {
+                // Show validation feedback
+                showValidationFeedback();
+            }
+        });
+        
+        // Previous button click handler
+        prevBtn.addEventListener('click', () => {
+            if (currentQuestion > 0) {
+                questions[currentQuestion].classList.remove('active');
+                questions[currentQuestion].classList.add('next');
+                currentQuestion--;
+                questions[currentQuestion].classList.remove('previous');
+                questions[currentQuestion].classList.add('active');
+                updateProgress();
+                questions[currentQuestion].scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+        
+        // Energy level slider change handler
+        const energySlider = document.getElementById('energyLevel');
+        energySlider.addEventListener('input', () => {
+            answers.energyLevel = energySlider.value;
+            updateProgress();
+        });
+        
+        // Current thoughts input handler (optional)
+        const currentThoughts = document.getElementById('currentThoughts');
+        currentThoughts.addEventListener('input', () => {
+            answers.currentThoughts = currentThoughts.value;
+            updateProgress();
+        });
+        
+        // Enhanced Discover button click handler
+        discoverBtn.addEventListener('click', () => {
+            // Validate all mandatory questions
+            if (!validateAllMandatoryQuestions()) {
+                showValidationFeedback();
+                return;
+            }
+            
+            // Show loading state
+            discoverBtn.innerHTML = '<div class="loading-spinner"></div> <span data-en="Redirecting..." data-sw="Inaelekeza...">Redirecting...</span>';
+            discoverBtn.disabled = true;
+            
+            // Show recommendation preview briefly
+            recommendationPreview.style.display = 'block';
+            movieMatch.style.display = 'none';
+            
+            // After 2 seconds, redirect to about page
+            setTimeout(() => {
+                window.location.href = '/about/';
+            }, 2000);
+        });
+        
+        // Try again button click handler
+        tryAgainBtn.addEventListener('click', () => {
+            currentQuestion = 0;
+            showQuestion(currentQuestion);
+            movieMatch.classList.remove('show');
+            document.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            energySlider.value = 5;
+            currentThoughts.value = '';
+            answers = {};
+            questions[0].scrollIntoView({ behavior: 'smooth' });
+        });
+        
+        // Validation functions
+        function validateCurrentQuestion() {
+            const currentQuestionEl = questions[currentQuestion];
+            
+            // Check if current question is mandatory
+            if (!mandatoryQuestions.includes(currentQuestion)) {
+                return true; // Optional question
+            }
+            
+            // Validate based on question type
+            if (currentQuestion === 1) { // Energy level (slider)
+                return answers.energyLevel && answers.energyLevel !== '5';
+            } else if (currentQuestion === 5) { // Current thoughts (text input)
+                return true; // Optional
+            } else { // Mood options
+                const questionName = getQuestionName(currentQuestion);
+                return answers[questionName] !== undefined;
+            }
         }
-      });
-    }
+        
+        function validateAllMandatoryQuestions() {
+            for (let i = 0; i < mandatoryQuestions.length; i++) {
+                const questionIndex = mandatoryQuestions[i];
+                if (questionIndex === 1) { // Energy level
+                    if (!answers.energyLevel || answers.energyLevel === '5') {
+                        return false;
+                    }
+                } else { // Mood options
+                    const questionName = getQuestionName(questionIndex);
+                    if (!answers[questionName]) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        
+        function getQuestionName(questionIndex) {
+            const questionNames = ['currentMood', 'energyLevel', 'thinkingLevel', 'watchingWith', 'timeAvailable', 'currentThoughts'];
+            return questionNames[questionIndex];
+        }
+        
+        function showValidationFeedback() {
+            const currentQuestionEl = questions[currentQuestion];
+            
+            // Add shake animation
+            currentQuestionEl.classList.add('shake');
+            setTimeout(() => {
+                currentQuestionEl.classList.remove('shake');
+            }, 500);
+            
+            // Highlight unanswered options
+            if (currentQuestion !== 1 && currentQuestion !== 5) { // Not slider or text input
+                const options = currentQuestionEl.querySelectorAll('.mood-btn');
+                options.forEach(option => {
+                    if (!option.classList.contains('selected')) {
+                        option.classList.add('highlight-missing');
+                        setTimeout(() => {
+                            option.classList.remove('highlight-missing');
+                        }, 2000);
+                    }
+                });
+            }
+        }
+        
+        // Show question function
+        function showQuestion(index) {
+            console.log('Showing question:', index);
+            questions.forEach((question, i) => {
+                question.classList.remove('active', 'previous', 'next');
+                if (i < index) {
+                    question.classList.add('previous');
+                } else if (i > index) {
+                    question.classList.add('next');
+                } else {
+                    question.classList.add('active');
+                    console.log('Question', i, 'is now active');
+                }
+            });
+            updateProgress();
+        }
+        
+        // Enhanced progress update function
+        function updateProgress() {
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            progressFill.style.width = `${progress}%`;
+            
+            const currentLang = document.body.getAttribute('data-lang');
+            const langPrefix = currentLang === 'en' ? 'Question' : 'Swali';
+            const langSuffix = currentLang === 'en' ? 'of' : 'la';
+            progressText.textContent = `${langPrefix} ${currentQuestion + 1} ${langSuffix} ${totalQuestions}`;
+            
+            // Show/hide navigation buttons
+            if (currentQuestion === 0) {
+                prevBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'inline-flex';
+            }
+            
+            if (currentQuestion === totalQuestions - 1) {
+                nextBtn.style.display = 'none';
+                discoverBtn.style.display = 'flex';
+            } else {
+                nextBtn.style.display = 'inline-flex';
+                discoverBtn.style.display = 'none';
+            }
+            
+            // Update button states based on validation
+            if (currentQuestion < totalQuestions - 1) {
+                nextBtn.disabled = !validateCurrentQuestion();
+            }
+            
+            if (currentQuestion === totalQuestions - 1) {
+                discoverBtn.disabled = !validateAllMandatoryQuestions();
+            }
+        }
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Animate elements when they come into view
+        const animateOnScroll = () => {
+            const elements = document.querySelectorAll('.feature-card, .movie-card');
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                const windowHeight = window.innerHeight;
+                
+                if (elementPosition < windowHeight - 100) {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                }
+            });
+        };
+        
+        // Set initial state for animation
+        document.querySelectorAll('.feature-card, .movie-card').forEach(element => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        });
+        
+        // Add scroll event listener
+        window.addEventListener('scroll', animateOnScroll);
+        
+        // Trigger once on page load
+        animateOnScroll();
 
-    // Get genre name from ID
-    function getGenreName(genreId) {
-      return GENRE_MAP[genreId] || 'Other';
-    }
+        // TMDB Hero Background Slider (daily, random, high-quality, no consecutive repeats)
+        const TMDB_API_KEY = 'b6e814a0b9ff291122e8a05a0f206cd8';
+        const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+        const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/original';
 
-    // Create movie card HTML with flip functionality
-    function createMovieCard(movie, type = 'movie') {
-      const isTV = type === 'tv';
-      const title = movie.title || movie.name || 'Untitled';
-      const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
-      const poster = movie.poster_path ? TMDB_IMAGE_BASE + movie.poster_path : 'https://via.placeholder.com/500x750/1A1A1A/B3B3B3?text=No+Poster';
-      const genre = Array.isArray(movie.genre_ids) && movie.genre_ids.length ? getGenreName(movie.genre_ids[0]) : 'Other';
-      const rating = typeof movie.vote_average === 'number' ? movie.vote_average.toFixed(1) : 'N/A';
-      const votes = typeof movie.vote_count === 'number' ? movie.vote_count : 'N/A';
-      const lang = movie.original_language ? movie.original_language.toUpperCase() : 'N/A';
-      const overview = movie.overview || 'No description available.';
-      
-      const card = document.createElement('div');
-      card.className = 'movie-card';
-      card.tabIndex = '0';
-      card.innerHTML = `
-        <div class="card-inner">
-          <div class="card-front">
-            <img src="${poster}" alt="${title}" class="movie-poster" loading="lazy" onerror="this.src='https://via.placeholder.com/500x750/1A1A1A/B3B3B3?text=No+Poster'">
-            <div class="movie-info">
-              <h3 class="movie-title">${title}</h3>
-              <div class="movie-meta">
-                <span>${year}</span>
-                <div class="movie-rating">
-                  <i class="fas fa-star"></i>
-                  <span>${rating}</span>
+        let heroSlides = [];
+        let heroSlideIndex = 0;
+        let heroSlideInterval = null;
+        let heroMedia = [];
+        let heroRefreshCount = 0;
+        let heroLastRefreshes = [];
+
+        // Helper to fetch popular and high-rated movies/TV
+        async function fetchHeroMedia() {
+            // Popular movies and TV shows, sorted by rating
+            const [movieRes, tvRes] = await Promise.all([
+                fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`),
+                fetch(`${TMDB_BASE_URL}/tv/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`)
+            ]);
+            const [movieData, tvData] = await Promise.all([movieRes.json(), tvRes.json()]);
+            let movies = movieData.results.filter(m => m.vote_average >= 7.5);
+            let tvs = tvData.results.filter(t => t.vote_average >= 7.5);
+            // Tag type for later
+            movies = movies.map(m => ({...m, media_type: 'movie'}));
+            tvs = tvs.map(t => ({...t, media_type: 'tv'}));
+            let all = [...movies, ...tvs];
+            // Shuffle and pick 5
+            all = all.sort(() => Math.random() - 0.5).slice(0, 5);
+            return all;
+        }
+
+        // Genre mapping for overlay styling
+        const HERO_GENRE_MAP = {
+            28: 'action', 12: 'adventure', 16: 'animation', 35: 'comedy', 80: 'crime', 99: 'documentary',
+            18: 'drama', 10751: 'family', 14: 'fantasy', 36: 'history', 27: 'horror', 10402: 'musical',
+            9648: 'mystery', 10749: 'romance', 878: 'sci-fi', 10770: 'tv-movie', 53: 'thriller',
+            10752: 'war', 37: 'western', 53: 'thriller', 10759: 'action', 10762: 'family', 10763: 'news',
+            10764: 'reality', 10765: 'sci-fi', 10766: 'soap', 10767: 'talk', 10768: 'war'
+        };
+        function getHeroGenreClass(genre_ids) {
+            if (!genre_ids || !genre_ids.length) return 'genre-drama';
+            for (const id of genre_ids) {
+                if (HERO_GENRE_MAP[id]) return 'genre-' + HERO_GENRE_MAP[id];
+            }
+            return 'genre-drama';
+        }
+        function getHeroTag(movie) {
+            // Example: trending if vote_count high, now playing if release_date is recent
+            const now = new Date();
+            if (movie.release_date) {
+                const rel = new Date(movie.release_date);
+                if ((now - rel) < 1000*60*60*24*30) return '<span class="hero-tag now-playing">Now Playing</span>';
+            }
+            if (movie.popularity > 1000 || movie.vote_count > 2000) return '<span class="hero-tag trending">Trending</span>';
+            return '';
+        }
+        function getHeroDesc(movie) {
+            // Optionally tweak tone by genre
+            if (!movie.overview) return '';
+            const genre = getHeroGenreClass(movie.genre_ids);
+            if (genre === 'genre-thriller') return movie.overview.replace(/\.$/, '!');
+            if (genre === 'genre-comedy') return '😂 ' + movie.overview;
+            if (genre === 'genre-horror') return '☠️ ' + movie.overview;
+            if (genre === 'genre-romance') return '💕 ' + movie.overview;
+            if (genre === 'genre-musical') return '🎵 ' + movie.overview;
+            return movie.overview;
+        }
+        function getHeroGenreName(movie) {
+            if (!movie.genre_ids || !movie.genre_ids.length) return '';
+            const id = movie.genre_ids[0];
+            return GENRE_MAP && GENRE_MAP[id] ? GENRE_MAP[id] : '';
+        }
+        function updateHeroOverlay(idx) {
+            if (!heroMedia || !heroMedia.length) return;
+            const movie = heroMedia[idx];
+            if (!movie) return;
+            const overlay = document.getElementById('heroOverlay');
+            if (!overlay) return;
+            // Remove previous genre classes
+            overlay.className = 'hero-overlay';
+            const genreClass = getHeroGenreClass(movie.genre_ids);
+            overlay.classList.add(genreClass);
+            // Title font/placement by genre
+            const title = movie.title || movie.name || 'Untitled';
+            // Description
+            const desc = getHeroDesc(movie);
+            // Rating
+            const rating = typeof movie.vote_average === 'number' ? movie.vote_average.toFixed(1) : 'N/A';
+            // Year
+            const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
+            // Genre name
+            const genreName = getHeroGenreName(movie);
+            // Tag
+            const tag = getHeroTag(movie);
+            // IMDb/Star icon
+            const ratingHtml = `<span class=\"hero-rating\"><i class=\"fas fa-star\"></i> ${rating}</span>`;
+            const yearHtml = year ? `<span class=\"hero-year\">${year}</span>` : '';
+            const genreHtml = genreName ? `<span class=\"hero-genre\">${genreName}</span>` : '';
+            overlay.innerHTML = `
+              <div class=\"hero-title\">${title}</div>
+              <div class=\"hero-meta\">${ratingHtml} ${yearHtml} ${genreHtml} ${tag}</div>
+              <div class=\"hero-desc-bg\"><div class=\"hero-desc\">${desc}</div></div>
+            `;
+        }
+        // Update overlay on slide change
+        function goToHeroSlide(idx) {
+            if (!heroSlides.length) return;
+            heroSlides[heroSlideIndex].classList.remove('active');
+            heroSlideIndex = (idx + heroSlides.length) % heroSlides.length;
+            heroSlides[heroSlideIndex].classList.add('active');
+            updateHeroOverlay(heroSlideIndex);
+            setTimeout(setHeroOverlayTextContrast, 300);
+        }
+        // Also call after initial load
+        if (document.querySelector('.hero-bg-slider')) {
+            setTimeout(setHeroOverlayTextContrast, 1200);
+        }
+        // Initial overlay update after loading backgrounds
+        async function loadHeroBackgrounds(forceRefresh=false) {
+            try {
+                heroMedia = await fetchHeroMedia();
+                const slider = document.querySelector('.hero-bg-slider');
+                if (!slider) return;
+                slider.innerHTML = '';
+                heroMedia.forEach((item, idx) => {
+                    const img = document.createElement('img');
+                    img.src = `${TMDB_IMAGE_BASE}${item.backdrop_path}`;
+                    img.className = 'hero-bg-slide' + (idx === 0 ? ' active' : '');
+                    img.alt = item.title || item.name;
+                    img.style.objectFit = 'cover';
+                    img.style.width = '100%';
+                    img.style.height = '100%';
+                    slider.appendChild(img);
+                });
+                heroSlides = document.querySelectorAll('.hero-bg-slide');
+                heroSlideIndex = 0;
+                if (heroSlideInterval) clearInterval(heroSlideInterval);
+                heroSlideInterval = setInterval(() => {
+                    goToHeroSlide((heroSlideIndex + 1) % heroSlides.length);
+                }, 10000);
+                updateHeroOverlay(heroSlideIndex);
+            } catch (e) {}
+        }
+
+        // Navigation arrow logic
+        const heroArrowLeft = document.getElementById('heroArrowLeft');
+        const heroArrowRight = document.getElementById('heroArrowRight');
+        if (heroArrowLeft && heroArrowRight) {
+            heroArrowLeft.onclick = () => {
+                goToHeroSlide(heroSlideIndex - 1);
+            };
+            heroArrowRight.onclick = () => {
+                goToHeroSlide(heroSlideIndex + 1);
+            };
+            // Keyboard navigation
+            document.addEventListener('keydown', e => {
+                if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+                if (e.key === 'ArrowLeft') heroArrowLeft.click();
+                if (e.key === 'ArrowRight') heroArrowRight.click();
+            });
+            // Touch/swipe navigation
+            let touchStartX = null;
+            document.querySelector('.hero').addEventListener('touchstart', e => {
+                touchStartX = e.touches[0].clientX;
+            });
+            document.querySelector('.hero').addEventListener('touchend', e => {
+                if (touchStartX === null) return;
+                const dx = e.changedTouches[0].clientX - touchStartX;
+                if (Math.abs(dx) > 50) {
+                    if (dx > 0) heroArrowLeft.click();
+                    else heroArrowRight.click();
+                }
+                touchStartX = null;
+            });
+        }
+
+        // Refresh button logic
+        const heroRefreshBtn = document.getElementById('heroRefreshBtn');
+        if (heroRefreshBtn) {
+            heroRefreshBtn.onclick = async () => {
+                // Animate icon spin
+                heroRefreshBtn.classList.add('spinning');
+                setTimeout(() => {
+                    heroRefreshBtn.classList.remove('spinning');
+                    heroRefreshBtn.blur(); // Remove focus so hover/focus effect disappears
+                }, 800);
+                // Track refreshes in the last hour
+                const now = Date.now();
+                heroLastRefreshes = heroLastRefreshes.filter(ts => now - ts < 3600000);
+                heroLastRefreshes.push(now);
+                heroRefreshCount = heroLastRefreshes.length;
+                // Refresh hero
+                await loadHeroBackgrounds(true);
+                // If >3 times in an hour, also refresh featured
+                if (heroRefreshCount > 3) {
+                    if (typeof loadFeaturedMovies === 'function') {
+                        await loadFeaturedMovies();
+                    }
+                }
+            };
+        }
+
+        // Initial load
+        if (document.querySelector('.hero-bg-slider')) {
+            loadHeroBackgrounds();
+        }
+
+        // TMDB Featured Movies Showcase
+        const FEATURED_CONTAINER = document.getElementById('featuredMovies');
+        const FEATURED_ROWS = document.getElementById('featuredRows');
+        const FEATURED_SEARCH_INPUT = document.getElementById('featuredSearchInput');
+        const FEATURED_SEARCH_BTN = document.getElementById('featuredSearchBtn');
+        const TMDB_IMAGE_BASE_W780 = 'https://image.tmdb.org/t/p/w780'; // w780 for high quality
+        let allFeaturedMovies = [];
+        async function loadFeaturedMovies() {
+            try {
+                const res = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+                const data = await res.json();
+                allFeaturedMovies = data.results.slice(0, 8); // 8 movies for 2 rows
+                renderFeaturedMovies(allFeaturedMovies);
+            } catch (e) {
+                FEATURED_ROWS.innerHTML = '<p>Could not load featured movies.</p>';
+            }
+        }
+        function renderFeaturedMovies(movies) {
+            const padded = movies.concat(Array(8 - movies.length).fill(null)).slice(0, 8);
+            FEATURED_ROWS.innerHTML = padded.map(movie => {
+                if (!movie) return `<div class="movie-card" style="visibility:hidden;"></div>`;
+                const isTV = movie.media_type === 'tv' || movie.first_air_date;
+                const title = movie.title || movie.name || 'Untitled';
+                const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
+                const poster = movie.poster_path ? `${TMDB_IMAGE_BASE_W780}${movie.poster_path}` : '/static/img/placeholder.png';
+                const genre = Array.isArray(movie.genre_ids) && movie.genre_ids.length ? getGenreName(movie.genre_ids[0]) : 'Other';
+                const rating = typeof movie.vote_average === 'number' ? movie.vote_average : 'N/A';
+                const votes = typeof movie.vote_count === 'number' ? movie.vote_count : 'N/A';
+                const lang = movie.original_language ? movie.original_language.toUpperCase() : 'N/A';
+                const overview = movie.overview || 'No description available.';
+                return `
+                <div class="movie-card" tabindex="0">
+                    <div class="card-inner">
+                        <div class="card-front">
+                            <img class="poster-image" src="${poster}" alt="${title}" loading="lazy" />
+                            <div class="card-meta">
+                                <span class="genre">${genre}${isTV ? ' <span class=\'tv-badge\'>TV</span>' : ''}</span>
+                                <span class="rating">⭐ ${rating}</span>
+                                <span class="year">${year}</span>
+                            </div>
+                        </div>
+                        <div class="card-back">
+                            <button class="close-detail" aria-label="Close">&times;</button>
+                            <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '…' : title}</h3>
+                            <div class="movie-description" style="overflow:auto;max-height:160px;">${overview}</div>
+                            <div class="movie-details-grid" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.2rem;">
+                                <div><strong>Rating:</strong> ${rating}</div>
+                                <div><strong>Year:</strong> ${year || 'N/A'}</div>
+                                <div><strong>Language:</strong> ${lang}</div>
+                                <div><strong>Votes:</strong> ${votes}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+
+            // Add flip/close logic
+            const grid = FEATURED_ROWS;
+            document.querySelectorAll('.movie-card').forEach(card => {
+                const inner = card.querySelector('.card-inner');
+                const closeBtn = card.querySelector('.close-detail');
+                if (!inner) return;
+                card.onclick = e => {
+                    if (card.classList.contains('flipped')) return;
+                    document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('flipped'));
+                    card.classList.add('flipped');
+                    grid.classList.add('flipping');
+                    e.stopPropagation();
+                };
+                if (closeBtn) {
+                    closeBtn.onclick = e => {
+                        card.classList.remove('flipped');
+                        grid.classList.remove('flipping');
+                        e.stopPropagation();
+                    };
+                }
+            });
+            // Close flip on outside click
+            document.body.addEventListener('click', e => {
+                document.querySelectorAll('.movie-card.flipped').forEach(card => {
+                    if (!card.contains(e.target)) {
+                        card.classList.remove('flipped');
+                        grid.classList.remove('flipping');
+                    }
+                });
+            });
+        }
+        if (FEATURED_CONTAINER) {
+            loadFeaturedMovies();
+        }
+        // Search functionality
+        let searchTimeout;
+        let lastSearchController = null;
+        const searchBar = document.getElementById('mainSearchBar');
+
+        FEATURED_SEARCH_INPUT.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            if (lastSearchController) lastSearchController.abort();
+            
+            // Remove loading state
+            searchBar.classList.remove('loading');
+            
+            searchTimeout = setTimeout(async () => {
+                const query = FEATURED_SEARCH_INPUT.value.trim();
+                if (!query || query.length < 2) {
+                    renderFeaturedMovies(allFeaturedMovies);
+                    return;
+                }
+                
+                // Add loading state
+                searchBar.classList.add('loading');
+                
+                // Show loading spinner
+                FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;"><span class="loading-spinner"></span></div>';
+                
+                // Fetch from TMDb search/multi
+                try {
+                    lastSearchController = new AbortController();
+                    const res = await fetch(`${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`, { signal: lastSearchController.signal });
+                    if (!res.ok) throw new Error('API error');
+                    const data = await res.json();
+                    // Only show movies and TV shows
+                    const results = (data.results || []).filter(item => item.media_type === 'movie' || item.media_type === 'tv');
+                    if (results.length === 0) {
+                        FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-secondary);">No results found.</div>';
+                        return;
+                    }
+                    renderFeaturedMovies(results);
+                } catch (e) {
+                    if (e.name === 'AbortError') return;
+                    // Silently fail - don't show error message
+                    renderFeaturedMovies(allFeaturedMovies);
+                } finally {
+                    // Remove loading state
+                    searchBar.classList.remove('loading');
+                }
+            }, 300);
+        });
+        mainSearchBar.addEventListener('submit', async e => {
+            e.preventDefault();
+            const query = FEATURED_SEARCH_INPUT.value.trim();
+            if (!query || query.length < 2) {
+                renderFeaturedMovies(allFeaturedMovies);
+                return;
+            }
+            
+            // Add loading state
+            searchBar.classList.add('loading');
+            
+            FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;"><span class="loading-spinner"></span></div>';
+            try {
+                lastSearchController = new AbortController();
+                const res = await fetch(`${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`, { signal: lastSearchController.signal });
+                if (!res.ok) throw new Error('API error');
+                const data = await res.json();
+                const results = (data.results || []).filter(item => item.media_type === 'movie' || item.media_type === 'tv');
+                if (results.length === 0) {
+                    FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-secondary);">No results found.</div>';
+                    return;
+                }
+                renderFeaturedMovies(results);
+            } catch (e) {
+                if (e.name === 'AbortError') return;
+                // Silently fail - don't show error message
+                renderFeaturedMovies(allFeaturedMovies);
+            } finally {
+                // Remove loading state
+                searchBar.classList.remove('loading');
+            }
+        });
+        // Add a simple loading spinner style
+        if (!document.getElementById('search-spinner-style')) {
+            const style = document.createElement('style');
+            style.id = 'search-spinner-style';
+            style.textContent = `
+            .loading-spinner {
+                display: inline-block;
+                width: 36px;
+                height: 36px;
+                border: 4px solid var(--color-blue, #3B82F6);
+                border-top: 4px solid transparent;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+            }
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+            `;
+            document.head.appendChild(style);
+        }
+        // TMDB genre mapping (partial, for demo)
+        const GENRE_MAP = {
+            28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy', 80: 'Crime', 99: 'Documentary',
+            18: 'Drama', 10751: 'Family', 14: 'Fantasy', 36: 'History', 27: 'Horror', 10402: 'Music',
+            9648: 'Mystery', 10749: 'Romance', 878: 'Sci-Fi', 10770: 'TV Movie', 53: 'Thriller',
+            10752: 'War', 37: 'Western'
+        };
+        function getGenreName(id) {
+            return GENRE_MAP[id] || 'Other';
+        }
+
+        // === DYNAMIC HERO OVERLAY TEXT COLOR BASED ON BACKGROUND ===
+        // Utility: Get contrast color (YIQ)
+        function getContrastYIQ(hexcolor) {
+            hexcolor = hexcolor.replace('#', '');
+            if (hexcolor.length === 3) {
+                hexcolor = hexcolor[0]+hexcolor[0]+hexcolor[1]+hexcolor[1]+hexcolor[2]+hexcolor[2];
+            }
+            var r = parseInt(hexcolor.substr(0,2),16);
+            var g = parseInt(hexcolor.substr(2,2),16);
+            var b = parseInt(hexcolor.substr(4,2),16);
+            var yiq = ((r*299)+(g*587)+(b*114))/1000;
+            return (yiq >= 128) ? 'black' : 'white';
+        }
+        // Use Color Thief to get dominant color from hero background image
+        // (Color Thief CDN)
+        if (!window.ColorThief) {
+            var colorThiefScript = document.createElement('script');
+            colorThiefScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.2/color-thief.umd.js';
+            document.head.appendChild(colorThiefScript);
+        }
+        function setHeroOverlayTextContrast() {
+            const overlay = document.getElementById('heroOverlay');
+            const headline = document.getElementById('heroHeadline');
+            const subtext = document.getElementById('heroSubtext');
+            const activeImg = document.querySelector('.hero-bg-slide.active');
+            if (!overlay || !headline || !subtext || !activeImg) return;
+            // Wait for Color Thief to load
+            if (!window.ColorThief || !activeImg.complete) {
+                setTimeout(setHeroOverlayTextContrast, 200);
+                return;
+            }
+            try {
+                const colorThief = new window.ColorThief();
+                let rgb = colorThief.getColor(activeImg);
+                let hex = '#' + rgb.map(x => x.toString(16).padStart(2, '0')).join('');
+                let contrast = getContrastYIQ(hex);
+                if (contrast === 'white') {
+                    overlay.style.color = '#fff';
+                    headline.style.color = '#fff';
+                    subtext.style.color = '#fff';
+                    overlay.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+                    headline.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+                    subtext.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+                } else {
+                    overlay.style.color = '#18181b';
+                    headline.style.color = '#18181b';
+                    subtext.style.color = '#18181b';
+                    overlay.style.textShadow = '0 2px 8px rgba(255,255,255,0.85)';
+                    headline.style.textShadow = '0 2px 8px rgba(255,255,255,0.85)';
+                    subtext.style.textShadow = '0 2px 8px rgba(255,255,255,0.85)';
+                }
+            } catch (e) {
+                // fallback: always white
+                overlay.style.color = '#fff';
+                headline.style.color = '#fff';
+                subtext.style.color = '#fff';
+                overlay.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+                headline.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+                subtext.style.textShadow = '0 2px 8px rgba(0,0,0,0.85)';
+            }
+        }
+        // Call on hero slide change
+        function goToHeroSlide(idx) {
+            if (!heroSlides.length) return;
+            heroSlides[heroSlideIndex].classList.remove('active');
+            heroSlideIndex = (idx + heroSlides.length) % heroSlides.length;
+            heroSlides[heroSlideIndex].classList.add('active');
+            updateHeroOverlay(heroSlideIndex);
+            setTimeout(setHeroOverlayTextContrast, 300);
+        }
+        // Also call after initial load
+        if (document.querySelector('.hero-bg-slider')) {
+            setTimeout(setHeroOverlayTextContrast, 1200);
+        }
+
+        // === CAROUSEL LOGIC FOR TRENDING MOVIES & TV SHOWS ===
+        const CAROUSEL_CARD_WIDTH = {
+          desktop: 19.5, // 100/5.5
+          tablet: 28.5,  // 100/3.5
+          mobile: 45.5   // 100/2.2
+        };
+        function getCarouselCardWidth() {
+          if (window.innerWidth < 600) return CAROUSEL_CARD_WIDTH.mobile;
+          if (window.innerWidth < 1024) return CAROUSEL_CARD_WIDTH.tablet;
+          return CAROUSEL_CARD_WIDTH.desktop;
+        }
+        function createCarousel(cards, carouselId) {
+          const carousel = document.getElementById(carouselId);
+          if (!carousel) return;
+          carousel.innerHTML = '';
+          // Duplicate first/last for infinite loop
+          const items = [cards[cards.length-1], ...cards, cards[0]];
+          items.forEach((card, i) => {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'carousel-card';
+            cardDiv.innerHTML = card;
+            carousel.appendChild(cardDiv);
+          });
+          // Set scroll snap and width
+          const cardWidth = getCarouselCardWidth();
+          carousel.style.gridTemplateColumns = `repeat(${items.length}, ${cardWidth}vw)`;
+        }
+        // Fetch trending movies/TV and render carousels
+        async function loadTrendingCarousels() {
+          // Use TMDB API as in hero section
+          const TMDB_API_KEY = 'b6e814a0b9ff291122e8a05a0f206cd8';
+          const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+          const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+          // Movies
+          const movieRes = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+          const movieData = await movieRes.json();
+          const movieCards = (movieData.results || []).map(movie => renderMovieCard(movie, TMDB_IMAGE_BASE));
+          createCarousel(movieCards, 'trendingMoviesCarousel');
+          // TV Shows
+          const tvRes = await fetch(`${TMDB_BASE_URL}/tv/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+          const tvData = await tvRes.json();
+          const tvCards = (tvData.results || []).map(tv => renderMovieCard(tv, TMDB_IMAGE_BASE));
+          createCarousel(tvCards, 'trendingTVCarousel');
+        }
+        function renderMovieCard(item, imgBase) {
+          // Use existing card HTML structure, lazy load images
+          const title = item.title || item.name || 'Untitled';
+          const year = (item.release_date || item.first_air_date || '').slice(0, 4);
+          const poster = item.poster_path ? `${imgBase}${item.poster_path}` : '/static/img/placeholder.png';
+          const rating = typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : 'N/A';
+          return `
+            <div class="movie-card" tabindex="0">
+              <div class="card-inner">
+                <div class="card-front">
+                  <img class="poster-image" src="${poster}" alt="${title}" loading="lazy" />
+                  <div class="card-meta">
+                    <span class="rating">⭐ ${rating}</span>
+                    <span class="year">${year}</span>
+                  </div>
+                </div>
+                <div class="card-back">
+                  <button class="close-detail" aria-label="Close">&times;</button>
+                  <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '…' : title}</h3>
+                  <div class="movie-description" style="overflow:auto;max-height:160px;">${item.overview || 'No description available.'}</div>
+                  <div class="movie-details-grid" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.2rem;">
+                    <div><strong>Rating:</strong> ${rating}</div>
+                    <div><strong>Year:</strong> ${year || 'N/A'}</div>
+                    <div><strong>Language:</strong> ${(item.original_language || '').toUpperCase()}</div>
+                    <div><strong>Votes:</strong> ${item.vote_count || 'N/A'}</div>
+                  </div>
+                  <div class="movie-match-actions">
+                    <a href="#" class="watch-now-btn">
+                      <i class="fas fa-play"></i> <span>Watch Now</span>
+                    </a>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          
-          <div class="card-back">
-            <button class="close-detail" aria-label="Close">&times;</button>
-            <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '…' : title}</h3>
-            <div class="movie-overview">${overview}</div>
-            <div class="movie-details-grid" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.2rem;">
-              <div><strong>Rating:</strong> ${rating}</div>
-              <div><strong>Year:</strong> ${year || 'N/A'}</div>
-              <div><strong>Language:</strong> ${lang}</div>
-              <div><strong>Votes:</strong> ${votes}</div>
-            </div>
-            <div class="card-actions">
-              <button class="action-btn" onclick="watchTrailer(${movie.id}, '${type}')">
-                <i class="fas fa-play"></i> Trailer
-              </button>
-              <button class="action-btn secondary" onclick="saveToWatchlist(${movie.id}, '${type}')">
-                <i class="fas fa-bookmark"></i> Save
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      // Add flip functionality
-      const inner = card.querySelector('.card-inner');
-      const closeBtn = card.querySelector('.close-detail');
-      
-      card.onclick = e => {
-        if (card.classList.contains('flipped')) return;
-        document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('flipped'));
-        card.classList.add('flipped');
-        e.stopPropagation();
-      };
-      
-      if (closeBtn) {
-        closeBtn.onclick = e => {
-          card.classList.remove('flipped');
-          e.stopPropagation();
-        };
-      }
-      
-      return card;
-    }
-
-    // API Functions
-    async function fetchFromTMDB(endpoint) {
-      try {
-        const response = await fetch(`${TMDB_BASE_URL}${endpoint}?api_key=${TMDB_API_KEY}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          `;
         }
-        return await response.json();
-      } catch (error) {
-        console.error('TMDB API Error:', error);
-        return null;
-      }
-    }
+        window.addEventListener('DOMContentLoaded', loadTrendingCarousels);
 
-    // Get curated recommendations based on selected moods
-    async function getCuratedRecommendations() {
-      const curatedCarousel = document.getElementById('curatedCarousel');
-      curatedSection.classList.remove('hidden');
-      
-      // Show loading
-      curatedCarousel.innerHTML = '<div class="loading-container"><div class="loading-spinner"></div></div>';
-      
-      try {
-        const allGenres = selectedMoods.flatMap(mood => MOOD_TO_GENRE[mood] || []);
-        const uniqueGenres = [...new Set(allGenres)];
-        
-        if (uniqueGenres.length === 0) {
-          throw new Error('No genres found for selected moods');
+        // Carousel Navigation
+        const trendingMoviesCarousel = document.getElementById('trendingMoviesCarousel');
+        const trendingTVCarousel = document.getElementById('trendingTVCarousel');
+        const trendingMoviesLeftArrow = document.querySelector('.carousel-arrow.left');
+        const trendingMoviesRightArrow = document.querySelector('.carousel-arrow.right');
+        const trendingTVLeftArrow = document.querySelector('.carousel-arrow.left');
+        const trendingTVRightArrow = document.querySelector('.carousel-arrow.right');
+
+        function scrollCarousel(carousel, direction) {
+            const scrollAmount = carousel.scrollWidth / carousel.children.length;
+            if (direction === 'left') {
+                carousel.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                carousel.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
         }
-        
-        const genreQuery = uniqueGenres.join(',');
-        const data = await fetchFromTMDB(`/discover/movie?with_genres=${genreQuery}&sort_by=popularity.desc&page=1`);
-        
-        if (data && data.results) {
-          populateCarousel(curatedCarousel, data.results, 'movie');
-        } else {
-          throw new Error('No recommendations found');
+
+        trendingMoviesCarousel.addEventListener('scroll', () => {
+            if (trendingMoviesCarousel.scrollLeft === 0) {
+                trendingMoviesCarousel.scrollBy({ left: trendingMoviesCarousel.scrollWidth / 2, behavior: 'smooth' });
+            } else if (trendingMoviesCarousel.scrollLeft >= trendingMoviesCarousel.scrollWidth - trendingMoviesCarousel.clientWidth) {
+                trendingMoviesCarousel.scrollBy({ left: -trendingMoviesCarousel.scrollWidth / 2, behavior: 'smooth' });
+            }
+        });
+
+        trendingTVCarousel.addEventListener('scroll', () => {
+            if (trendingTVCarousel.scrollLeft === 0) {
+                trendingTVCarousel.scrollBy({ left: trendingTVCarousel.scrollWidth / 2, behavior: 'smooth' });
+            } else if (trendingTVCarousel.scrollLeft >= trendingTVCarousel.scrollWidth - trendingTVCarousel.clientWidth) {
+                trendingTVCarousel.scrollBy({ left: -trendingTVCarousel.scrollWidth / 2, behavior: 'smooth' });
+            }
+        });
+
+        if (trendingMoviesLeftArrow) {
+            trendingMoviesLeftArrow.onclick = () => scrollCarousel(trendingMoviesCarousel, 'left');
         }
-      } catch (error) {
-        console.error('Error fetching curated recommendations:', error);
-        curatedCarousel.innerHTML = '<div class="error-message">Failed to load recommendations. Please try again.</div>';
-      }
-    }
-
-    // Load trending content
-    async function loadTrendingContent() {
-      // Load trending movies
-      try {
-        const trendingMoviesData = await fetchFromTMDB('/trending/movie/week');
-        if (trendingMoviesData && trendingMoviesData.results) {
-          populateCarousel(document.getElementById('trendingMovies'), trendingMoviesData.results, 'movie');
+        if (trendingMoviesRightArrow) {
+            trendingMoviesRightArrow.onclick = () => scrollCarousel(trendingMoviesCarousel, 'right');
         }
-      } catch (error) {
-        console.error('Error loading trending movies:', error);
-        document.getElementById('trendingMovies').innerHTML = '<div class="error-message">Failed to load trending movies.</div>';
-      }
-
-      // Load trending TV shows
-      try {
-        const trendingShowsData = await fetchFromTMDB('/trending/tv/week');
-        if (trendingShowsData && trendingShowsData.results) {
-          populateCarousel(document.getElementById('trendingShows'), trendingShowsData.results, 'tv');
+        if (trendingTVLeftArrow) {
+            trendingTVLeftArrow.onclick = () => scrollCarousel(trendingTVCarousel, 'left');
         }
-      } catch (error) {
-        console.error('Error loading trending shows:', error);
-        document.getElementById('trendingShows').innerHTML = '<div class="error-message">Failed to load trending shows.</div>';
-      }
-    }
-
-    // Populate carousel with movies/shows
-    function populateCarousel(carousel, items, type = 'movie') {
-      carousel.innerHTML = '';
-      
-      if (!items || items.length === 0) {
-        carousel.innerHTML = '<div class="error-message">No content available.</div>';
-        return;
-      }
-      
-      items.forEach(item => {
-        const card = createMovieCard(item, type);
-        carousel.appendChild(card);
-      });
-    }
-
-    // Action button functions
-    function watchTrailer(id, type) {
-      // Implement trailer functionality
-      console.log(`Watch trailer for ${type} ID: ${id}`);
-      // You can integrate with YouTube API or TMDB videos endpoint
-      alert(`Trailer functionality for ${type} ID: ${id} - To be implemented`);
-    }
-
-    function saveToWatchlist(id, type) {
-      // Implement save to watchlist functionality
-      console.log(`Save ${type} ID: ${id} to watchlist`);
-      // You can save to localStorage or send to your backend
-      alert(`Saved ${type} ID: ${id} to watchlist - To be implemented`);
-    }
-
-    // Navigation function
-    function goHome() {
-      // Reset the page state
-      selectedMoods = [];
-      moodOptions.forEach(option => {
-        option.classList.remove('selected');
-      });
-      getRecommendationsBtn.disabled = true;
-      curatedSection.classList.add('hidden');
-      
-      // Scroll to top
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    // Close flipped cards when clicking outside
-    document.body.addEventListener('click', e => {
-      document.querySelectorAll('.movie-card.flipped').forEach(card => {
-        if (!card.contains(e.target)) {
-          card.classList.remove('flipped');
+        if (trendingTVRightArrow) {
+            trendingTVRightArrow.onclick = () => scrollCarousel(trendingTVCarousel, 'right');
         }
-      });
-    });
 
-    // Touch/swipe support for mobile
-    let startX = 0;
-    let scrollLeft = 0;
+        // Keyboard navigation for carousels
+        trendingMoviesCarousel.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                scrollCarousel(trendingMoviesCarousel, 'left');
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                scrollCarousel(trendingMoviesCarousel, 'right');
+            }
+        });
+        trendingTVCarousel.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                scrollCarousel(trendingTVCarousel, 'left');
+            } else if (e.key === 'ArrowRight') {
+                e.preventDefault();
+                scrollCarousel(trendingTVCarousel, 'right');
+            }
+        });
 
-    document.querySelectorAll('.carousel').forEach(carousel => {
-      carousel.addEventListener('touchstart', (e) => {
-        startX = e.touches[0].pageX - carousel.offsetLeft;
-        scrollLeft = carousel.scrollLeft;
-      });
+        // Touch/swipe navigation for carousels
+        let trendingMoviesTouchStartX = null;
+        trendingMoviesCarousel.addEventListener('touchstart', (e) => {
+            trendingMoviesTouchStartX = e.touches[0].clientX;
+        });
+        trendingMoviesCarousel.addEventListener('touchend', (e) => {
+            if (trendingMoviesTouchStartX === null) return;
+            const dx = e.changedTouches[0].clientX - trendingMoviesTouchStartX;
+            if (Math.abs(dx) > 50) {
+                if (dx > 0) scrollCarousel(trendingMoviesCarousel, 'left');
+                else scrollCarousel(trendingMoviesCarousel, 'right');
+            }
+            trendingMoviesTouchStartX = null;
+        });
 
-      carousel.addEventListener('touchmove', (e) => {
-        if (!startX) return;
-        e.preventDefault();
-        const x = e.touches[0].pageX - carousel.offsetLeft;
-        const walk = (x - startX) * 2;
-        carousel.scrollLeft = scrollLeft - walk;
-      });
+        let trendingTVTouchStartX = null;
+        trendingTVCarousel.addEventListener('touchstart', (e) => {
+            trendingTVTouchStartX = e.touches[0].clientX;
+        });
+        trendingTVCarousel.addEventListener('touchend', (e) => {
+            if (trendingTVTouchStartX === null) return;
+            const dx = e.changedTouches[0].clientX - trendingTVTouchStartX;
+            if (Math.abs(dx) > 50) {
+                if (dx > 0) scrollCarousel(trendingTVCarousel, 'left');
+                else scrollCarousel(trendingTVCarousel, 'right');
+            }
+            trendingTVTouchStartX = null;
+        });
 
-      carousel.addEventListener('touchend', () => {
-        startX = 0;
-      });
-    });
-  </script>
+        // Auto-scroll for carousels (pause on hover)
+        let trendingMoviesScrollInterval = null;
+        let trendingTVScrollInterval = null;
+
+        function startAutoScroll(carousel, interval) {
+            if (interval) clearInterval(interval);
+            interval = setInterval(() => {
+                scrollCarousel(carousel, 'right');
+            }, 5000); // Scroll every 5 seconds
+        }
+
+        function stopAutoScroll(interval) {
+            if (interval) clearInterval(interval);
+        }
+
+        trendingMoviesCarousel.addEventListener('mouseenter', () => stopAutoScroll(trendingMoviesScrollInterval));
+        trendingMoviesCarousel.addEventListener('mouseleave', () => startAutoScroll(trendingMoviesCarousel, trendingMoviesScrollInterval));
+        trendingTVCarousel.addEventListener('mouseenter', () => stopAutoScroll(trendingTVScrollInterval));
+        trendingTVCarousel.addEventListener('mouseleave', () => startAutoScroll(trendingTVCarousel, trendingTVScrollInterval));
+
+        // Initial auto-scroll on load
+        startAutoScroll(trendingMoviesCarousel, trendingMoviesScrollInterval);
+        startAutoScroll(trendingTVCarousel, trendingTVScrollInterval);
+
+        // Add focus states for accessibility
+        document.querySelectorAll('.carousel-card').forEach(card => {
+            card.addEventListener('focus', () => card.classList.add('focused'));
+            card.addEventListener('blur', () => card.classList.remove('focused'));
+        });
+
+        // Add momentum scrolling for smoother scrolling on touch devices
+        trendingMoviesCarousel.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            trendingMoviesCarousel.scrollBy({
+                left: e.deltaX,
+                behavior: 'auto'
+            });
+        });
+        trendingTVCarousel.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            trendingTVCarousel.scrollBy({
+                left: e.deltaX,
+                behavior: 'auto'
+            });
+        });
+
+    </script>
 </body>
 </html>
