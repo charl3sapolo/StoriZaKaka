@@ -36,7 +36,7 @@ LOCAL_APPS = [
     'apps.api',
 ]
 
-INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + ['djongo']
+INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -76,18 +76,17 @@ WSGI_APPLICATION = 'movierecommender.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'djongo',
-        'NAME': 'KakaFlix',
-        'ENFORCE_SCHEMA': False,
-        'CLIENT': {
-            'host': os.environ.get('MONGODB_URI'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME'),
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
+        'OPTIONS': {
+            'connect_timeout': 10,
         }
     }
 }
-
-# MongoDB connection for app data (used via mongoengine/pymongo, not as Django backend)
-MONGODB_URI = config('MONGODB_URI', default='mongodb://localhost:27017/movierecommender')
-MONGODB_NAME = config('MONGODB_NAME', default='movierecommender')
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -233,4 +232,4 @@ AUTH_USER_MODEL = 'core.User'
 
 # External API keys
 TMDB_API_KEY = config('TMDB_API_KEY', default='')
-IMDB_API_KEY = config('IMDB_API_KEY', default='') 
+IMDB_API_KEY = config('IMDB_API_KEY', default='')
