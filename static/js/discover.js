@@ -1,5 +1,5 @@
 // TMDB API Configuration
-const TMDB_API_KEY = '{{ TMDB_API_KEY }}'; // Make sure this is passed from your Django view
+const TMDB_API_KEY = window.TMDB_API_KEY || '';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
 
@@ -274,23 +274,43 @@ function createMediaCard(item, type = 'movie') {
   return card;
 }
 
+// === HORIZONTAL ROWS FOR TRENDING MOVIES/TV ===
+async function loadTrendingRow(mediaType, rowId, count = 15) {
+  const row = document.getElementById(rowId);
+  if (!row) return;
+  // Show skeletons
+  row.innerHTML = Array(6).fill(`
+    <div class="skeleton-card">
+      <div class="skeleton-poster"></div>
+      <div class="skeleton-title"></div>
+      <div class="skeleton-meta"></div>
+    </div>
+  `).join('');
+  try {
+    const res = await fetch(`${TMDB_BASE_URL}/trending/${mediaType}/week?api_key=${TMDB_API_KEY}&page=1`);
+    const data = await res.json();
+    row.innerHTML = '';
+    (data.results || []).slice(0, count).forEach(item => {
+      const card = createMediaCard(item, mediaType);
+      row.appendChild(card);
+    });
+  } catch (e) {
+    row.innerHTML = `<div class='error-message'><i class='fas fa-exclamation-triangle'></i> Failed to load content</div>`;
+  }
+}
+
 // Initialize the app
 document.addEventListener('DOMContentLoaded', function() {
   setupMoodSelection();
-  
-  // Initialize loaders
-  const movieLoader = new MediaLoader('movie', 'moviesGrid');
-  const tvLoader = new MediaLoader('tv', 'tvGrid');
-
-  // Initial load
-  movieLoader.loadMore();
-  tvLoader.loadMore();
-
+  // Horizontal rows for trending movies/TV
+  loadTrendingRow('movie', 'moviesRow', 15);
+  loadTrendingRow('tv', 'tvRow', 15);
+  // Keep curated and mood logic
   // Retry button handler
   document.querySelector('.retry-btn')?.addEventListener('click', () => {
     document.querySelector('.error-state').classList.add('hidden');
-    movieLoader.loadMore();
-    tvLoader.loadMore();
+    loadTrendingRow('movie', 'moviesRow', 15);
+    loadTrendingRow('tv', 'tvRow', 15);
   });
 });
 
