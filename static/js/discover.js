@@ -270,6 +270,11 @@ function createMediaCard(item, type = 'movie') {
       card.classList.add('flipped');
     }
   });
+  // Double-click to unflip
+  card.addEventListener('dblclick', (e) => {
+    card.classList.remove('flipped');
+    e.stopPropagation();
+  });
 
   return card;
 }
@@ -471,6 +476,7 @@ document.addEventListener('DOMContentLoaded', function() {
   setupMoodSelection();
   fillTrendingRows('movie', 'moviesRow1', 'moviesRow2', 'moviesLoading1', 'moviesLoading2');
   fillTrendingRows('tv', 'tvRow1', 'tvRow2', 'tvLoading1', 'tvLoading2');
+  setupGlobalUnflip();
   // Keep curated and mood logic
   // Retry button handler
   document.querySelector('.retry-btn')?.addEventListener('click', () => {
