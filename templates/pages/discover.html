@@ -86,38 +86,30 @@
     <!-- Movies Section -->
     <section class="movie-section" id="trending-movies">
       <h2 class="section-title">Trending Movies</h2>
-      <div class="movie-row" id="moviesRow">
-        <!-- Skeleton Loaders -->
-        {% for i in "123456"|make_list %}
-        <div class="skeleton-card">
-          <div class="skeleton-poster"></div>
-          <div class="skeleton-title"></div>
-          <div class="skeleton-meta"></div>
+      <div class="movie-row" id="moviesRow1">
+        <div class="loading-indicator hidden" id="moviesLoading1">
+          <div class="spinner"></div>
         </div>
-        {% endfor %}
       </div>
-      <div class="loading-indicator hidden">
-        <div class="spinner"></div>
-        <p>Loading more movies...</p>
+      <div class="movie-row" id="moviesRow2">
+        <div class="loading-indicator hidden" id="moviesLoading2">
+          <div class="spinner"></div>
+        </div>
       </div>
     </section>
 
     <!-- TV Shows Section -->
     <section class="movie-section" id="trending-tv">
       <h2 class="section-title">Trending TV Shows</h2>
-      <div class="movie-row" id="tvRow">
-        <!-- Skeleton Loaders -->
-        {% for i in "123456"|make_list %}
-        <div class="skeleton-card">
-          <div class="skeleton-poster"></div>
-          <div class="skeleton-title"></div>
-          <div class="skeleton-meta"></div>
+      <div class="movie-row" id="tvRow1">
+        <div class="loading-indicator hidden" id="tvLoading1">
+          <div class="spinner"></div>
         </div>
-        {% endfor %}
       </div>
-      <div class="loading-indicator hidden">
-        <div class="spinner"></div>
-        <p>Loading more TV shows...</p>
+      <div class="movie-row" id="tvRow2">
+        <div class="loading-indicator hidden" id="tvLoading2">
+          <div class="spinner"></div>
+        </div>
       </div>
     </section>
 
