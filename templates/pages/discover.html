@@ -84,9 +84,9 @@
     </section>
 
     <!-- Movies Section -->
-    <section class="trending-section">
+    <section class="movie-section" id="trending-movies">
       <h2 class="section-title">Trending Movies</h2>
-      <div class="media-grid" id="moviesGrid">
+      <div class="movie-row" id="moviesRow">
         <!-- Skeleton Loaders -->
         {% for i in "123456"|make_list %}
         <div class="skeleton-card">
@@ -103,9 +103,9 @@
     </section>
 
     <!-- TV Shows Section -->
-    <section class="trending-section">
+    <section class="movie-section" id="trending-tv">
       <h2 class="section-title">Trending TV Shows</h2>
-      <div class="media-grid" id="tvGrid">
+      <div class="movie-row" id="tvRow">
         <!-- Skeleton Loaders -->
         {% for i in "123456"|make_list %}
         <div class="skeleton-card">
@@ -129,6 +129,9 @@
     </div>
   </div>
 
+  <script>
+    window.TMDB_API_KEY = "{{ TMDB_API_KEY|escapejs }}";
+  </script>
   <script src="{% static 'js/discover.js' %}"></script>
 </body>
 </html>
