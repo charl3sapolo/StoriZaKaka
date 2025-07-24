@@ -441,16 +441,11 @@ body {
   }
 }
 
+/* Remove shimmer pseudo-element from skeletons */
 .skeleton-card::after,
 .skeleton-poster::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(245, 184, 35, 0.1), transparent);
-  animation: shimmer 2s infinite;
+  display: none !important;
+  content: none !important;
 }
 
 /* Loading Indicator */
