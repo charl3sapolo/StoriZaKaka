@@ -274,43 +274,209 @@ function createMediaCard(item, type = 'movie') {
   return card;
 }
 
-// === HORIZONTAL ROWS FOR TRENDING MOVIES/TV ===
-async function loadTrendingRow(mediaType, rowId, count = 15) {
-  const row = document.getElementById(rowId);
-  if (!row) return;
-  // Show skeletons
-  row.innerHTML = Array(6).fill(`
-    <div class="skeleton-card">
-      <div class="skeleton-poster"></div>
-      <div class="skeleton-title"></div>
-      <div class="skeleton-meta"></div>
-    </div>
-  `).join('');
+// === TRENDING ROWS: FIRST ROW = MOST RECENT, SECOND ROW = OLDER TRENDING ===
+async function fillTrendingRows(mediaType, rowId1, rowId2, loadingId1, loadingId2) {
+  const row1 = document.getElementById(rowId1);
+  const row2 = document.getElementById(rowId2);
+  const loading1 = document.getElementById(loadingId1);
+  const loading2 = document.getElementById(loadingId2);
+  row1.innerHTML = '';
+  row2.innerHTML = '';
+  row1.appendChild(loading1);
+  row2.appendChild(loading2);
+  loading1.classList.remove('hidden');
+  loading2.classList.remove('hidden');
+
+  // Fetch page 1 for row 1 (most recent trending)
+  let page1Results = [];
   try {
-    const res = await fetch(`${TMDB_BASE_URL}/trending/${mediaType}/week?api_key=${TMDB_API_KEY}&page=1`);
-    const data = await res.json();
-    row.innerHTML = '';
-    (data.results || []).slice(0, count).forEach(item => {
+    const res1 = await fetch(`${TMDB_BASE_URL}/trending/${mediaType}/week?api_key=${TMDB_API_KEY}&page=1`);
+    const data1 = await res1.json();
+    page1Results = (data1 && data1.results) ? data1.results : [];
+    page1Results.forEach(item => {
       const card = createMediaCard(item, mediaType);
-      row.appendChild(card);
+      row1.insertBefore(card, loading1);
     });
-  } catch (e) {
-    row.innerHTML = `<div class='error-message'><i class='fas fa-exclamation-triangle'></i> Failed to load content</div>`;
+  } catch (e) {}
+  loading1.classList.add('hidden');
+
+  // Fetch page 2 for row 2 (older trending, but not in row 1)
+  let page2Results = [];
+  try {
+    const res2 = await fetch(`${TMDB_BASE_URL}/trending/${mediaType}/week?api_key=${TMDB_API_KEY}&page=2`);
+    const data2 = await res2.json();
+    page2Results = (data2 && data2.results) ? data2.results : [];
+    // Filter out any items already in row 1
+    const row1Ids = new Set(page1Results.map(item => item.id));
+    page2Results.filter(item => !row1Ids.has(item.id)).forEach(item => {
+      const card = createMediaCard(item, mediaType);
+      row2.insertBefore(card, loading2);
+    });
+  } catch (e) {}
+  loading2.classList.add('hidden');
+}
+
+// === INFINITE HORIZONTAL SCROLLING FOR MULTIPLE ROWS (NO DUPLICATES BETWEEN ROWS, FILL BOTH ROWS INITIALLY) ===
+class InfiniteMovieRow {
+  constructor(mediaType, rowId, loadingId, siblingRow, rowIndex, sharedState) {
+    this.mediaType = mediaType;
+    this.row = document.getElementById(rowId);
+    this.loading = document.getElementById(loadingId);
+    this.page = 1;
+    this.items = [];
+    this.totalPages = 1;
+    this.isLoading = false;
+    this.loopIndex = 0;
+    this.siblingRow = siblingRow; // Reference to the other row for this media type
+    this.visibleIds = new Set(); // Track IDs in this row
+    this.rowIndex = rowIndex; // 0 for first row, 1 for second
+    this.sharedState = sharedState; // { loadedItems: [], loadedIds: Set, page: 1, totalPages: 1, isLoading: false }
+    this.init();
+  }
+
+  async init() {
+    this.showLoading();
+    await this.initialFill();
+    this.hideLoading();
+    this.attachScrollListener();
+  }
+
+  async initialFill() {
+    // Load at least one page, then fill rows with whatever is available
+    let loadedAtLeastOne = false;
+    let prevCount = 0;
+    while (
+      (!loadedAtLeastOne || (this.sharedState.loadedItems.length < 20 && this.sharedState.page <= this.sharedState.totalPages))
+    ) {
+      await this.sharedLoadNextPage();
+      loadedAtLeastOne = true;
+      this.appendInitialItems(); // Update UI after every page
+      // If no more pages, break
+      if (this.sharedState.page > this.sharedState.totalPages) break;
+      // Failsafe: if no new items were added, break to avoid infinite loop
+      if (this.sharedState.loadedItems.length === prevCount) break;
+      prevCount = this.sharedState.loadedItems.length;
+    }
+  }
+
+  appendInitialItems() {
+    // Each row gets every other item (row 0: 0,2,4...; row 1: 1,3,5...)
+    const siblingIds = this.siblingRow ? this.siblingRow.visibleIds : new Set();
+    this.sharedState.loadedItems.forEach((item, idx) => {
+      if (idx % 2 === this.rowIndex && !this.visibleIds.has(item.id) && !siblingIds.has(item.id)) {
+        const card = createMediaCard(item, this.mediaType);
+        this.row.insertBefore(card, this.loading);
+        this.visibleIds.add(item.id);
+      }
+    });
+  }
+
+  async sharedLoadNextPage() {
+    if (this.sharedState.isLoading) return;
+    this.sharedState.isLoading = true;
+    this.showLoading();
+    try {
+      const res = await fetch(`${TMDB_BASE_URL}/trending/${this.mediaType}/week?api_key=${TMDB_API_KEY}&page=${this.sharedState.page}`);
+      const data = await res.json();
+      if (data && data.results && data.results.length) {
+        data.results.forEach(item => {
+          if (!this.sharedState.loadedIds.has(item.id)) {
+            this.sharedState.loadedItems.push(item);
+            this.sharedState.loadedIds.add(item.id);
+          }
+        });
+        this.sharedState.totalPages = data.total_pages || 1;
+        this.sharedState.page++;
+      }
+    } catch (e) {}
+    this.sharedState.isLoading = false;
+    this.hideLoading();
+  }
+
+  attachScrollListener() {
+    this.row.addEventListener('scroll', async () => {
+      if (this.isLoading) return;
+      // If near the end, load more or loop
+      const { scrollLeft, scrollWidth, clientWidth } = this.row;
+      if (scrollLeft + clientWidth >= scrollWidth - 300) {
+        if (this.sharedState.page <= this.sharedState.totalPages) {
+          await this.sharedLoadNextPage();
+          this.appendNewSharedItems();
+        } else {
+          // Loop: append from start, skipping IDs in sibling row
+          this.appendLoopItems();
+        }
+      }
+    });
+  }
+
+  appendNewSharedItems() {
+    // Add new items from shared pool that aren't in this row or sibling
+    const siblingIds = this.siblingRow ? this.siblingRow.visibleIds : new Set();
+    for (let i = 0; i < this.sharedState.loadedItems.length; i++) {
+      const item = this.sharedState.loadedItems[i];
+      if (i % 2 === this.rowIndex && !this.visibleIds.has(item.id) && !siblingIds.has(item.id)) {
+        const card = createMediaCard(item, this.mediaType);
+        this.row.insertBefore(card, this.loading);
+        this.visibleIds.add(item.id);
+      }
+    }
+  }
+
+  appendLoopItems() {
+    // Loop through shared pool, skipping IDs in sibling row
+    const siblingIds = this.siblingRow ? this.siblingRow.visibleIds : new Set();
+    let added = 0;
+    let tries = 0;
+    while (added < 10 && tries < this.sharedState.loadedItems.length) {
+      const item = this.sharedState.loadedItems[this.loopIndex];
+      this.loopIndex = (this.loopIndex + 1) % this.sharedState.loadedItems.length;
+      if (!this.visibleIds.has(item.id) && !siblingIds.has(item.id)) {
+        const card = createMediaCard(item, this.mediaType);
+        this.row.insertBefore(card, this.loading);
+        this.visibleIds.add(item.id);
+        added++;
+      }
+      tries++;
+    }
+  }
+
+  showLoading() {
+    this.loading.classList.remove('hidden');
+  }
+  hideLoading() {
+    this.loading.classList.add('hidden');
   }
 }
 
+// Helper to link sibling rows and share state
+function setupInfiniteRows() {
+  // Movies
+  const movieShared = { loadedItems: [], loadedIds: new Set(), page: 1, totalPages: 1, isLoading: false };
+  let moviesRow1, moviesRow2;
+  moviesRow1 = new InfiniteMovieRow('movie', 'moviesRow1', 'moviesLoading1', null, 0, movieShared);
+  moviesRow2 = new InfiniteMovieRow('movie', 'moviesRow2', 'moviesLoading2', moviesRow1, 1, movieShared);
+  moviesRow1.siblingRow = moviesRow2;
+  // TV Shows
+  const tvShared = { loadedItems: [], loadedIds: new Set(), page: 1, totalPages: 1, isLoading: false };
+  let tvRow1, tvRow2;
+  tvRow1 = new InfiniteMovieRow('tv', 'tvRow1', 'tvLoading1', null, 0, tvShared);
+  tvRow2 = new InfiniteMovieRow('tv', 'tvRow2', 'tvLoading2', tvRow1, 1, tvShared);
+  tvRow1.siblingRow = tvRow2;
+}
+
 // Initialize the app
+
 document.addEventListener('DOMContentLoaded', function() {
   setupMoodSelection();
-  // Horizontal rows for trending movies/TV
-  loadTrendingRow('movie', 'moviesRow', 15);
-  loadTrendingRow('tv', 'tvRow', 15);
+  fillTrendingRows('movie', 'moviesRow1', 'moviesRow2', 'moviesLoading1', 'moviesLoading2');
+  fillTrendingRows('tv', 'tvRow1', 'tvRow2', 'tvLoading1', 'tvLoading2');
   // Keep curated and mood logic
   // Retry button handler
   document.querySelector('.retry-btn')?.addEventListener('click', () => {
     document.querySelector('.error-state').classList.add('hidden');
-    loadTrendingRow('movie', 'moviesRow', 15);
-    loadTrendingRow('tv', 'tvRow', 15);
+    fillTrendingRows('movie', 'moviesRow1', 'moviesRow2', 'moviesLoading1', 'moviesLoading2');
+    fillTrendingRows('tv', 'tvRow1', 'tvRow2', 'tvLoading1', 'tvLoading2');
   });
 });
 
