@@ -35,3 +35,14 @@ CSRF_COOKIE_SECURE = False
 # Logging for development
 LOGGING['root']['level'] = 'DEBUG'
 LOGGING['handlers']['console']['level'] = 'DEBUG'
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
+LOGIN_REDIRECT_URL = '/discover/'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/discover/'
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+SOCIALACCOUNT_LOGIN_ON_GET = True
