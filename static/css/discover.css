@@ -696,6 +696,61 @@ body {
   box-shadow: var(--shadow-sm);
 }
 
+/* === HORIZONTAL SCROLLING MOVIE ROWS === */
+.movie-section {
+  margin-bottom: var(--space-xl);
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+}
+
+.movie-row {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem 0;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+}
+.movie-row::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-row .movie-card {
+  flex: 0 0 auto;
+  width: 200px;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+@media (max-width: 768px) {
+  .movie-row {
+    gap: 0.75rem;
+    padding: 1rem 0.25rem;
+  }
+  .movie-row .movie-card {
+    width: 150px;
+  }
+  .movie-section {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .movie-row .movie-card {
+    width: 200px;
+  }
+}
+
+/* Edge padding for touch targets */
+.movie-row {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 /* Responsive Design */
 @media (max-width: 479px) {
   .media-grid {
