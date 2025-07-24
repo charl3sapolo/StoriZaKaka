@@ -490,9 +490,105 @@ function goHome() {
   window.location.href = '/';
 }
 
-function watchTrailer(id, type) {
-  alert(`Would play trailer for ${type} ID: ${id}\n(Integration with YouTube/TMDB videos API needed)`);
+// --- Trailer Modal Logic ---
+function ensureTrailerModal() {
+  if (document.getElementById('trailerModal')) return;
+  const modal = document.createElement('div');
+  modal.id = 'trailerModal';
+  modal.style.display = 'none';
+  modal.innerHTML = `
+    <div class="trailer-modal-backdrop"></div>
+    <div class="trailer-modal-content">
+      <button class="trailer-modal-close" id="trailerModalClose">&times;</button>
+      <div id="trailerModalBody"></div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  document.getElementById('trailerModalClose').onclick = closeTrailerModal;
+  modal.querySelector('.trailer-modal-backdrop').onclick = closeTrailerModal;
 }
+
+function showTrailerModal(iframeHtml) {
+  ensureTrailerModal();
+  const modal = document.getElementById('trailerModal');
+  const body = document.getElementById('trailerModalBody');
+  body.innerHTML = iframeHtml;
+  modal.style.display = 'flex';
+  setTimeout(() => { modal.classList.add('show'); }, 10);
+}
+
+function closeTrailerModal() {
+  const modal = document.getElementById('trailerModal');
+  if (modal) {
+    modal.classList.remove('show');
+    setTimeout(() => { modal.style.display = 'none'; }, 200);
+    document.getElementById('trailerModalBody').innerHTML = '';
+  }
+}
+
+async function watchTrailer(id, type) {
+  ensureTrailerModal();
+  const modal = document.getElementById('trailerModal');
+  const body = document.getElementById('trailerModalBody');
+  body.innerHTML = '<div style="padding:2rem;text-align:center;">Loading trailer...</div>';
+  modal.style.display = 'flex';
+  setTimeout(() => { modal.classList.add('show'); }, 10);
+  try {
+    const res = await fetch(`${TMDB_BASE_URL}/${type}/${id}/videos?api_key=${TMDB_API_KEY}`);
+    const data = await res.json();
+    const trailers = (data.results || []).filter(v => v.site === 'YouTube' && v.type === 'Trailer');
+    if (trailers.length > 0) {
+      const trailer = trailers[0];
+      const iframe = `<iframe width="100%" height="400" src="https://www.youtube.com/embed/${trailer.key}?autoplay=1" frameborder="0" allowfullscreen allow="autoplay; encrypted-media"></iframe>`;
+      body.innerHTML = iframe;
+    } else {
+      body.innerHTML = '<div style="padding:2rem;text-align:center;">No trailer found for this title.</div>';
+    }
+  } catch (e) {
+    body.innerHTML = '<div style="padding:2rem;text-align:center;">Could not load trailer. Please try again later.</div>';
+  }
+}
+
+// --- Trailer Modal Styles ---
+(function addTrailerModalStyles() {
+  if (document.getElementById('trailerModalStyles')) return;
+  const style = document.createElement('style');
+  style.id = 'trailerModalStyles';
+  style.textContent = `
+    #trailerModal {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: none; align-items: center; justify-content: center;
+      z-index: 9999;
+      background: rgba(0,0,0,0.45);
+      transition: background 0.2s;
+    }
+    #trailerModal.show { background: rgba(0,0,0,0.85); }
+    .trailer-modal-backdrop {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: transparent;
+    }
+    .trailer-modal-content {
+      position: relative; background: #18181b; border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+      padding: 0; max-width: 700px; width: 95vw;
+      animation: trailerPopIn 0.2s;
+    }
+    .trailer-modal-close {
+      position: absolute; top: 8px; right: 12px; font-size: 2rem;
+      background: none; border: none; color: #fff; cursor: pointer;
+      z-index: 2;
+      transition: color 0.2s;
+    }
+    .trailer-modal-close:hover { color: #F5B823; }
+    #trailerModalBody { padding: 0; }
+    @keyframes trailerPopIn { from { transform: scale(0.95); opacity: 0.5; } to { transform: scale(1); opacity: 1; } }
+    @media (max-width: 600px) {
+      .trailer-modal-content { max-width: 98vw; }
+      #trailerModalBody iframe { height: 220px !important; }
+    }
+  `;
+  document.head.appendChild(style);
+})();
 
 function saveToWatchlist(id, type) {
   alert(`Would save ${type} ID: ${id} to watchlist\n(Need to implement storage)`);
