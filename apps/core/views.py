@@ -2,6 +2,7 @@ from django.shortcuts import render
 from .models import Movie
 from .utils import tmdb_search_movies, tmdb_get_movie_details, TMDBApiError
 from django.http import JsonResponse
+from django.conf import settings
 
 def home(request):
     # Example context, replace with real data as needed
@@ -17,7 +18,7 @@ def home(request):
     return render(request, "pages/home.html", context)
 
 def discover(request):
-    return render(request, "pages/discover.html")
+    return render(request, "pages/discover.html", {"TMDB_API_KEY": settings.TMDB_API_KEY})
 
 def discovery(request):
     query = request.GET.get('q', '')
