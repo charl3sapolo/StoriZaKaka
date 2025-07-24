@@ -470,13 +470,99 @@ function setupInfiniteRows() {
   tvRow1.siblingRow = tvRow2;
 }
 
+// --- Genre Dropdown and Dynamic Genre Section ---
+const GENRE_API_URL = `${TMDB_BASE_URL}/genre/movie/list?api_key=${TMDB_API_KEY}&language=en-US`;
+let GENRE_MAP = {};
+
+async function populateGenreDropdown() {
+  const select = document.getElementById('genreSelect');
+  try {
+    const res = await fetch(GENRE_API_URL);
+    const data = await res.json();
+    if (data.genres) {
+      GENRE_MAP = {};
+      data.genres.forEach(g => {
+        GENRE_MAP[g.id] = g.name;
+        const option = document.createElement('option');
+        option.value = g.id;
+        option.textContent = g.name;
+        select.appendChild(option);
+      });
+    }
+  } catch (e) {
+    // fallback: static genres
+    const fallback = {
+      28: "Action", 12: "Adventure", 35: "Comedy", 18: "Drama", 27: "Horror", 10749: "Romance", 878: "Science Fiction"
+    };
+    GENRE_MAP = fallback;
+    Object.entries(fallback).forEach(([id, name]) => {
+      const option = document.createElement('option');
+      option.value = id;
+      option.textContent = name;
+      select.appendChild(option);
+    });
+  }
+}
+
+async function fetchMoviesByGenre(genreId) {
+  const res = await fetch(`${TMDB_BASE_URL}/discover/movie?with_genres=${genreId}&api_key=${TMDB_API_KEY}&sort_by=popularity.desc`);
+  const data = await res.json();
+  return data.results || [];
+}
+
+function displayGenreMovies(movies) {
+  const row = document.getElementById('genreMovieRow');
+  row.innerHTML = '';
+  movies.forEach(movie => {
+    const card = createMediaCard(movie, 'movie');
+    row.appendChild(card);
+  });
+}
+
+function setupGenreDropdown() {
+  const select = document.getElementById('genreSelect');
+  const section = document.getElementById('selectedGenreSection');
+  const title = document.getElementById('genreTitle');
+  select.addEventListener('change', async (e) => {
+    const genreId = e.target.value;
+    if (!genreId) {
+      section.style.display = 'none';
+      return;
+    }
+    section.style.display = 'block';
+    title.textContent = `${GENRE_MAP[genreId] || 'Genre'} Movies`;
+    const movies = await fetchMoviesByGenre(genreId);
+    displayGenreMovies(movies);
+  });
+}
+
+// --- Curated Section Visibility Logic ---
+function showCuratedSection(moodAnalysis) {
+  const curatedSection = document.getElementById('curatedSection');
+  if (moodAnalysis && moodAnalysis.completed) {
+    curatedSection.style.display = 'block';
+    // Load mood-based recommendations (reuse getCuratedRecommendations)
+    getCuratedRecommendations();
+  } else {
+    curatedSection.style.display = 'none';
+  }
+}
+
+// --- Mood Analysis Completion Trigger ---
+// This is a stub. Replace with your real mood analysis completion logic.
+window.moodAnalysis = { completed: false };
+// Example: when mood analysis is done, call showCuratedSection(window.moodAnalysis)
+
 // Initialize the app
 
 document.addEventListener('DOMContentLoaded', function() {
   setupMoodSelection();
+  populateGenreDropdown();
+  setupGenreDropdown();
   fillTrendingRows('movie', 'moviesRow1', 'moviesRow2', 'moviesLoading1', 'moviesLoading2');
   fillTrendingRows('tv', 'tvRow1', 'tvRow2', 'tvLoading1', 'tvLoading2');
   setupGlobalUnflip();
+  showCuratedSection(window.moodAnalysis); // Initial check
   // Keep curated and mood logic
   // Retry button handler
   document.querySelector('.retry-btn')?.addEventListener('click', () => {
