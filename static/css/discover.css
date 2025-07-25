@@ -1457,3 +1457,17 @@ body {
     align-items: flex-start;
   }
 }
+
+.site-logo {
+  height: 48px;
+  width: auto;
+  display: block;
+  margin: 0 auto 0.5rem auto;
+  max-width: 220px;
+}
+@media (max-width: 600px) {
+  .site-logo {
+    height: 36px;
+    max-width: 140px;
+  }
+}
