@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KakaFlix</title>
-    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/home.css">
@@ -66,6 +66,13 @@
         </button>
         <!-- Dynamic Movie Overlay -->
         <div class="hero-overlay" id="heroOverlay"></div>
+        
+        <!-- Mobile Details Button -->
+        <button class="mobile-details-btn" id="mobileDetailsBtn" data-en="View Details" data-sw="Ona Maelezo">
+            <i class="fas fa-info-circle"></i>
+            <span data-en="View Details" data-sw="Ona Maelezo">View Details</span>
+        </button>
+        
         <div class="container">
             <div class="hero-content">
                 <h1 class="hero-title" id="heroHeadline" data-en="Stori za Kaka here—your movie matchmaker." data-sw="Hujambo! Stori za Kaka hapa—mchumba wako wa filamu.">Stori za Kaka here—your movie matchmaker.</h1>
@@ -85,6 +92,44 @@
             </div>
         </div>
     </section>
+
+    <!-- Movie Modal System -->
+    <div class="movie-modal" id="movieModal">
+        <button class="modal-close" id="modalClose">✕</button>
+        
+        <!-- Modal Navigation Arrows -->
+        <button class="modal-arrow modal-arrow-left" id="modalArrowLeft">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="modal-arrow modal-arrow-right" id="modalArrowRight">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="modal-poster" id="modalPoster">
+            <!-- Movie poster will be inserted here -->
+        </div>
+        
+        <div class="modal-content">
+            <h3 id="modalTitle">Movie Title</h3>
+            <div class="modal-meta" id="modalMeta">
+                <span class="modal-rating">⭐ 8.5</span>
+                <span class="modal-year">2023</span>
+                <span class="modal-genre">Action</span>
+            </div>
+            <p class="modal-desc" id="modalDesc">
+                Movie description will be inserted here...
+            </p>
+            <button class="watch-trailer" id="watchTrailer" data-yt-id="">
+                <i class="fas fa-play"></i> ▶ Play Trailer
+            </button>
+        </div>
+    </div>
+
+    <!-- YouTube Container -->
+    <div class="youtube-container" id="youtubeContainer">
+        <button class="youtube-close" id="youtubeClose">✕</button>
+        <!-- YouTube iframe will be inserted here -->
+    </div>
 
     <!-- Features Section -->
     <section class="section" id="features">
@@ -1212,6 +1257,238 @@ setTimeout(() => {
         if (document.querySelector('.hero-bg-slider')) {
             loadHeroBackgrounds();
         }
+
+        // === MOBILE MODAL SYSTEM ===
+        const mobileDetailsBtn = document.getElementById('mobileDetailsBtn');
+        const movieModal = document.getElementById('movieModal');
+        const modalClose = document.getElementById('modalClose');
+        const modalArrowLeft = document.getElementById('modalArrowLeft');
+        const modalArrowRight = document.getElementById('modalArrowRight');
+        const watchTrailer = document.getElementById('watchTrailer');
+        const youtubeContainer = document.getElementById('youtubeContainer');
+        const youtubeClose = document.getElementById('youtubeClose');
+        
+        // Modal elements
+        const modalPoster = document.getElementById('modalPoster');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMeta = document.getElementById('modalMeta');
+        const modalDesc = document.getElementById('modalDesc');
+        
+        let currentModalMovieIndex = 0;
+        let youtubeIframeLoaded = false;
+
+        // Mobile details button click handler
+        if (mobileDetailsBtn) {
+            mobileDetailsBtn.addEventListener('click', () => {
+                if (heroMedia && heroMedia.length > 0) {
+                    showMovieModal(heroSlideIndex);
+                }
+            });
+        }
+
+        // Show movie modal
+        function showMovieModal(movieIndex) {
+            if (!heroMedia || !heroMedia[movieIndex]) return;
+            
+            const movie = heroMedia[movieIndex];
+            currentModalMovieIndex = movieIndex;
+            
+            // Update modal content
+            modalTitle.textContent = movie.title || movie.name || 'Untitled';
+            
+            // Update poster
+            const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '/static/img/placeholder.png';
+            modalPoster.innerHTML = `<img src="${posterPath}" alt="${movie.title || movie.name}" />`;
+            
+            // Update meta information
+            const rating = typeof movie.vote_average === 'number' ? movie.vote_average.toFixed(1) : 'N/A';
+            const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
+            const genre = getGenreName(movie.genre_ids?.[0] || '');
+            
+            modalMeta.innerHTML = `
+                <span class="modal-rating">⭐ ${rating}</span>
+                <span class="modal-year">${year || 'N/A'}</span>
+                <span class="modal-genre">${genre}</span>
+            `;
+            
+            // Update description
+            modalDesc.textContent = movie.overview || 'No description available.';
+            
+            // Fetch and update trailer button with YouTube ID
+            const mediaType = movie.media_type || 'movie';
+            fetchTrailerId(movie.id, mediaType).then(trailerId => {
+                const youtubeId = trailerId || 'dQw4w9WgXcQ'; // Fallback to placeholder
+                watchTrailer.setAttribute('data-yt-id', youtubeId);
+                watchTrailer.disabled = !trailerId; // Disable if no trailer available
+                if (!trailerId) {
+                    watchTrailer.innerHTML = '<i class="fas fa-exclamation-triangle"></i> No Trailer Available';
+                    watchTrailer.style.opacity = '0.6';
+                } else {
+                    watchTrailer.innerHTML = '<i class="fas fa-play"></i> ▶ Play Trailer';
+                    watchTrailer.style.opacity = '1';
+                }
+            });
+            
+            // Show modal and prevent background scrolling
+            movieModal.style.display = 'flex';
+            document.body.classList.add('modal-open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeMovieModal() {
+            movieModal.style.display = 'none';
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = ''; // Restore scrolling
+        }
+
+        // Modal close button
+        if (modalClose) {
+            modalClose.addEventListener('click', closeMovieModal);
+        }
+
+        // Modal navigation
+        if (modalArrowLeft) {
+            modalArrowLeft.addEventListener('click', () => {
+                const newIndex = (currentModalMovieIndex - 1 + heroMedia.length) % heroMedia.length;
+                showMovieModal(newIndex);
+            });
+        }
+
+        if (modalArrowRight) {
+            modalArrowRight.addEventListener('click', () => {
+                const newIndex = (currentModalMovieIndex + 1) % heroMedia.length;
+                showMovieModal(newIndex);
+            });
+        }
+
+        // Watch trailer functionality
+        if (watchTrailer) {
+            watchTrailer.addEventListener('click', () => {
+                const youtubeId = watchTrailer.getAttribute('data-yt-id');
+                if (youtubeId) {
+                    showYouTubeTrailer(youtubeId);
+                }
+            });
+        }
+
+        // Fetch YouTube trailer ID from TMDB
+        async function fetchTrailerId(movieId, mediaType = 'movie') {
+            try {
+                const response = await fetch(`${TMDB_BASE_URL}/${mediaType}/${movieId}/videos?api_key=${TMDB_API_KEY}&language=en-US`);
+                const data = await response.json();
+                
+                // Find the first official trailer
+                const trailer = data.results?.find(video => 
+                    video.type === 'Trailer' && 
+                    (video.site === 'YouTube') &&
+                    (video.official || video.name.toLowerCase().includes('trailer'))
+                );
+                
+                return trailer?.key || null;
+            } catch (error) {
+                console.log('Could not fetch trailer:', error);
+                return null;
+            }
+        }
+
+        // Show YouTube trailer
+        function showYouTubeTrailer(youtubeId) {
+            if (!youtubeIframeLoaded) {
+                // Lazy load YouTube iframe only on first trailer click
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`;
+                iframe.width = '100%';
+                iframe.height = '100%';
+                iframe.frameBorder = '0';
+                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                iframe.allowFullscreen = true;
+                
+                youtubeContainer.appendChild(iframe);
+                youtubeIframeLoaded = true;
+            } else {
+                // Update existing iframe
+                const iframe = youtubeContainer.querySelector('iframe');
+                if (iframe) {
+                    iframe.src = `https://www.youtube.com/embed/${youtubeId}?autoplay=1&rel=0&modestbranding=1`;
+                }
+            }
+            
+            youtubeContainer.style.display = 'flex';
+        }
+
+        // Close YouTube container
+        if (youtubeClose) {
+            youtubeClose.addEventListener('click', () => {
+                youtubeContainer.style.display = 'none';
+                const iframe = youtubeContainer.querySelector('iframe');
+                if (iframe) {
+                    iframe.src = ''; // Stop video
+                }
+            });
+        }
+
+        // Close modal on outside click
+        movieModal.addEventListener('click', (e) => {
+            if (e.target === movieModal) {
+                closeMovieModal();
+            }
+        });
+
+        // Close YouTube on outside click
+        youtubeContainer.addEventListener('click', (e) => {
+            if (e.target === youtubeContainer) {
+                youtubeContainer.style.display = 'none';
+                const iframe = youtubeContainer.querySelector('iframe');
+                if (iframe) {
+                    iframe.src = ''; // Stop video
+                }
+            }
+        });
+
+        // Keyboard navigation for modal
+        document.addEventListener('keydown', (e) => {
+            if (movieModal.style.display === 'flex') {
+                if (e.key === 'Escape') {
+                    closeMovieModal();
+                } else if (e.key === 'ArrowLeft') {
+                    modalArrowLeft.click();
+                } else if (e.key === 'ArrowRight') {
+                    modalArrowRight.click();
+                }
+            }
+            
+            if (youtubeContainer.style.display === 'flex') {
+                if (e.key === 'Escape') {
+                    youtubeContainer.style.display = 'none';
+                    const iframe = youtubeContainer.querySelector('iframe');
+                    if (iframe) {
+                        iframe.src = '';
+                    }
+                }
+            }
+        });
+
+        // Update mobile details button text on language change
+        function updateMobileDetailsButtonText() {
+            const currentLang = document.body.getAttribute('data-lang') || 'en';
+            const mobileBtn = document.getElementById('mobileDetailsBtn');
+            if (mobileBtn) {
+                const span = mobileBtn.querySelector('span');
+                if (span) {
+                    const attr = `data-${currentLang}`;
+                    if (span.hasAttribute(attr)) {
+                        span.textContent = span.getAttribute(attr);
+                    }
+                }
+            }
+        }
+
+        // Call on language change
+        langToggle.addEventListener('click', updateMobileDetailsButtonText);
+        
+        // Initial call
+        updateMobileDetailsButtonText();
 
         // TMDB Featured Movies Showcase
         const FEATURED_CONTAINER = document.getElementById('featuredMovies');
