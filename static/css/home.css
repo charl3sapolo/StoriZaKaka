@@ -2401,3 +2401,595 @@
     .hero-meta .hero-year, .hero-meta .hero-genre { font-size: 0.92rem; }
     .hero-desc-bg { padding: 0.5rem 0.7rem; }
 }
+
+/* Mobile Optimization for Hero Section */
+
+/* Mobile Details Button - Hidden on Desktop */
+.mobile-details-btn {
+    display: none; /* Hidden on desktop */
+    width: 120px;
+    height: 36px;
+    font-size: 0.8rem;
+    background: var(--gradient-primary);
+    border-radius: 18px;
+    box-shadow: 0 3px 10px rgba(139, 92, 246, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 15;
+}
+
+.mobile-details-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.6);
+    animation: colorPulse 1s ease-in-out infinite alternate;
+}
+
+@keyframes colorPulse {
+    0% { background: var(--gradient-primary); }
+    100% { background: linear-gradient(135deg, #8B5CF6, #EC4899); }
+}
+
+/* Movie Modal System */
+.movie-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 1000;
+    flex-direction: column;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.modal-close {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 1001;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s, transform 0.2s;
+}
+
+.modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.modal-poster {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    max-height: 50vh;
+}
+
+.modal-poster img {
+    max-height: 200px;
+    max-width: 100%;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content {
+    flex: 1;
+    padding: 20px;
+    background: var(--bg-primary);
+    border-radius: 20px 20px 0 0;
+    overflow-y: auto;
+    position: relative;
+}
+
+.modal-content h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.modal-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.modal-desc {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.watch-trailer {
+    width: 100%;
+    height: 48px;
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: 24px;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    position: sticky;
+    bottom: 20px;
+    margin-top: 20px;
+}
+
+.watch-trailer:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+}
+
+/* Modal Navigation Arrows */
+.modal-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s, transform 0.2s;
+    z-index: 1001;
+}
+
+.modal-arrow:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.modal-arrow-left {
+    left: 20px;
+}
+
+.modal-arrow-right {
+    right: 20px;
+}
+
+/* YouTube iframe container */
+.youtube-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1002;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+.youtube-container iframe {
+    width: 90%;
+    height: 60%;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.youtube-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: background 0.2s, transform 0.2s;
+}
+
+.youtube-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Mobile-First Overhaul (max-width: 600px) */
+@media (max-width: 600px) {
+    /* Reduce font sizes by 30-40% */
+    .hero-title {
+        font-size: clamp(1.4rem, 3.5vw, 2.8rem);
+        margin-bottom: 1rem;
+    }
+    
+    .hero-subtitle {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+    
+    /* Scale down movie poster */
+    .hero-overlay .hero-title {
+        font-size: 1.2rem;
+    }
+    
+    .hero-meta {
+        font-size: 0.85rem;
+        gap: 0.4rem;
+    }
+    
+    .hero-meta .hero-year, 
+    .hero-meta .hero-genre {
+        font-size: 0.85rem;
+    }
+    
+    .hero-desc {
+        font-size: 0.9rem;
+    }
+    
+    /* Compress padding/margins */
+    .hero {
+        padding: 60px 0 30px;
+        min-height: 80vh;
+    }
+    
+    .hero-content {
+        margin-left: 1vw;
+        max-width: 95vw;
+    }
+    
+    /* Hide desktop hero-overlay completely */
+    .hero-overlay {
+        display: none !important;
+    }
+    
+    /* Show mobile details button */
+    .mobile-details-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    /* Hide desktop arrows on mobile */
+    .hero-arrow {
+        display: none !important;
+    }
+    
+    /* Resize refresh button */
+    .nav-controls .hero-refresh {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    
+    /* Modal specific mobile styles */
+    .modal-content {
+        padding: 16px;
+    }
+    
+    .modal-content h3 {
+        font-size: 1.3rem;
+    }
+    
+    .modal-meta {
+        font-size: 0.85rem;
+        gap: 8px;
+    }
+    
+    .modal-desc {
+        font-size: 0.9rem;
+    }
+    
+    .watch-trailer {
+        height: 44px;
+        font-size: 0.95rem;
+    }
+    
+    .modal-arrow {
+        width: 28px;
+        height: 28px;
+        font-size: 0.9rem;
+    }
+    
+    .modal-arrow-left {
+        left: 12px;
+    }
+    
+    .modal-arrow-right {
+        right: 12px;
+    }
+    
+    .youtube-container iframe {
+        width: 95%;
+        height: 50%;
+    }
+}
+
+/* Ensure touch targets meet WCAG standards */
+@media (max-width: 600px) {
+    .mobile-details-btn,
+    .modal-close,
+    .watch-trailer,
+    .modal-arrow,
+    .youtube-close {
+        min-width: 48px;
+        min-height: 48px;
+    }
+    
+    .mobile-details-btn {
+        width: 140px;
+        height: 44px;
+    }
+}
+
+/* Performance optimizations */
+@media (max-width: 600px) {
+    .hero-bg-slide {
+        will-change: opacity;
+    }
+    
+    .movie-modal {
+        will-change: transform, opacity;
+    }
+    
+    .mobile-details-btn {
+        will-change: transform;
+    }
+}
+
+/* Smooth transitions for state changes */
+.movie-modal,
+.youtube-container {
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.mobile-details-btn,
+.modal-close,
+.watch-trailer,
+.modal-arrow,
+.youtube-close {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Color contrast for accessibility */
+.modal-close,
+.modal-arrow,
+.youtube-close {
+    color: #ffffff;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.watch-trailer {
+    color: #ffffff;
+    font-weight: 700;
+}
+
+/* Viewport units for typography scaling */
+@media (max-width: 600px) {
+    .hero-title {
+        font-size: clamp(1.4rem, 4vw, 2.8rem);
+    }
+    
+    .hero-subtitle {
+        font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    }
+    
+    .modal-content h3 {
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
+    }
+    
+    .modal-desc {
+        font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+    }
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 600px) {
+    /* Ensure proper z-index stacking */
+    .hero {
+        z-index: 1;
+    }
+    
+    .mobile-details-btn {
+        z-index: 15;
+    }
+    
+    .movie-modal {
+        z-index: 1000;
+    }
+    
+    .youtube-container {
+        z-index: 1002;
+    }
+    
+    /* Prevent body scroll when modal is open */
+    body.modal-open {
+        overflow: hidden;
+        position: fixed;
+        width: 100%;
+    }
+    
+    /* Smooth animations for modal */
+    .movie-modal {
+        animation: modalSlideUp 0.3s ease-out;
+    }
+    
+    @keyframes modalSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(100%);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Ensure modal content is scrollable */
+    .modal-content {
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-purple) transparent;
+    }
+    
+    .modal-content::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .modal-content::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .modal-content::-webkit-scrollbar-thumb {
+        background: var(--color-purple);
+        border-radius: 2px;
+    }
+    
+    /* Improve touch targets */
+    .mobile-details-btn,
+    .modal-close,
+    .watch-trailer,
+    .modal-arrow,
+    .youtube-close {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: manipulation;
+    }
+    
+    /* Prevent text selection on buttons */
+    .mobile-details-btn,
+    .modal-close,
+    .watch-trailer,
+    .modal-arrow,
+    .youtube-close {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .mobile-details-btn {
+        border: 2px solid currentColor;
+    }
+    
+    .modal-close,
+    .modal-arrow,
+    .youtube-close {
+        border: 2px solid white;
+    }
+    
+    .watch-trailer {
+        border: 2px solid currentColor;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .mobile-details-btn,
+    .modal-close,
+    .watch-trailer,
+    .modal-arrow,
+    .youtube-close,
+    .movie-modal,
+    .youtube-container {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    .mobile-details-btn:hover {
+        transform: none !important;
+    }
+}
+
+/* Loading states for trailer button */
+.watch-trailer:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--text-secondary);
+}
+
+.watch-trailer:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Ensure proper focus states for accessibility */
+.mobile-details-btn:focus,
+.modal-close:focus,
+.watch-trailer:focus,
+.modal-arrow:focus,
+.youtube-close:focus {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 2px;
+}
+
+/* Dark mode adjustments for modal */
+[data-theme="dark"] .modal-content {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+[data-theme="light"] .modal-content {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+/* Ensure modal works well on very small screens */
+@media (max-width: 375px) {
+    .modal-content {
+        padding: 12px;
+    }
+    
+    .modal-content h3 {
+        font-size: 1.1rem;
+    }
+    
+    .modal-meta {
+        font-size: 0.8rem;
+        gap: 6px;
+    }
+    
+    .modal-desc {
+        font-size: 0.85rem;
+    }
+    
+    .watch-trailer {
+        height: 40px;
+        font-size: 0.9rem;
+    }
+    
+    .mobile-details-btn {
+        width: 120px;
+        height: 40px;
+        font-size: 0.75rem;
+        bottom: 15px;
+        right: 15px;
+    }
+}
