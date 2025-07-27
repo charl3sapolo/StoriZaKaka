@@ -1,11 +1,12 @@
-
-             <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KakaFlix</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">-->
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/home.css">
     
 </head>
@@ -67,7 +68,7 @@
         <div class="hero-overlay" id="heroOverlay"></div>
         <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title" id="heroHeadline" data-en="Hey there! Stori za Kaka here—your movie matchmaker." data-sw="Hujambo! Stori za Kaka hapa—mchumba wako wa filamu.">Hey there! Stori za Kaka here—your movie matchmaker.</h1>
+                <h1 class="hero-title" id="heroHeadline" data-en="Stori za Kaka here—your movie matchmaker." data-sw="Hujambo! Stori za Kaka hapa—mchumba wako wa filamu.">Stori za Kaka here—your movie matchmaker.</h1>
                 <p class="hero-subtitle" id="heroSubtext"
                    data-en="Can't decide what to watch? Just tell me your mood, and I'll handpick a film you'll love. Ready to discover your next favorite movie together?"
                    data-sw="Hauwezi kuamua uangalie nini? Niambie tu hali yako, nitakuchagulia filamu utakayopenda. Tuko tayari kugundua filamu yako mpya unayopenda pamoja?">
@@ -89,7 +90,7 @@
     <section class="section" id="features">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title" data-en="Why Choose CineMatch?" data-sw="Kwa Nini Kuchagua CineMatch?">Why Choose CineMatch?</h2>
+                <h2 class="section-title" data-en="Why Choose Stori za Kaka?" data-sw="Kwa Nini Kuchagua Stori za Kaka?">Why Choose Stori za Kaka?</h2>
                 <p class="section-subtitle"
                    data-en="Our unique approach to movie recommendations sets us apart from traditional platforms"
                    data-sw="Mbinu yetu ya kipekee ya mapendekezo ya filamu inatufanya tuwe tofauti na majukwaa ya kawaida">
@@ -104,7 +105,7 @@
                     <p class="feature-description"
                        data-en="Our AI detects subtle emotional cues from your interactions to suggest movies that match your current state of mind."
                        data-sw="AI yetu hugundua ishara za kihisia kutoka kwa mwingiliano wako kupendekeza filamu zinazolingana na hali yako ya sasa ya akili.">
-                        Our AI detects subtle emotional cues from your interactions to suggest movies that match your current state of mind.
+                        Our -- detects subtle emotional cues from your interactions to suggest movies that match your current state of mind.
                     </p>
                 </div>
                 
@@ -132,9 +133,9 @@
                     <span class="feature-icon">🔄</span>
                     <h3 class="feature-title" data-en="Adaptive Learning" data-sw="Kujifunza Kukabiliana">Adaptive Learning</h3>
                     <p class="feature-description"
-                       data-en="The more you use CineMatch, the better it understands your evolving tastes and preferences over time."
-                       data-sw="Kadiri unavyotumia CineMatch, ndivyo inavyoelewa vyema ladha na mapendeleo yako yanayobadilika kwa muda.">
-                        The more you use CineMatch, the better it understands your evolving tastes and preferences over time.
+                       data-en="The more you use Stori za Kaka, the better it understands your evolving tastes and preferences over time."
+                       data-sw="Kadiri unavyotumia Stori za Kaka, ndivyo inavyoelewa vyema ladha na mapendeleo yako yanayobadilika kwa muda.">
+                        The more you use Stori za Kaka, the better it understands your evolving tastes and preferences over time.
                     </p>
                 </div>
                 
@@ -241,15 +242,18 @@
 
                         <!-- Question 2: Energy Level -->
                         <div class="question" id="question2">
-                            <h3><span class="emoji">⚡</span> <span data-en="What's your energy level?" data-sw="Kiwango chako cha nishati ni kipi?">What's your energy level?</span></h3>
-                            <div class="slider-container">
-                                <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" />
-                                <div class="slider-labels">
-                                    <span data-en="Low" data-sw="Chini">Low</span>
-                                    <span data-en="High" data-sw="Juu">High</span>
-                                </div>
-                            </div>
-                        </div>
+    <h3><span class="emoji">⚡</span> <span data-en="What's your energy level?" data-sw="Kiwango chako cha nishati ni kipi?">What's your energy level?</span></h3>
+    <div class="slider-container">
+        <div class="slider-layout">
+            <div class="slider-label low-label" data-en="Low" data-sw="Chini">Low</div>
+            <div class="slider-track-wrapper">
+                <div class="slider-track"></div>
+                <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" />
+            </div>
+            <div class="slider-label high-label" data-en="High" data-sw="Juu">High</div>
+        </div>
+    </div>
+</div>
 
                         <!-- Question 3: Thinking Level -->
                         <div class="question" id="question3">
@@ -312,19 +316,20 @@
                             </div>
                         </div>
 
-                        <!-- Question 6: Current Thoughts -->
-                        <div class="question" id="question6">
+                        <!-- Question 6: Current Thoughts 
+                          <div class="question" id="question6">
                             <h3><span class="emoji">💭</span> <span data-en="What's on your mind lately?" data-sw="Ni nini kilicho kwenye akili yako hivi karibuni?">What's on your mind lately?</span></h3>
                             <input type="text" class="text-input" id="currentThoughts" 
                                    data-en-placeholder="e.g., work stress, wanting to laugh, missing old friends..." 
                                    data-sw-placeholder="mfano, msongo kazini, kutaka kucheka, kukumbuka rafiki wa zamani..." />
                         </div>
                     </div>
-
+-->
+                       
                     <!-- Progress Bar at Bottom -->
                     <div class="progress-container">
                         <div class="progress-text">
-                            <span id="progressText" data-en="Question 1 of 6" data-sw="Swali 1 la 6">Question 1 of 6</span>
+                            <span id="progressText" data-en="Question 1 of 5" data-sw="Swali 1 la 6">Question 1 of 5</span>
                         </div>
                         <div class="progress-bar">
                             <div class="progress-fill" id="progressFill"></div>
@@ -346,14 +351,14 @@
                         <span class="emoji">🎯</span> <span data-en="Discover My Perfect Movie" data-sw="Gundua Filamu Yangu Kamili">Discover My Perfect Movie</span>
                     </button>
 
-                    <!-- Recommendation Preview -->
-                    <div class="recommendation-preview" id="recommendationPreview">
-                        <h3><span class="emoji">🎉</span> <span data-en="Great! We're analyzing your mood..." data-sw="Vizuri! Tunachambua hali yako...">Great! We're analyzing your mood...</span></h3>
-                        <p data-en="Based on your feelings, we'll find movies that perfectly match your current vibe!"
-                           data-sw="Kulingana na hisia zako, tutapata filamu zinazolingana kabisa na hali yako ya sasa!">
-                            Based on your feelings, we'll find movies that perfectly match your current vibe!
-                        </p>
-                    </div>
+                   <!-- Recommendation Preview -->
+<div class="recommendation-preview" id="recommendationPreview" style="display: none;">
+    <h3><span class="emoji">🎉</span> <span data-en="Great! We're analyzing your mood..." data-sw="Vizuri! Tunachambua hali yako...">Great! We're analyzing your mood...</span></h3>
+    <p data-en="Based on your feelings, we'll find movies that perfectly match your current vibe!"
+       data-sw="Kulingana na hisia zako, tutapata filamu zinazolingana kabisa na hali yako ya sasa!">
+        Based on your feelings, we'll find movies that perfectly match your current vibe!
+    </p>
+</div>
 
                     <!-- Movie Match Result -->
                     <div class="movie-match" id="movieMatch">
@@ -385,7 +390,7 @@
                                 </div>
                                 <div class="movie-match-actions">
                                     <a href="#" class="watch-now-btn">
-                                        <i class="fas fa-play"></i> <span data-en="Watch Now" data-sw="Angalia Sasa">Watch Now</span>
+                                        <i class="fas fa-play"></i> <span data-en="Watch Now" data-sw="Angalia Sasa">Trailer</span>
                                     </a>
                                     <a href="#" class="try-again-btn" id="tryAgainBtn">
                                         <i class="fas fa-redo"></i> <span data-en="Try Again" data-sw="Jaribu Tena">Try Again</span>
@@ -416,7 +421,7 @@
                         <span class="stat-label" data-en="Movies Available" data-sw="Filamu Zinazopatikana">Movies Available</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">25+</span>
+                        <span class="stat-number">20+</span>
                         <span class="stat-label" data-en="Genres Covered" data-sw="Aina za Filamu">Genres Covered</span>
                     </div>
                     <div class="stat-item">
@@ -424,7 +429,7 @@
                         <span class="stat-label" data-en="Happy Users" data-sw="Watumiaji Wenye Furaha">Happy Users</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-number">97%</span>
+                        <span class="stat-number">94%</span>
                         <span class="stat-label" data-en="Satisfaction Rate" data-sw="Kiwango cha Kuridhika">Satisfaction Rate</span>
                     </div>
                 </div>
@@ -529,194 +534,319 @@
                 }
             });
         }
+// Enhanced Discover Questionnaire Logic
+const questions = document.querySelectorAll('.question');
+const nextBtn = document.getElementById('nextBtn');
+const prevBtn = document.getElementById('prevBtn');
+const discoverBtn = document.getElementById('discoverBtn');
+const progressFill = document.getElementById('progressFill');
+const progressText = document.getElementById('progressText');
+const moodOptions = document.querySelectorAll('.mood-options .mood-btn');
+const recommendationPreview = document.getElementById('recommendationPreview');
+const movieMatch = document.getElementById('movieMatch');
+const tryAgainBtn = document.getElementById('tryAgainBtn');
 
-             // Enhanced Discover Questionnaire Logic
-        const questions = document.querySelectorAll('.question');
-        const nextBtn = document.getElementById('nextBtn');
-        const prevBtn = document.getElementById('prevBtn');
-        const discoverBtn = document.getElementById('discoverBtn');
-        const progressFill = document.getElementById('progressFill');
-        const progressText = document.getElementById('progressText');
-        const moodOptions = document.querySelectorAll('.mood-options .mood-btn');
-        const recommendationPreview = document.getElementById('recommendationPreview');
-        const movieMatch = document.getElementById('movieMatch');
-        const tryAgainBtn = document.getElementById('tryAgainBtn');
+let currentQuestion = 0;
+const totalQuestions = questions.length;
+const answers = {};
+let lastTap = 0; // For double-tap detection
+
+// Define mandatory questions (1-5, question 6 is optional)
+const mandatoryQuestions = [0, 1, 2, 3, 4]; // Questions 1-5 (0-indexed)
+
+// Initialize first question
+console.log('Questions found:', questions.length);
+console.log('First question:', questions[0]);
+showQuestion(currentQuestion);
+
+// Double-tap detection for mood options
+moodOptions.forEach(option => {
+    option.addEventListener('click', function(e) {
+        const now = new Date().getTime();
+        const timeDiff = now - lastTap;
         
-        let currentQuestion = 0;
-        const totalQuestions = questions.length;
-        const answers = {};
-        let lastTap = 0; // For double-tap detection
-        
-        // Define mandatory questions (1-5, question 6 is optional)
-        const mandatoryQuestions = [0, 1, 2, 3, 4]; // Questions 1-5 (0-indexed)
-        
-        // Initialize first question
-        console.log('Questions found:', questions.length);
-        console.log('First question:', questions[0]);
-        showQuestion(currentQuestion);
-        
-        // Double-tap detection for mood options
-        moodOptions.forEach(option => {
-            option.addEventListener('click', function(e) {
-                const now = new Date().getTime();
-                const timeDiff = now - lastTap;
-                
-                // Handle selection
-                const question = this.parentElement.getAttribute('data-question');
-                const value = this.getAttribute('data-value');
-                this.parentElement.querySelectorAll('.mood-btn').forEach(btn => {
-                    btn.classList.remove('selected');
-                });
-                this.classList.add('selected');
-                answers[question] = value;
-                
-                // Check for double-tap (300ms threshold)
-                if (timeDiff < 300 && timeDiff > 0) {
-                    // Double-tap detected - auto-advance
-                    setTimeout(() => {
-                        if (validateCurrentQuestion()) {
-                            nextBtn.click();
-                        }
-                    }, 100);
-                }
-                
-                lastTap = now;
-                updateProgress();
-            });
+        // Handle selection
+        const question = this.parentElement.getAttribute('data-question');
+        const value = this.getAttribute('data-value');
+        this.parentElement.querySelectorAll('.mood-btn').forEach(btn => {
+            btn.classList.remove('selected');
         });
+        this.classList.add('selected');
+        answers[question] = value;
         
-        // Enhanced Next button click handler with validation
-        nextBtn.addEventListener('click', () => {
-            if (validateCurrentQuestion() && currentQuestion < totalQuestions - 1) {
-                questions[currentQuestion].classList.remove('active');
-                questions[currentQuestion].classList.add('previous');
-                currentQuestion++;
-                questions[currentQuestion].classList.remove('next');
-                questions[currentQuestion].classList.add('active');
-                updateProgress();
-                questions[currentQuestion].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            } else if (!validateCurrentQuestion()) {
-                // Show validation feedback
-                showValidationFeedback();
-            }
-        });
-        
-        // Previous button click handler
-        prevBtn.addEventListener('click', () => {
-            if (currentQuestion > 0) {
-                questions[currentQuestion].classList.remove('active');
-                questions[currentQuestion].classList.add('next');
-                currentQuestion--;
-                questions[currentQuestion].classList.remove('previous');
-                questions[currentQuestion].classList.add('active');
-                updateProgress();
-                questions[currentQuestion].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        });
-        
-        // Energy level slider change handler
-        const energySlider = document.getElementById('energyLevel');
-        energySlider.addEventListener('input', () => {
-            answers.energyLevel = energySlider.value;
-            updateProgress();
-        });
-        
-        // Current thoughts input handler (optional)
-        const currentThoughts = document.getElementById('currentThoughts');
-        currentThoughts.addEventListener('input', () => {
-            answers.currentThoughts = currentThoughts.value;
-            updateProgress();
-        });
-        
-        // Enhanced Discover button click handler
-        discoverBtn.addEventListener('click', () => {
-            // Validate all mandatory questions
-            if (!validateAllMandatoryQuestions()) {
-                showValidationFeedback();
-                return;
-            }
-            
-            // Show loading state
-            discoverBtn.innerHTML = '<div class="loading-spinner"></div> <span data-en="Redirecting..." data-sw="Inaelekeza...">Redirecting...</span>';
-            discoverBtn.disabled = true;
-            
-            // Show recommendation preview briefly
-            recommendationPreview.style.display = 'block';
-            movieMatch.style.display = 'none';
-            
-            // After 2 seconds, redirect to about page
+        // Check for double-tap (300ms threshold)
+        if (timeDiff < 300 && timeDiff > 0) {
+            // Double-tap detected - auto-advance
             setTimeout(() => {
-                window.location.href = '/about/';
-            }, 2000);
-        });
+                if (validateCurrentQuestion()) {
+                    nextBtn.click();
+                }
+            }, 100);
+        }
         
-        // Try again button click handler
-        tryAgainBtn.addEventListener('click', () => {
-            currentQuestion = 0;
-            showQuestion(currentQuestion);
-            movieMatch.classList.remove('show');
-            document.querySelectorAll('.mood-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            energySlider.value = 5;
-            currentThoughts.value = '';
-            answers = {};
-            questions[0].scrollIntoView({ behavior: 'smooth' });
-        });
+        lastTap = now;
+        updateProgress();
+    });
+});
+
+// Enhanced Next button click handler with validation
+nextBtn.addEventListener('click', () => {
+    console.log('Next button clicked, current question:', currentQuestion);
+    console.log('Validation result:', validateCurrentQuestion());
+    console.log('Current answers:', answers);
+    
+    if (validateCurrentQuestion() && currentQuestion < totalQuestions - 1) {
+        questions[currentQuestion].classList.remove('active');
+        questions[currentQuestion].classList.add('previous');
+        currentQuestion++;
+        questions[currentQuestion].classList.remove('next');
+        questions[currentQuestion].classList.add('active');
+        updateProgress();
+        questions[currentQuestion].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else if (!validateCurrentQuestion()) {
+        // Show validation feedback
+        showValidationFeedback();
+    }
+});
+
+// Previous button click handler
+prevBtn.addEventListener('click', () => {
+    if (currentQuestion > 0) {
+        questions[currentQuestion].classList.remove('active');
+        questions[currentQuestion].classList.add('next');
+        currentQuestion--;
+        questions[currentQuestion].classList.remove('previous');
+        questions[currentQuestion].classList.add('active');
+        updateProgress();
+        questions[currentQuestion].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+});
+
+// Enhanced slider initialization with proper event handling
+const energySlider = document.getElementById('energyLevel');
+if (energySlider) {
+    // Handle both 'input' and 'change' events for immediate feedback
+    const handleSliderChange = function() {
+        const value = this.value;
+        console.log('Slider changed to:', value);
         
-        // Validation functions
-        function validateCurrentQuestion() {
-            const currentQuestionEl = questions[currentQuestion];
+        // Store the value in answers object
+        answers.energyLevel = value;
+        console.log('Stored in answers:', answers);
+        
+        // Update UI effects
+        const lowLabel = document.querySelector('.low-label');
+        const highLabel = document.querySelector('.high-label');
+        
+        if (lowLabel && highLabel) {
+            lowLabel.classList.remove('glow', 'highlight-missing');
+            highLabel.classList.remove('glow', 'highlight-missing');
             
-            // Check if current question is mandatory
-            if (!mandatoryQuestions.includes(currentQuestion)) {
-                return true; // Optional question
-            }
-            
-            // Validate based on question type
-            if (currentQuestion === 1) { // Energy level (slider)
-                return answers.energyLevel && answers.energyLevel !== '5';
-            } else if (currentQuestion === 5) { // Current thoughts (text input)
-                return true; // Optional
-            } else { // Mood options
-                const questionName = getQuestionName(currentQuestion);
-                return answers[questionName] !== undefined;
+            const numValue = parseInt(value);
+            if (numValue <= 40) {
+                lowLabel.classList.add('glow');
+            } else if (numValue >= 60) {
+                highLabel.classList.add('glow');
             }
         }
         
-        function validateAllMandatoryQuestions() {
-            for (let i = 0; i < mandatoryQuestions.length; i++) {
-                const questionIndex = mandatoryQuestions[i];
-                if (questionIndex === 1) { // Energy level
-                    if (!answers.energyLevel || answers.energyLevel === '5') {
-                        return false;
-                    }
-                } else { // Mood options
-                    const questionName = getQuestionName(questionIndex);
-                    if (!answers[questionName]) {
-                        return false;
-                    }
+        // Update progress to enable/disable next button
+        updateProgress();
+    };
+    
+    energySlider.addEventListener('input', handleSliderChange);
+    energySlider.addEventListener('change', handleSliderChange);
+    
+    // Initialize with default value if not already set
+    if (!answers.energyLevel) {
+        answers.energyLevel = energySlider.value;
+    }
+}
+
+// Current thoughts input handler (optional)
+const currentThoughts = document.getElementById('currentThoughts');
+if (currentThoughts) {
+    currentThoughts.addEventListener('input', () => {
+        answers.currentThoughts = currentThoughts.value;
+        updateProgress();
+    });
+}
+
+// Enhanced Discover button click handler
+discoverBtn.addEventListener('click', () => {
+    // Validate all mandatory questions
+    if (!validateAllMandatoryQuestions()) {
+        showValidationFeedback();
+        return;
+    }
+    
+    // Show loading state
+    discoverBtn.innerHTML = '<div class="loading-spinner"></div> <span data-en="Redirecting..." data-sw="Inaelekeza...">Redirecting...</span>';
+    discoverBtn.disabled = true;
+    
+    // NOW show recommendation preview (only after discover button is clicked)
+    if (recommendationPreview) {
+        recommendationPreview.style.display = 'block';
+        recommendationPreview.style.opacity = '0';
+        // Fade in animation
+        setTimeout(() => {
+            recommendationPreview.style.transition = 'opacity 0.5s ease-in-out';
+            recommendationPreview.style.opacity = '1';
+        }, 100);
+    }
+    
+    if (movieMatch) {
+        movieMatch.style.display = 'none';
+    }
+    
+    // After 2 seconds, redirect to about page
+    setTimeout(() => {
+        window.location.href = '/about/';
+    }, 2000);
+});
+
+// Try again button click handler
+if (tryAgainBtn) {
+    tryAgainBtn.addEventListener('click', () => {
+        currentQuestion = 0;
+        showQuestion(currentQuestion);
+        if (movieMatch) {
+            movieMatch.classList.remove('show');
+        }
+        
+        // Hide recommendation preview when resetting
+        if (recommendationPreview) {
+            recommendationPreview.style.display = 'none';
+            recommendationPreview.style.opacity = '0';
+        }
+        
+        document.querySelectorAll('.mood-btn').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        if (energySlider) {
+            energySlider.value = 50; // Reset to middle
+        }
+        if (currentThoughts) {
+            currentThoughts.value = '';
+        }
+        // Clear answers object
+        Object.keys(answers).forEach(key => delete answers[key]);
+        questions[0].scrollIntoView({ behavior: 'smooth' });
+        updateProgress();
+    });
+}
+
+// Enhanced Validation Functions
+function validateCurrentQuestion() {
+    const currentQuestionEl = questions[currentQuestion];
+    
+    // Check if current question is mandatory
+    if (!mandatoryQuestions.includes(currentQuestion)) {
+        return true; // Optional question
+    }
+    
+    // Validate based on question type
+    if (currentQuestion === 1) { // Energy level (slider)
+        // Check if answer exists in answers object OR if slider has been moved
+        const slider = document.getElementById('energyLevel');
+        const hasAnswer = answers.energyLevel !== undefined;
+        const sliderMoved = slider && slider.value !== '50'; // 50 is middle value
+        
+        console.log('Slider validation:', {
+            hasAnswer,
+            sliderMoved,
+            currentValue: slider?.value,
+            storedAnswer: answers.energyLevel
+        });
+        
+        return hasAnswer || sliderMoved;
+    } else if (currentQuestion === 5) { // Current thoughts (text input)
+        return true; // Optional
+    } else { // Mood options
+        const questionName = getQuestionName(currentQuestion);
+        const isValid = answers[questionName] !== undefined;
+        console.log(`Question ${currentQuestion} (${questionName}) validation:`, isValid);
+        return isValid;
+    }
+}
+
+function validateAllMandatoryQuestions() {
+    console.log('Validating all mandatory questions...');
+    
+    for (let i = 0; i < mandatoryQuestions.length; i++) {
+        const questionIndex = mandatoryQuestions[i];
+        const questionName = getQuestionName(questionIndex);
+        
+        if (questionIndex === 1) { // Energy level
+            const slider = document.getElementById('energyLevel');
+            const hasAnswer = answers.energyLevel !== undefined;
+            const sliderMoved = slider && slider.value !== '50';
+            
+            if (!hasAnswer && !sliderMoved) {
+                console.log('Energy level question not answered');
+                return false;
+            }
+        } else if (questionIndex === 5) { // Current thoughts
+            continue; // Skip optional question
+        } else { // Mood options
+            if (!answers[questionName]) {
+                console.log(`Question ${questionIndex} (${questionName}) not answered`);
+                return false;
+            }
+        }
+    }
+    
+    console.log('All mandatory questions validated successfully');
+    return true;
+}
+
+function getQuestionName(questionIndex) {
+    const questionNames = ['currentMood', 'energyLevel', 'thinkingLevel', 'watchingWith', 'timeAvailable', 'currentThoughts'];
+    return questionNames[questionIndex];
+}
+
+function showValidationFeedback() {
+    const currentQuestionEl = questions[currentQuestion];
+    
+    if (!validateCurrentQuestion()) {
+        // Highlight current question if invalid
+        currentQuestionEl.classList.add('invalid-question');
+        
+        // Special handling for slider question
+        if (currentQuestion === 1) {
+            const sliderContainer = currentQuestionEl.querySelector('.slider-container');
+            if (sliderContainer) {
+                sliderContainer.classList.add('shake');
+                setTimeout(() => {
+                    sliderContainer.classList.remove('shake');
+                }, 500);
+            }
+            
+            // Add visual feedback for slider
+            const slider = document.getElementById('energyLevel');
+            if (slider && slider.value === '50') {
+                const lowLabel = currentQuestionEl.querySelector('.low-label');
+                const highLabel = currentQuestionEl.querySelector('.high-label');
+                
+                if (lowLabel && highLabel) {
+                    lowLabel.classList.add('highlight-missing');
+                    highLabel.classList.add('highlight-missing');
+                    
+                    setTimeout(() => {
+                        lowLabel.classList.remove('highlight-missing');
+                        highLabel.classList.remove('highlight-missing');
+                    }, 2000);
                 }
             }
-            return true;
-        }
-        
-        function getQuestionName(questionIndex) {
-            const questionNames = ['currentMood', 'energyLevel', 'thinkingLevel', 'watchingWith', 'timeAvailable', 'currentThoughts'];
-            return questionNames[questionIndex];
-        }
-        
-        function showValidationFeedback() {
-            const currentQuestionEl = questions[currentQuestion];
-            
-            // Add shake animation
+        } else {
+            // Add shake animation for other questions
             currentQuestionEl.classList.add('shake');
             setTimeout(() => {
                 currentQuestionEl.classList.remove('shake');
             }, 500);
             
             // Highlight unanswered options
-            if (currentQuestion !== 1 && currentQuestion !== 5) { // Not slider or text input
+            if (currentQuestion !== 5) { // Not text input
                 const options = currentQuestionEl.querySelectorAll('.mood-btn');
                 options.forEach(option => {
                     if (!option.classList.contains('selected')) {
@@ -729,57 +859,108 @@
             }
         }
         
-        // Show question function
-        function showQuestion(index) {
-            console.log('Showing question:', index);
-            questions.forEach((question, i) => {
-                question.classList.remove('active', 'previous', 'next');
-                if (i < index) {
-                    question.classList.add('previous');
-                } else if (i > index) {
-                    question.classList.add('next');
-                } else {
-                    question.classList.add('active');
-                    console.log('Question', i, 'is now active');
-                }
-            });
-            updateProgress();
+        return false;
+    }
+    
+    currentQuestionEl.classList.remove('invalid-question');
+    return true;
+}
+
+// Show question function
+function showQuestion(index) {
+    console.log('Showing question:', index);
+    questions.forEach((question, i) => {
+        question.classList.remove('active', 'previous', 'next');
+        if (i < index) {
+            question.classList.add('previous');
+        } else if (i > index) {
+            question.classList.add('next');
+        } else {
+            question.classList.add('active');
+            console.log('Question', i, 'is now active');
         }
-        
-        // Enhanced progress update function
-        function updateProgress() {
-            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
-            progressFill.style.width = `${progress}%`;
-            
-            const currentLang = document.body.getAttribute('data-lang');
-            const langPrefix = currentLang === 'en' ? 'Question' : 'Swali';
-            const langSuffix = currentLang === 'en' ? 'of' : 'la';
-            progressText.textContent = `${langPrefix} ${currentQuestion + 1} ${langSuffix} ${totalQuestions}`;
-            
-            // Show/hide navigation buttons
-            if (currentQuestion === 0) {
-                prevBtn.style.display = 'none';
-            } else {
-                prevBtn.style.display = 'inline-flex';
-            }
-            
-            if (currentQuestion === totalQuestions - 1) {
-                nextBtn.style.display = 'none';
-                discoverBtn.style.display = 'flex';
-            } else {
-                nextBtn.style.display = 'inline-flex';
-                discoverBtn.style.display = 'none';
-            }
-            
-            // Update button states based on validation
-            if (currentQuestion < totalQuestions - 1) {
-                nextBtn.disabled = !validateCurrentQuestion();
-            }
-            
-            if (currentQuestion === totalQuestions - 1) {
-                discoverBtn.disabled = !validateAllMandatoryQuestions();
-            }
+    });
+    updateProgress();
+}
+
+// Enhanced progress update function
+function updateProgress() {
+    const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+    if (progressFill) {
+        progressFill.style.width = `${progress}%`;
+    }
+    
+    if (progressText) {
+        const currentLang = document.body.getAttribute('data-lang') || 'en';
+        const langPrefix = currentLang === 'en' ? 'Question' : 'Swali';
+        const langSuffix = currentLang === 'en' ? 'of' : 'la';
+        progressText.textContent = `${langPrefix} ${currentQuestion + 1} ${langSuffix} ${totalQuestions}`;
+    }
+    
+    // Show/hide navigation buttons
+    if (prevBtn) {
+        if (currentQuestion === 0) {
+            prevBtn.style.display = 'none';
+        } else {
+            prevBtn.style.display = 'inline-flex';
         }
+    }
+    
+    if (nextBtn && discoverBtn) {
+        if (currentQuestion === totalQuestions - 1) {
+            nextBtn.style.display = 'none';
+            discoverBtn.style.display = 'flex';
+        } else {
+            nextBtn.style.display = 'inline-flex';
+            discoverBtn.style.display = 'none';
+        }
+    }
+    
+    // Update button states based on validation
+    if (nextBtn && currentQuestion < totalQuestions - 1) {
+        const isValid = validateCurrentQuestion();
+        nextBtn.disabled = !isValid;
+        console.log('Next button disabled:', !isValid);
+    }
+    
+    if (discoverBtn && currentQuestion === totalQuestions - 1) {
+        discoverBtn.disabled = !validateAllMandatoryQuestions();
+    }
+
+    // Enhanced Discover button click handler
+discoverBtn.addEventListener('click', () => {
+    // Validate all mandatory questions first
+    if (!validateAllMandatoryQuestions()) {
+        showValidationFeedback();
+        return;
+    }
+    
+    // Show loading state on button
+    discoverBtn.innerHTML = '<div class="loading-spinner"></div> <span data-en="Redirecting..." data-sw="Inaelekeza...">Redirecting...</span>';
+    discoverBtn.disabled = true;
+    
+    // Show the recommendation preview
+    const recommendationPreview = document.getElementById('recommendationPreview');
+    recommendationPreview.style.display = 'block';
+    recommendationPreview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // Hide the movie match section if it was shown
+    const movieMatch = document.getElementById('movieMatch');
+    movieMatch.style.display = 'none';
+    
+    // After 2 seconds, redirect to about page
+    setTimeout(() => {
+        window.location.href = '/about/';
+    }, 2000);
+});
+// Inside discoverBtn click handler:
+const recommendationPreview = document.getElementById('recommendationPreview');
+recommendationPreview.style.display = 'block';
+setTimeout(() => {
+    recommendationPreview.classList.add('show');
+}, 50);
+
+}
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
