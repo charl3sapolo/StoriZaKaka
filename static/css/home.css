@@ -490,58 +490,197 @@
             line-height: 1.6;
         }
 
-        /* Statistics Section */
-        .stats-section {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 4rem 2rem;
-            margin: 4rem 0;
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
 
-        .stats-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
-            opacity: 0.3;
-            z-index: -1;
-        }
 
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            text-align: center;
-        }
+/* Enhanced Statistics Section */
+.stats-section {
+    background: var(--stats-bg, rgba(40, 40, 50, 0.6));
+    border: 1px solid var(--stats-border, rgba(255, 255, 255, 0.1));
+    border-radius: clamp(16px, 2vw, 20px);
+    padding: clamp(2.5rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
+    margin: clamp(2.5rem, 5vw, 4rem) 0;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--stats-shadow, 0 8px 32px rgba(0, 0, 0, 0.2));
+    transition: all 0.4s ease;
+}
 
-        .stat-item {
-            padding: 1rem;
-        }
+.stats-section:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--stats-hover-shadow, 0 12px 40px rgba(0, 0, 0, 0.3));
+}
 
-        .stat-number {
-            display: block;
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--color-red);
-            margin-bottom: 0.5rem;
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+.stats-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxkZWZzPjxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5Vbml0cz0idXNlclNwYWNlT25Vc2UiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIvPjwvcGF0dGVybj48L2RlZnM+PHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0idXJsKCNwYXR0ZXJuKSIvPjwvc3ZnPg==');
+    opacity: var(--stats-pattern-opacity, 0.2);
+    z-index: -1;
+}
 
-        .stat-label {
-            color: var(--text-secondary);
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
+.stats-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--gradient-primary);
+    transform: scaleY(0);
+    transform-origin: top;
+    transition: transform 0.6s ease-out;
+}
+
+.stats-section:hover::after {
+    transform: scaleY(1);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+    gap: clamp(1rem, 3vw, 2rem);
+    text-align: center;
+}
+
+.stat-item {
+    padding: clamp(0.75rem, 2vw, 1rem);
+    position: relative;
+}
+
+.stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.stat-item:hover::before {
+    opacity: 1;
+}
+
+.stat-number {
+    display: block;
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 800;
+    margin-bottom: clamp(0.25rem, 1vw, 0.5rem);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    font-family: 'Barlow', sans-serif;
+    text-shadow: 0 0 10px rgba(245, 184, 35, 0.2);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+/* Theme Variables */
+:root {
+    /* Light Mode */
+    --stats-bg-light: rgba(248, 248, 250, 0.9);
+    --stats-border-light: rgba(0, 0, 0, 0.08);
+    --stats-shadow-light: 0 4px 24px rgba(0, 0, 0, 0.1);
+    --stats-hover-shadow-light: 0 8px 32px rgba(0, 0, 0, 0.15);
+    --stats-pattern-opacity-light: 0.15;
+    
+    /* Dark Mode */
+    --stats-bg-dark: rgba(30, 30, 40, 0.7);
+    --stats-border-dark: rgba(255, 255, 255, 0.1);
+    --stats-shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --stats-hover-shadow-dark: 0 12px 40px rgba(0, 0, 0, 0.4);
+    --stats-pattern-opacity-dark: 0.25;
+}
+
+[data-theme="light"] .stats-section {
+    --stats-bg: var(--stats-bg-light);
+    --stats-border: var(--stats-border-light);
+    --stats-shadow: var(--stats-shadow-light);
+    --stats-hover-shadow: var(--stats-hover-shadow-light);
+    --stats-pattern-opacity: var(--stats-pattern-opacity-light);
+    --text-secondary: #5a5a6a;
+}
+
+[data-theme="dark"] .stats-section {
+    --stats-bg: var(--stats-bg-dark);
+    --stats-border: var(--stats-border-dark);
+    --stats-shadow: var(--stats-shadow-dark);
+    --stats-hover-shadow: var(--stats-hover-shadow-dark);
+    --stats-pattern-opacity: var(--stats-pattern-opacity-dark);
+    --text-secondary: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile Optimizations */
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .stats-section {
+        padding: 2rem 1rem;
+    }
+    
+    .stats-section:hover {
+        transform: none;
+    }
+    
+    .stat-number {
+        font-size: 2.2rem;
+    }
+}
+
+/* Animation */
+@keyframes statPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.stat-item:hover .stat-number {
+    animation: statPulse 0.6s ease;
+}
+@media (max-width: 480px) {
+    /* Base Reset */
+    body {
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden;
+    }
+
+    /* Layout Structure */
+    .container {
+        max-width: 100vw;
+        padding: 0 0.75rem;
+    }
+
+    .section {
+        padding: 2.5rem 0;
+    }
+
+    .section-header {
+        margin-bottom: 2rem;
+    }
+
+    /* Typography */
+    [class*="title"] {
+        font-size: 1.375rem;
+        line-height: 1.3;
+    }
+}
 
         /* Movie Showcase */
 
@@ -2156,78 +2295,3 @@
     .hero-meta .hero-year, .hero-meta .hero-genre { font-size: 0.92rem; }
     .hero-desc-bg { padding: 0.5rem 0.7rem; }
 }
-
-/* === MINIMAL COLOR UPDATE FOR STORI ZA KAKA === */
-
-/* 1. Primary Accent: Golden Yellow */
-:root {
-    --color-red: #F5B823;
-    --color-purple: #F5B823;
-    --color-orange: #F5B823;
-    --color-green: #10B981;
-    --color-blue: #3B82F6;
-    --gradient-primary: linear-gradient(135deg, #F5B823, #F5B823);
-    --gradient-secondary: linear-gradient(135deg, #F5B823, #F5B823);
-    --gradient-blue: linear-gradient(135deg, #F5B823, #F5B823);
-    --bg-primary: #000000;
-    --bg-secondary: rgba(255, 255, 255, 0.05);
-    --bg-tertiary: rgba(0, 0, 0, 0.3);
-    --text-primary: #FFFFFF;
-    --text-secondary: #94a3b8;
-    --text-muted: #64748b;
-    --border-color: #1A1A1A;
-    --border-hover: #1A1A1A;
-    --shadow-color: rgba(0, 0, 0, 0.3);
-    --header-bg: rgba(0, 0, 0, 0.95);
-}
-
-/* 2. Backgrounds */
-body {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-}
-.card-front, .card-back, .feature-card, .tech-card, .cta-section, .stats-section, .questionnaire-card {
-    border: 1px solid #1A1A1A !important;
-}
-
-/* 3. Primary Buttons & Accents */
-.btn-primary, .btn, .discover-btn, .featured-search-btn, .watch-now-btn {
-    background: #F5B823 !important;
-    color: #000 !important;
-    border: 1px solid #F5B823 !important;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-}
-.btn-primary:hover, .btn-primary:focus, .btn:hover, .discover-btn:hover, .featured-search-btn:hover, .watch-now-btn:hover {
-    background: #000 !important;
-    color: #F5B823 !important;
-    border: 1px solid #F5B823 !important;
-}
-
-/* 4. Section Titles & Accents */
-.section-title::after, .discover-title::after {
-    background: #F5B823 !important;
-}
-.feature-icon, .match-tag, .movie-match-rating, .card-meta .rating {
-    color: #F5B823 !important;
-    text-shadow: 0 0 1px #181818, 0 1px 1px #181818; /* 1px dark stroke for contrast */
-}
-
-/* 5. Poster overlays: Maintain current treatment, but ensure gold accent is visible */
-.card-meta .rating, .hero-meta .hero-rating, .hero-meta .hero-genre {
-    color: #F5B823 !important;
-    text-shadow: 0 0 1px #181818, 0 1px 1px #181818;
-}
-
-/* 6. Borders */
-.card-front, .card-back, .feature-card, .tech-card, .cta-section, .stats-section, .questionnaire-card {
-    border: 1px solid #1A1A1A !important;
-}
-
-/* 7. Text: Keep white for primary text */
-.hero-title, .section-title, .discover-title, .feature-title, .stat-number, .movie-match-details h4 {
-    color: #FFFFFF !important;
-}
-
-/* 8. Responsive and dynamic elements: No change to shapes, spacing, or animation */
-
-/* --- END MINIMAL COLOR UPDATE --- */
