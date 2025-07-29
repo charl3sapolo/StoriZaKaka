@@ -4475,38 +4475,7 @@ section {
     color: var(--text-muted);
 }
 
-/* Trailer Preview Overlay */
-.trailer-preview {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    border-radius: 12px;
-}
 
-.movie-card:hover .trailer-preview {
-    opacity: 1;
-}
-
-.trailer-preview i {
-    font-size: 2rem;
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-}
-
-.trailer-preview span {
-    font-size: 0.8rem;
-    color: white;
-    text-align: center;
-}
 
 /* Card Back Styling */
 .close-detail {
@@ -4704,39 +4673,231 @@ section {
     }
 }
 
-/* Trailer Preview Container */
-#trailerPreviewContainer {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10000;
-    background: rgba(0, 0, 0, 0.9);
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+
+/* Card Details Preview - Shows on hover */
+.card-details-preview {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.8) 100%);
+    padding: 0.75rem;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s ease;
     backdrop-filter: blur(10px);
-    display: none;
+    border-radius: 0 0 12px 12px;
 }
 
+.movie-card:hover .card-details-preview {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.details-text {
+    font-size: 0.8rem;
+    color: white;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Mobile Responsive Card Design */
 @media (max-width: 768px) {
-    #trailerPreviewContainer {
-        padding: 15px;
+    .movie-card {
+        width: 150px;
+        height: 240px;
     }
     
-    #trailerPreviewContainer iframe {
-        width: 280px !important;
-        height: 157px !important;
+    .poster-image {
+        height: 180px;
+    }
+    
+    .card-meta {
+        padding: 0.5rem;
+        gap: 0.2rem;
+    }
+    
+    .genre {
+        font-size: 0.7rem;
+    }
+    
+    .rating {
+        font-size: 0.8rem;
+    }
+    
+    .year {
+        font-size: 0.7rem;
+    }
+    
+    .card-details-preview {
+        padding: 0.5rem;
+    }
+    
+    .details-text {
+        font-size: 0.7rem;
+    }
+    
+    .card-back {
+        padding: 0.75rem;
+    }
+    
+    .movie-title {
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .movie-description {
+        font-size: 0.75rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .movie-details-grid {
+        font-size: 0.7rem;
+        gap: 0.4rem 1rem;
+    }
+    
+    .watch-trailer-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.8rem;
     }
 }
 
 @media (max-width: 480px) {
-    #trailerPreviewContainer {
-        padding: 10px;
+    .movie-card {
+        width: 130px;
+        height: 200px;
     }
     
-    #trailerPreviewContainer iframe {
-        width: 240px !important;
-        height: 135px !important;
+    .poster-image {
+        height: 150px;
+    }
+    
+    .card-meta {
+        padding: 0.4rem;
+    }
+    
+    .genre {
+        font-size: 0.65rem;
+    }
+    
+    .rating {
+        font-size: 0.75rem;
+    }
+    
+    .year {
+        font-size: 0.65rem;
+    }
+    
+    .card-details-preview {
+        padding: 0.4rem;
+    }
+    
+    .details-text {
+        font-size: 0.65rem;
+    }
+    
+    .card-back {
+        padding: 0.6rem;
+    }
+    
+    .movie-title {
+        font-size: 0.8rem;
+    }
+    
+    .movie-description {
+        font-size: 0.7rem;
+    }
+    
+    .movie-details-grid {
+        font-size: 0.65rem;
+        gap: 0.3rem 0.8rem;
+    }
+    
+    .watch-trailer-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* Poster wrapper fills card, details bar overlays bottom inside card */
+.poster-wrapper {
+    position: relative;
+    width: 100%;
+    height: 240px;
+    min-height: 0;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    overflow: hidden;
+}
+.poster-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+    margin: 0;
+    display: block;
+}
+.card-details-preview {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.82) 100%);
+    padding: 0.6rem 0.5rem 0.5rem 0.5rem;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    border-radius: 0 0 12px 12px;
+    pointer-events: none;
+    z-index: 2;
+    min-height: 1.7em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.movie-card.show-details .card-details-preview {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.details-text {
+    font-size: 0.8rem;
+    color: white;
+    font-weight: 500;
+    line-height: 1.3;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@media (max-width: 768px) {
+    .poster-wrapper {
+        height: 180px;
+    }
+    .details-text {
+        font-size: 0.7rem;
+    }
+    .card-details-preview {
+        padding: 0.4rem 0.3rem 0.3rem 0.3rem;
+        min-height: 1.3em;
+    }
+}
+@media (max-width: 480px) {
+    .poster-wrapper {
+        height: 140px;
+    }
+    .details-text {
+        font-size: 0.65rem;
+    }
+    .card-details-preview {
+        padding: 0.3rem 0.2rem 0.2rem 0.2rem;
+        min-height: 1em;
     }
 }
