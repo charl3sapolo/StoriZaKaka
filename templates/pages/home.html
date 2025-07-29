@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -138,33 +138,33 @@
         
         <!-- Modal Container -->
         <div class="modal-container">
-            <button class="modal-close" id="modalClose">✕</button>
-            
-            <!-- Modal Navigation Arrows -->
-            <button class="modal-arrow modal-arrow-left" id="modalArrowLeft">
-                <i class="fas fa-chevron-left"></i>
-            </button>
-            <button class="modal-arrow modal-arrow-right" id="modalArrowRight">
-                <i class="fas fa-chevron-right"></i>
-            </button>
-            
-            <div class="modal-poster" id="modalPoster">
-                <!-- Movie poster will be inserted here -->
+        <button class="modal-close" id="modalClose">✕</button>
+        
+        <!-- Modal Navigation Arrows -->
+        <button class="modal-arrow modal-arrow-left" id="modalArrowLeft">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="modal-arrow modal-arrow-right" id="modalArrowRight">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+        
+        <div class="modal-poster" id="modalPoster">
+            <!-- Movie poster will be inserted here -->
+        </div>
+        
+        <div class="modal-content">
+            <h3 id="modalTitle">Movie Title</h3>
+            <div class="modal-meta" id="modalMeta">
+                <span class="modal-rating">⭐ 8.5</span>
+                <span class="modal-year">2023</span>
+                <span class="modal-genre">Action</span>
             </div>
-            
-            <div class="modal-content">
-                <h3 id="modalTitle">Movie Title</h3>
-                <div class="modal-meta" id="modalMeta">
-                    <span class="modal-rating">⭐ 8.5</span>
-                    <span class="modal-year">2023</span>
-                    <span class="modal-genre">Action</span>
-                </div>
-                <p class="modal-desc" id="modalDesc">
-                    Movie description will be inserted here...
-                </p>
-                <button class="watch-trailer" id="watchTrailer" data-yt-id="">
-                    <i class="fas fa-play"></i> ▶ Play Trailer
-                </button>
+            <p class="modal-desc" id="modalDesc">
+                Movie description will be inserted here...
+            </p>
+            <button class="watch-trailer" id="watchTrailer" data-yt-id="">
+                <i class="fas fa-play"></i> ▶ Play Trailer
+            </button>
             </div>
         </div>
     </div>
@@ -1285,7 +1285,7 @@ setTimeout(() => {
                 });
             }, 250);
         });
-        
+
         // TMDB Hero Background Slider (daily, random, high-quality, no consecutive repeats)
         const TMDB_API_KEY = 'b6e814a0b9ff291122e8a05a0f206cd8';
         const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
@@ -1597,8 +1597,8 @@ setTimeout(() => {
             // Set trailer button with validated YouTube ID
             watchTrailer.setAttribute('data-yt-id', movie.trailerId);
             watchTrailer.disabled = false;
-            watchTrailer.innerHTML = '<i class="fas fa-play"></i> ▶ Play Trailer';
-            watchTrailer.style.opacity = '1';
+                    watchTrailer.innerHTML = '<i class="fas fa-play"></i> ▶ Play Trailer';
+                    watchTrailer.style.opacity = '1';
             
             // Show modal and prevent background scrolling
             movieModal.style.display = 'flex';
@@ -1883,71 +1883,84 @@ setTimeout(() => {
             setupMovieCardInteractions(row);
         }
         
-        // Create movie card HTML (restoring original flip card design)
+        // Create movie card HTML (restoring original flip card design, poster fills card)
         function createMovieCard(movie) {
-            const isTV = movie.media_type === 'tv' || movie.first_air_date;
-            const title = movie.title || movie.name || 'Untitled';
-            const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
+                const isTV = movie.media_type === 'tv' || movie.first_air_date;
+                const title = movie.title || movie.name || 'Untitled';
+                const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
             const poster = getOptimalPoster(movie);
-            const genre = Array.isArray(movie.genre_ids) && movie.genre_ids.length ? getGenreName(movie.genre_ids[0]) : 'Other';
-            const rating = typeof movie.vote_average === 'number' ? movie.vote_average : 'N/A';
-            const votes = typeof movie.vote_count === 'number' ? movie.vote_count : 'N/A';
-            const lang = movie.original_language ? movie.original_language.toUpperCase() : 'N/A';
-            const overview = movie.overview || 'No description available.';
+                const genre = Array.isArray(movie.genre_ids) && movie.genre_ids.length ? getGenreName(movie.genre_ids[0]) : 'Other';
+                const rating = typeof movie.vote_average === 'number' ? movie.vote_average : 'N/A';
+                const votes = typeof movie.vote_count === 'number' ? movie.vote_count : 'N/A';
+                const lang = movie.original_language ? movie.original_language.toUpperCase() : 'N/A';
+                const overview = movie.overview || 'No description available.';
             
-            return `
+                return `
             <div class="movie-card" tabindex="0" data-movie='${JSON.stringify(movie)}'>
-                <div class="card-inner">
-                    <div class="card-front">
-                        <img class="poster-image" src="${poster}" alt="${title}" loading="lazy" />
-                        <div class="card-meta">
-                            <span class="genre">${genre}${isTV ? ' <span class=\'tv-badge\'>TV</span>' : ''}</span>
-                            <span class="rating">⭐ ${rating}</span>
-                            <span class="year">${year}</span>
+                    <div class="card-inner">
+                        <div class="card-front">
+                        <div class="poster-wrapper">
+                            <img class="poster-image" src="${poster}" alt="${title}" loading="lazy" />
+                            <div class="card-details-preview">
+                                <span class="details-text">${title} • ${year} • ${rating}⭐ • ${genre}</span>
+                            </div>
                         </div>
-                        ${movie.trailerId ? `<div class="trailer-preview" data-trailer-id="${movie.trailerId}">
-                            <i class="fas fa-play"></i>
-                            <span>Hover to preview</span>
-                        </div>` : ''}
-                    </div>
-                    <div class="card-back">
-                        <button class="close-detail" aria-label="Close">&times;</button>
-                        <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '…' : title}</h3>
-                        <div class="movie-description" style="overflow:auto;max-height:160px;">${overview}</div>
-                        <div class="movie-details-grid" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.2rem;">
-                            <div><strong>Rating:</strong> ${rating}</div>
-                            <div><strong>Year:</strong> ${year || 'N/A'}</div>
-                            <div><strong>Language:</strong> ${lang}</div>
-                            <div><strong>Votes:</strong> ${votes}</div>
+                            <div class="card-meta">
+                                <span class="genre">${genre}${isTV ? ' <span class=\'tv-badge\'>TV</span>' : ''}</span>
+                                <span class="rating">⭐ ${rating}</span>
+                                <span class="year">${year}</span>
+                            </div>
                         </div>
+                        <div class="card-back">
+                            <button class="close-detail" aria-label="Close">&times;</button>
+                            <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '…' : title}</h3>
+                            <div class="movie-description" style="overflow:auto;max-height:160px;">${overview}</div>
+                            <div class="movie-details-grid" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.2rem;">
+                                <div><strong>Rating:</strong> ${rating}</div>
+                                <div><strong>Year:</strong> ${year || 'N/A'}</div>
+                                <div><strong>Language:</strong> ${lang}</div>
+                                <div><strong>Votes:</strong> ${votes}</div>
+                            </div>
                         ${movie.trailerId ? `<button class="watch-trailer-btn" onclick="loadTrailer('${movie.trailerId}')">
                             <i class="fas fa-play"></i> ▶ Play Trailer
                         </button>` : ''}
+                        </div>
                     </div>
                 </div>
-            </div>
-            `;
+                `;
         }
         
-        // Setup movie card interactions (restoring original flip functionality)
+        // Setup movie card interactions (flip on click only, details bar JS controlled)
         function setupMovieCardInteractions(row) {
             const cards = row.querySelectorAll('.movie-card');
             cards.forEach(card => {
                 const inner = card.querySelector('.card-inner');
                 const closeBtn = card.querySelector('.close-detail');
+                const detailsBar = card.querySelector('.card-details-preview');
                 if (!inner) return;
-                
+
+                // Show details bar on hover/focus/touch, hide on leave/blur
+                function showDetails() {
+                    // Hide all others
+                    row.querySelectorAll('.movie-card.show-details').forEach(c => c.classList.remove('show-details'));
+                    card.classList.add('show-details');
+                }
+                function hideDetails() {
+                    card.classList.remove('show-details');
+                }
+                card.addEventListener('mouseenter', showDetails);
+                card.addEventListener('mouseleave', hideDetails);
+                card.addEventListener('focus', showDetails);
+                card.addEventListener('blur', hideDetails);
+                card.addEventListener('touchstart', function(e) { showDetails(); }, {passive:true});
+
+                // Flip on click
                 card.addEventListener('click', (e) => {
                     if (card.classList.contains('flipped')) return;
-                    
-                    // Flip all other cards back
                     cards.forEach(c => c.classList.remove('flipped'));
-                    
-                    // Flip this card
                     card.classList.add('flipped');
                     e.stopPropagation();
                 });
-                
                 if (closeBtn) {
                     closeBtn.addEventListener('click', (e) => {
                         card.classList.remove('flipped');
@@ -1955,150 +1968,15 @@ setTimeout(() => {
                     });
                 }
             });
-            
             // Close flipped cards when clicking outside
             document.addEventListener('click', (e) => {
                 if (!e.target.closest('.movie-card')) {
                     cards.forEach(card => card.classList.remove('flipped'));
                 }
             });
-            
-            // Setup hover trailer preview functionality
-            setupTrailerPreview(cards);
         }
         
-        // Setup trailer preview on hover (with touch support for mobile)
-        function setupTrailerPreview(cards) {
-            cards.forEach(card => {
-                const trailerPreview = card.querySelector('.trailer-preview');
-                if (!trailerPreview) return;
-                
-                const trailerId = trailerPreview.getAttribute('data-trailer-id');
-                if (!trailerId) return;
-                
-                let hoverTimeout;
-                let isPreviewShown = false;
-                
-                // Desktop hover events
-                card.addEventListener('mouseenter', () => {
-                    if (window.innerWidth > 768) { // Only on desktop
-                        hoverTimeout = setTimeout(() => {
-                            if (!isPreviewShown) {
-                                showTrailerPreview(trailerId, card);
-                                isPreviewShown = true;
-                            }
-                        }, 500);
-                    }
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    if (window.innerWidth > 768) { // Only on desktop
-                        clearTimeout(hoverTimeout);
-                        hideTrailerPreview();
-                        isPreviewShown = false;
-                    }
-                });
-                
-                // Mobile touch events
-                card.addEventListener('touchstart', (e) => {
-                    if (window.innerWidth <= 768) { // Only on mobile
-                        e.preventDefault();
-                        if (!isPreviewShown) {
-                            showTrailerPreview(trailerId, card);
-                            isPreviewShown = true;
-                        }
-                    }
-                });
-                
-                // Close preview when touching outside
-                document.addEventListener('touchstart', (e) => {
-                    if (isPreviewShown && !e.target.closest('.movie-card') && !e.target.closest('#trailerPreviewContainer')) {
-                        hideTrailerPreview();
-                        isPreviewShown = false;
-                    }
-                });
-                
-                // Close preview when clicking outside (for both mobile and desktop)
-                document.addEventListener('click', (e) => {
-                    if (isPreviewShown && !e.target.closest('.movie-card') && !e.target.closest('#trailerPreviewContainer')) {
-                        hideTrailerPreview();
-                        isPreviewShown = false;
-                    }
-                });
-            });
-        }
-        
-        // Show trailer preview
-        function showTrailerPreview(trailerId, card) {
-            // Create or update trailer preview container
-            let previewContainer = document.getElementById('trailerPreviewContainer');
-            if (!previewContainer) {
-                previewContainer = document.createElement('div');
-                previewContainer.id = 'trailerPreviewContainer';
-                previewContainer.style.cssText = `
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    z-index: 10000;
-                    background: rgba(0, 0, 0, 0.9);
-                    border-radius: 12px;
-                    padding: 20px;
-                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-                    backdrop-filter: blur(10px);
-                `;
-                document.body.appendChild(previewContainer);
-            }
-            
-            // Create iframe for trailer
-            const iframe = document.createElement('iframe');
-            iframe.src = `https://www.youtube.com/embed/${trailerId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0`;
-            iframe.style.cssText = `
-                width: 320px;
-                height: 180px;
-                border: none;
-                border-radius: 8px;
-            `;
-            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-            
-            // Clear and add iframe
-            previewContainer.innerHTML = '';
-            previewContainer.appendChild(iframe);
-            
-            // Add close button
-            const closeBtn = document.createElement('button');
-            closeBtn.innerHTML = '✕';
-            closeBtn.style.cssText = `
-                position: absolute;
-                top: 10px;
-                right: 10px;
-                background: rgba(255, 255, 255, 0.2);
-                border: none;
-                color: white;
-                width: 30px;
-                height: 30px;
-                border-radius: 50%;
-                cursor: pointer;
-                font-size: 16px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            `;
-            closeBtn.addEventListener('click', hideTrailerPreview);
-            previewContainer.appendChild(closeBtn);
-            
-            // Show container
-            previewContainer.style.display = 'block';
-        }
-        
-        // Hide trailer preview
-        function hideTrailerPreview() {
-            const previewContainer = document.getElementById('trailerPreviewContainer');
-            if (previewContainer) {
-                previewContainer.style.display = 'none';
-                previewContainer.innerHTML = '';
-            }
-        }
+
         
         // Setup showcase navigation arrows
         function setupShowcaseNavigation() {
@@ -2617,7 +2495,7 @@ setTimeout(() => {
                 behavior: 'auto'
             });
         });
-
+        
         // === MOBILE NAVIGATION OVERHAUL - HAMBURGER MENU SYSTEM ===
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
