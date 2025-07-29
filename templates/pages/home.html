@@ -397,12 +397,21 @@
                         <span class="emoji">🎯</span> <span data-en="Discover My Perfect Movie" data-sw="Gundua Filamu Yangu Kamili">Discover My Perfect Movie</span>
                     </button>
 
+                   <!-- Analysis Text (Hidden by default) -->
+                   <div class="analysis-text hidden" id="analysis-text">
+                       <h3><span class="emoji">🎉</span> <span data-en="Great! We're analyzing your mood..." data-sw="Vizuri! Tunachambua hali yako...">Great! We're analyzing your mood...</span></h3>
+                       <p data-en="Based on your feelings, we'll find movies that perfectly match your current vibe!"
+                          data-sw="Kulingana na hisia zako, tutapata filamu zinazolingana kabisa na hali yako ya sasa!">
+                           Based on your feelings, we'll find movies that perfectly match your current vibe!
+                       </p>
+                   </div>
+
                    <!-- Recommendation Preview -->
 <div class="recommendation-preview" id="recommendationPreview" style="display: none;">
-    <h3><span class="emoji">🎉</span> <span data-en="Great! We're analyzing your mood..." data-sw="Vizuri! Tunachambua hali yako...">Great! We're analyzing your mood...</span></h3>
-    <p data-en="Based on your feelings, we'll find movies that perfectly match your current vibe!"
-       data-sw="Kulingana na hisia zako, tutapata filamu zinazolingana kabisa na hali yako ya sasa!">
-        Based on your feelings, we'll find movies that perfectly match your current vibe!
+    <h3><span class="emoji">🎯</span> <span data-en="Finding your perfect match..." data-sw="Kutafuta mechi yako kamili...">Finding your perfect match...</span></h3>
+    <p data-en="We're searching through thousands of movies to find the perfect one for you!"
+       data-sw="Tunatafuta kati ya maelfu ya filamu kupata ile kamili kwako!">
+        We're searching through thousands of movies to find the perfect one for you!
     </p>
 </div>
 
@@ -503,6 +512,20 @@
 
     <!-- JavaScript -->
     <script>
+        // Preload color scheme preferences
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme) {
+                document.body.setAttribute('data-theme', savedTheme);
+            } else if (prefersDark) {
+                document.body.setAttribute('data-theme', 'dark');
+            } else {
+                document.body.setAttribute('data-theme', 'light');
+            }
+        })();
+
         // Scroll to top on page load
         window.onload = function() {
             window.scrollTo(0, 0);
@@ -1490,6 +1513,32 @@ setTimeout(() => {
         
         // Initial call
         updateMobileDetailsButtonText();
+
+        // === QUESTIONNAIRE FLOW FIX ===
+        function showAnalysisText() {
+            const analysisText = document.getElementById('analysis-text');
+            if (analysisText && allQuestionsAnswered) {
+                analysisText.classList.remove('hidden');
+                analysisText.classList.add('show');
+            }
+        }
+
+        // Check if all questions are answered
+        function checkAllQuestionsAnswered() {
+            const mandatoryQuestions = ['currentMood', 'energyLevel', 'thinkingLevel', 'watchingWith', 'timeAvailable'];
+            return mandatoryQuestions.every(question => answers[question] !== undefined);
+        }
+
+        // Update the discover button click handler to show analysis text
+        const originalDiscoverBtnClick = discoverBtn.onclick;
+        discoverBtn.addEventListener('click', function(e) {
+            if (checkAllQuestionsAnswered()) {
+                showAnalysisText();
+            }
+            if (originalDiscoverBtnClick) {
+                originalDiscoverBtnClick.call(this, e);
+            }
+        });
 
         // TMDB Featured Movies Showcase
         const FEATURED_CONTAINER = document.getElementById('featuredMovies');
