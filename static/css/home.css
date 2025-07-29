@@ -2640,11 +2640,11 @@
 
 /* Dynamic Blurred Backdrop */
 .modal-backdrop {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-size: cover;
     background-position: center;
     filter: blur(12px) brightness(0.4);
@@ -2859,10 +2859,21 @@
 }
 
 .youtube-container iframe {
-    width: min(95vw, var(--youtube-max-width));
-    height: calc(min(95vw, var(--youtube-max-width)) / var(--youtube-aspect-ratio));
+    width: min(95vw, 1200px);
+    height: calc(min(95vw, 1200px) / 1.7777777778); /* 16:9 aspect ratio */
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    max-width: 100%;
+    max-height: 90vh;
+}
+
+/* Responsive YouTube container */
+@media (max-width: 600px) {
+    .youtube-container iframe {
+        width: 95vw;
+        height: calc(95vw / 1.7777777778);
+        border-radius: 8px;
+    }
 }
 
 /* YouTube Skeleton Loading */

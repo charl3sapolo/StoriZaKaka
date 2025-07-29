@@ -1135,19 +1135,24 @@ setTimeout(() => {
         const YOUTUBE_ID_PATTERN = /^[a-zA-Z0-9_-]{11}$/;
         
         // Enhanced trailer filtering function with strict validation
-        function filterMoviesWithTrailers(movies) {
-            const validMovies = movies.filter(movie => {
-                // Check if movie has a valid trailerId
-                if (!movie.trailerId) return false;
-                
-                // Validate YouTube ID format
-                if (!movie.trailerId.match(YOUTUBE_ID_PATTERN)) return false;
-                
-                // Additional validation: ensure it's not a placeholder
-                if (movie.trailerId === 'dQw4w9WgXcQ') return false;
-                
-                return true;
-            });
+        async function filterMoviesWithTrailers(movies) {
+            const validMovies = [];
+            
+            for (const movie of movies) {
+                try {
+                    // Fetch trailer ID for each movie
+                    const mediaType = movie.media_type || 'movie';
+                    const trailerId = await fetchTrailerId(movie.id, mediaType);
+                    
+                    // Validate trailer availability
+                    if (trailerId && trailerId.match(YOUTUBE_ID_PATTERN) && trailerId !== 'dQw4w9WgXcQ') {
+                        movie.trailerId = trailerId; // Store the validated trailer ID
+                        validMovies.push(movie);
+                    }
+                } catch (error) {
+                    console.log(`Failed to fetch trailer for ${movie.title || movie.name}:`, error);
+                }
+            }
             
             const removedCount = movies.length - validMovies.length;
             if (removedCount > 0) {
@@ -1160,6 +1165,24 @@ setTimeout(() => {
         // YouTube ID validation helper
         function isValidYouTubeId(trailerId) {
             return trailerId && trailerId.match(YOUTUBE_ID_PATTERN) && trailerId !== 'dQw4w9WgXcQ';
+        }
+        
+        // Content validation function for strict trailer enforcement
+        function validateContentForTrailers(content) {
+            if (!content || !Array.isArray(content)) return [];
+            
+            return content.filter(item => {
+                // Must have a valid trailer ID
+                if (!item.trailerId) return false;
+                
+                // Must match YouTube ID pattern
+                if (!item.trailerId.match(YOUTUBE_ID_PATTERN)) return false;
+                
+                // Must not be placeholder
+                if (item.trailerId === 'dQw4w9WgXcQ') return false;
+                
+                return true;
+            });
         }
         
         // Responsive poster system
@@ -1253,7 +1276,7 @@ setTimeout(() => {
         let heroRefreshCount = 0;
         let heroLastRefreshes = [];
 
-        // Helper to fetch popular and high-rated movies/TV
+        // Helper to fetch popular and high-rated movies/TV with strict trailer enforcement
         async function fetchHeroMedia() {
             // Popular movies and TV shows, sorted by rating
             const [movieRes, tvRes] = await Promise.all([
@@ -1267,8 +1290,17 @@ setTimeout(() => {
             movies = movies.map(m => ({...m, media_type: 'movie'}));
             tvs = tvs.map(t => ({...t, media_type: 'tv'}));
             let all = [...movies, ...tvs];
-            // Shuffle and pick 5
-            all = all.sort(() => Math.random() - 0.5).slice(0, 5);
+            
+            // Apply strict trailer filtering - only include movies with valid trailers
+            const filtered = await filterMoviesWithTrailers(all);
+            
+            if (filtered.length === 0) {
+                console.error('🚫 Trailer Enforcement: No valid trailer movies available for hero section');
+                return [];
+            }
+            
+            // Shuffle and pick 5 from trailer-validated movies
+            all = filtered.sort(() => Math.random() - 0.5).slice(0, 5);
             return all;
         }
 
@@ -1358,10 +1390,21 @@ setTimeout(() => {
         if (document.querySelector('.hero-bg-slider')) {
             setTimeout(setHeroOverlayTextContrast, 1200);
         }
-        // Initial overlay update after loading backgrounds
+        // Initial overlay update after loading backgrounds with strict trailer enforcement
         async function loadHeroBackgrounds(forceRefresh=false) {
             try {
                 heroMedia = await fetchHeroMedia();
+                
+                // Check if we have any valid trailer movies
+                if (!heroMedia || heroMedia.length === 0) {
+                    console.error('🚫 Trailer Enforcement: No valid trailer movies available for hero section');
+                    const hero = document.querySelector('.hero');
+                    if (hero) {
+                        hero.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    }
+                    return;
+                }
+                
                 const slider = document.querySelector('.hero-bg-slider');
                 if (!slider) return;
                 slider.innerHTML = '';
@@ -1382,7 +1425,9 @@ setTimeout(() => {
                     goToHeroSlide((heroSlideIndex + 1) % heroSlides.length);
                 }, 10000);
                 updateHeroOverlay(heroSlideIndex);
-            } catch (e) {}
+            } catch (e) {
+                console.error('Error loading hero backgrounds:', e);
+            }
         }
 
         // Navigation arrow logic
@@ -1476,11 +1521,18 @@ setTimeout(() => {
             });
         }
 
-        // Show movie modal with dynamic backdrop
+        // Show movie modal with strict trailer enforcement and dynamic backdrop
         function showMovieModal(movieIndex) {
             if (!heroMedia || !heroMedia[movieIndex]) return;
             
             const movie = heroMedia[movieIndex];
+            
+            // CRITICAL: Only show movies with valid trailers
+            if (!movie.trailerId || !movie.trailerId.match(YOUTUBE_ID_PATTERN) || movie.trailerId === 'dQw4w9WgXcQ') {
+                console.warn(`🚫 Trailer Enforcement: Skipping modal for ${movie.title || movie.name} - no valid trailer`);
+                return;
+            }
+            
             currentModalMovieIndex = movieIndex;
             
             // Update modal content
@@ -1490,16 +1542,18 @@ setTimeout(() => {
             const posterPath = getOptimalPoster(movie);
             modalPoster.innerHTML = `<img src="${posterPath}" alt="${movie.title || movie.name}" />`;
             
-            // Update dynamic backdrop with movie poster
+            // Update dynamic backdrop with movie poster (full page coverage)
             const modalBackdrop = document.getElementById('modalBackdrop');
             if (modalBackdrop && movie.poster_path) {
                 const backdropPath = `https://image.tmdb.org/t/p/original${movie.poster_path}`;
-                modalBackdrop.style.backgroundImage = `url(${backdropPath})`;
                 
                 // Pre-load image for better performance
                 const img = new Image();
                 img.onload = () => {
                     modalBackdrop.style.backgroundImage = `url(${backdropPath})`;
+                    modalBackdrop.style.backgroundSize = 'cover';
+                    modalBackdrop.style.backgroundPosition = 'center';
+                    modalBackdrop.style.filter = 'blur(12px) brightness(0.4)';
                 };
                 img.src = backdropPath;
             }
@@ -1518,20 +1572,11 @@ setTimeout(() => {
             // Update description
             modalDesc.textContent = movie.overview || 'No description available.';
             
-            // Fetch and update trailer button with YouTube ID
-            const mediaType = movie.media_type || 'movie';
-            fetchTrailerId(movie.id, mediaType).then(trailerId => {
-                const youtubeId = trailerId || 'dQw4w9WgXcQ'; // Fallback to placeholder
-                watchTrailer.setAttribute('data-yt-id', youtubeId);
-                watchTrailer.disabled = !trailerId; // Disable if no trailer available
-                if (!trailerId) {
-                    watchTrailer.innerHTML = '<i class="fas fa-exclamation-triangle"></i> No Trailer Available';
-                    watchTrailer.style.opacity = '0.6';
-                } else {
-                    watchTrailer.innerHTML = '<i class="fas fa-play"></i> ▶ Play Trailer';
-                    watchTrailer.style.opacity = '1';
-                }
-            });
+            // Set trailer button with validated YouTube ID
+            watchTrailer.setAttribute('data-yt-id', movie.trailerId);
+            watchTrailer.disabled = false;
+            watchTrailer.innerHTML = '<i class="fas fa-play"></i> ▶ Play Trailer';
+            watchTrailer.style.opacity = '1';
             
             // Show modal and prevent background scrolling
             movieModal.style.display = 'flex';
@@ -1732,16 +1777,11 @@ setTimeout(() => {
                 const res = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
                 const data = await res.json();
                 // Strict trailer enforcement
-                const filtered = filterMoviesWithTrailers(data.results.slice(0, 8));
+                const filtered = await filterMoviesWithTrailers(data.results.slice(0, 8));
                 
                 // Fallback behavior if no valid trailer movies
                 if (filtered.length === 0) {
-                    console.error('🚫 Trailer Enforcement: No valid trailer movies available for hero section');
-                    // Apply fallback styling
-                    const hero = document.querySelector('.hero');
-                    if (hero) {
-                        hero.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-                    }
+                    console.error('🚫 Trailer Enforcement: No valid trailer movies available for featured section');
                     FEATURED_ROWS.innerHTML = '<p>No movies with trailers available at the moment.</p>';
                     return;
                 }
@@ -1749,6 +1789,7 @@ setTimeout(() => {
                 allFeaturedMovies = filtered; // 8 movies for 2 rows, filtered
                 renderFeaturedMovies(allFeaturedMovies);
             } catch (e) {
+                console.error('Error loading featured movies:', e);
                 FEATURED_ROWS.innerHTML = '<p>Could not load featured movies.</p>';
             }
         }
