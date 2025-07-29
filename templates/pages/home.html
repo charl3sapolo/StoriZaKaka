@@ -271,18 +271,40 @@
                     </button>
                 </form>
                 
-                <!-- Movie Carousel with Navigation Arrows -->
-                <div class="movie-carousel-container">
-                    <button class="carousel-arrow left" id="trendingMoviesLeftArrow" aria-label="Previous movies">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <div class="movie-carousel" id="trendingMoviesCarousel"></div>
-                    <button class="carousel-arrow right" id="trendingMoviesRightArrow" aria-label="Next movies">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-                
-                <div class="movie-grid" id="featuredRows"></div>
+                <!-- Showcase Section with 2 Independent Rows -->
+                <section class="movie-section" id="showcase-movies">
+                    <h2 class="section-title">Popular Movies</h2>
+                    <div class="movie-row-container">
+                        <button class="row-nav-arrow left" id="popularMoviesLeftArrow" aria-label="Previous popular movies">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="movie-row" id="popularMoviesRow">
+                            <div class="loading-indicator hidden" id="popularMoviesLoading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                        <button class="row-nav-arrow right" id="popularMoviesRightArrow" aria-label="Next popular movies">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </section>
+
+                <section class="movie-section" id="showcase-trending">
+                    <h2 class="section-title">Trending Movies</h2>
+                    <div class="movie-row-container">
+                        <button class="row-nav-arrow left" id="trendingMoviesLeftArrow" aria-label="Previous trending movies">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="movie-row" id="trendingMoviesRow">
+                            <div class="loading-indicator hidden" id="trendingMoviesLoading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                        <button class="row-nav-arrow right" id="trendingMoviesRightArrow" aria-label="Next trending movies">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </section>
             </div>
         </div>
     </section>
@@ -1765,108 +1787,406 @@ setTimeout(() => {
             }
         });
 
-        // TMDB Featured Movies Showcase
+        // TMDB Showcase with 2 Independent Rows (mirroring discover.html)
         const FEATURED_CONTAINER = document.getElementById('featuredMovies');
-        const FEATURED_ROWS = document.getElementById('featuredRows');
         const FEATURED_SEARCH_INPUT = document.getElementById('featuredSearchInput');
         const FEATURED_SEARCH_BTN = document.getElementById('featuredSearchBtn');
-        const TMDB_IMAGE_BASE_W780 = 'https://image.tmdb.org/t/p/w780'; // w780 for high quality
-        let allFeaturedMovies = [];
-        async function loadFeaturedMovies() {
+        
+        // Showcase data storage
+        let popularMovies = [];
+        let trendingMovies = [];
+        let currentPopularIndex = 0;
+        let currentTrendingIndex = 0;
+        
+        // Load showcase movies for both rows
+        async function loadShowcaseMovies() {
             try {
-                const res = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
-                const data = await res.json();
-                // Strict trailer enforcement
-                const filtered = await filterMoviesWithTrailers(data.results.slice(0, 8));
+                // Show loading indicators
+                showLoading('popularMoviesLoading');
+                showLoading('trendingMoviesLoading');
                 
-                // Fallback behavior if no valid trailer movies
-                if (filtered.length === 0) {
-                    console.error('🚫 Trailer Enforcement: No valid trailer movies available for featured section');
-                    FEATURED_ROWS.innerHTML = '<p>No movies with trailers available at the moment.</p>';
+                // Load popular movies for row 1
+                const popularRes = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+                const popularData = await popularRes.json();
+                const filteredPopular = await filterMoviesWithTrailers(popularData.results.slice(0, 20));
+                
+                // Load trending movies for row 2
+                const trendingRes = await fetch(`${TMDB_BASE_URL}/movie/now_playing?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
+                const trendingData = await trendingRes.json();
+                const filteredTrending = await filterMoviesWithTrailers(trendingData.results.slice(0, 20));
+                
+                if (filteredPopular.length === 0 && filteredTrending.length === 0) {
+                    console.error('🚫 Trailer Enforcement: No valid trailer movies available for showcase');
+                    hideLoading('popularMoviesLoading');
+                    hideLoading('trendingMoviesLoading');
                     return;
                 }
                 
-                allFeaturedMovies = filtered; // 8 movies for 2 rows, filtered
-                renderFeaturedMovies(allFeaturedMovies);
+                popularMovies = filteredPopular;
+                trendingMovies = filteredTrending;
+                
+                // Render both rows
+                renderShowcaseRow('popularMoviesRow', popularMovies, 0);
+                renderShowcaseRow('trendingMoviesRow', trendingMovies, 0);
+                
+                // Setup navigation
+                setupShowcaseNavigation();
+                
+                // Hide loading indicators
+                hideLoading('popularMoviesLoading');
+                hideLoading('trendingMoviesLoading');
+                
             } catch (e) {
-                console.error('Error loading featured movies:', e);
-                FEATURED_ROWS.innerHTML = '<p>Could not load featured movies.</p>';
+                console.error('Error loading showcase movies:', e);
+                hideLoading('popularMoviesLoading');
+                hideLoading('trendingMoviesLoading');
             }
         }
-        function renderFeaturedMovies(movies) {
-            const padded = movies.concat(Array(8 - movies.length).fill(null)).slice(0, 8);
-            FEATURED_ROWS.innerHTML = padded.map(movie => {
-                if (!movie) return `<div class="movie-card" style="visibility:hidden;"></div>`;
-                const isTV = movie.media_type === 'tv' || movie.first_air_date;
-                const title = movie.title || movie.name || 'Untitled';
-                const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
-                const poster = getOptimalPoster(movie);
-                const genre = Array.isArray(movie.genre_ids) && movie.genre_ids.length ? getGenreName(movie.genre_ids[0]) : 'Other';
-                const rating = typeof movie.vote_average === 'number' ? movie.vote_average : 'N/A';
-                const votes = typeof movie.vote_count === 'number' ? movie.vote_count : 'N/A';
-                const lang = movie.original_language ? movie.original_language.toUpperCase() : 'N/A';
-                const overview = movie.overview || 'No description available.';
-                return `
-                <div class="movie-card" tabindex="0">
-                    <div class="card-inner">
-                        <div class="card-front">
-                            <img class="poster-image" src="${poster}" alt="${title}" loading="lazy" />
-                            <div class="card-meta">
-                                <span class="genre">${genre}${isTV ? ' <span class=\'tv-badge\'>TV</span>' : ''}</span>
-                                <span class="rating">⭐ ${rating}</span>
-                                <span class="year">${year}</span>
-                            </div>
+        
+        // Show loading indicator
+        function showLoading(loadingId) {
+            const loadingElement = document.getElementById(loadingId);
+            if (loadingElement) {
+                loadingElement.classList.remove('hidden');
+            }
+        }
+        
+        // Hide loading indicator
+        function hideLoading(loadingId) {
+            const loadingElement = document.getElementById(loadingId);
+            if (loadingElement) {
+                loadingElement.classList.add('hidden');
+            }
+        }
+        
+        // Render showcase row with movies
+        function renderShowcaseRow(rowId, movies, startIndex) {
+            const row = document.getElementById(rowId);
+            if (!row || !movies || movies.length === 0) return;
+            
+            // Clear loading indicator
+            const loadingElement = row.querySelector('.loading-indicator');
+            if (loadingElement) {
+                loadingElement.classList.add('hidden');
+            }
+            
+            // Get 4 movies starting from startIndex
+            const moviesToShow = movies.slice(startIndex, startIndex + 4);
+            
+            // Create movie cards
+            const movieCards = moviesToShow.map(movie => createMovieCard(movie)).join('');
+            
+            // Update row content
+            row.innerHTML = movieCards;
+            
+            // Setup card interactions
+            setupMovieCardInteractions(row);
+        }
+        
+        // Create movie card HTML (restoring original flip card design)
+        function createMovieCard(movie) {
+            const isTV = movie.media_type === 'tv' || movie.first_air_date;
+            const title = movie.title || movie.name || 'Untitled';
+            const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
+            const poster = getOptimalPoster(movie);
+            const genre = Array.isArray(movie.genre_ids) && movie.genre_ids.length ? getGenreName(movie.genre_ids[0]) : 'Other';
+            const rating = typeof movie.vote_average === 'number' ? movie.vote_average : 'N/A';
+            const votes = typeof movie.vote_count === 'number' ? movie.vote_count : 'N/A';
+            const lang = movie.original_language ? movie.original_language.toUpperCase() : 'N/A';
+            const overview = movie.overview || 'No description available.';
+            
+            return `
+            <div class="movie-card" tabindex="0" data-movie='${JSON.stringify(movie)}'>
+                <div class="card-inner">
+                    <div class="card-front">
+                        <img class="poster-image" src="${poster}" alt="${title}" loading="lazy" />
+                        <div class="card-meta">
+                            <span class="genre">${genre}${isTV ? ' <span class=\'tv-badge\'>TV</span>' : ''}</span>
+                            <span class="rating">⭐ ${rating}</span>
+                            <span class="year">${year}</span>
                         </div>
-                        <div class="card-back">
-                            <button class="close-detail" aria-label="Close">&times;</button>
-                            <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '…' : title}</h3>
-                            <div class="movie-description" style="overflow:auto;max-height:160px;">${overview}</div>
-                            <div class="movie-details-grid" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.2rem;">
-                                <div><strong>Rating:</strong> ${rating}</div>
-                                <div><strong>Year:</strong> ${year || 'N/A'}</div>
-                                <div><strong>Language:</strong> ${lang}</div>
-                                <div><strong>Votes:</strong> ${votes}</div>
-                            </div>
+                        ${movie.trailerId ? `<div class="trailer-preview" data-trailer-id="${movie.trailerId}">
+                            <i class="fas fa-play"></i>
+                            <span>Hover to preview</span>
+                        </div>` : ''}
+                    </div>
+                    <div class="card-back">
+                        <button class="close-detail" aria-label="Close">&times;</button>
+                        <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '…' : title}</h3>
+                        <div class="movie-description" style="overflow:auto;max-height:160px;">${overview}</div>
+                        <div class="movie-details-grid" style="margin-top:1rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 1.2rem;">
+                            <div><strong>Rating:</strong> ${rating}</div>
+                            <div><strong>Year:</strong> ${year || 'N/A'}</div>
+                            <div><strong>Language:</strong> ${lang}</div>
+                            <div><strong>Votes:</strong> ${votes}</div>
                         </div>
+                        ${movie.trailerId ? `<button class="watch-trailer-btn" onclick="loadTrailer('${movie.trailerId}')">
+                            <i class="fas fa-play"></i> ▶ Play Trailer
+                        </button>` : ''}
                     </div>
                 </div>
-                `;
-            }).join('');
-
-            // Add flip/close logic
-            const grid = FEATURED_ROWS;
-            document.querySelectorAll('.movie-card').forEach(card => {
+            </div>
+            `;
+        }
+        
+        // Setup movie card interactions (restoring original flip functionality)
+        function setupMovieCardInteractions(row) {
+            const cards = row.querySelectorAll('.movie-card');
+            cards.forEach(card => {
                 const inner = card.querySelector('.card-inner');
                 const closeBtn = card.querySelector('.close-detail');
                 if (!inner) return;
-                card.onclick = e => {
+                
+                card.addEventListener('click', (e) => {
                     if (card.classList.contains('flipped')) return;
-                    document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('flipped'));
+                    
+                    // Flip all other cards back
+                    cards.forEach(c => c.classList.remove('flipped'));
+                    
+                    // Flip this card
                     card.classList.add('flipped');
-                    grid.classList.add('flipping');
                     e.stopPropagation();
-                };
+                });
+                
                 if (closeBtn) {
-                    closeBtn.onclick = e => {
+                    closeBtn.addEventListener('click', (e) => {
                         card.classList.remove('flipped');
-                        grid.classList.remove('flipping');
                         e.stopPropagation();
-                    };
+                    });
                 }
             });
-            // Close flip on outside click
-            document.body.addEventListener('click', e => {
-                document.querySelectorAll('.movie-card.flipped').forEach(card => {
-                    if (!card.contains(e.target)) {
-                        card.classList.remove('flipped');
-                        grid.classList.remove('flipping');
+            
+            // Close flipped cards when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.movie-card')) {
+                    cards.forEach(card => card.classList.remove('flipped'));
+                }
+            });
+            
+            // Setup hover trailer preview functionality
+            setupTrailerPreview(cards);
+        }
+        
+        // Setup trailer preview on hover (with touch support for mobile)
+        function setupTrailerPreview(cards) {
+            cards.forEach(card => {
+                const trailerPreview = card.querySelector('.trailer-preview');
+                if (!trailerPreview) return;
+                
+                const trailerId = trailerPreview.getAttribute('data-trailer-id');
+                if (!trailerId) return;
+                
+                let hoverTimeout;
+                let isPreviewShown = false;
+                
+                // Desktop hover events
+                card.addEventListener('mouseenter', () => {
+                    if (window.innerWidth > 768) { // Only on desktop
+                        hoverTimeout = setTimeout(() => {
+                            if (!isPreviewShown) {
+                                showTrailerPreview(trailerId, card);
+                                isPreviewShown = true;
+                            }
+                        }, 500);
+                    }
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    if (window.innerWidth > 768) { // Only on desktop
+                        clearTimeout(hoverTimeout);
+                        hideTrailerPreview();
+                        isPreviewShown = false;
+                    }
+                });
+                
+                // Mobile touch events
+                card.addEventListener('touchstart', (e) => {
+                    if (window.innerWidth <= 768) { // Only on mobile
+                        e.preventDefault();
+                        if (!isPreviewShown) {
+                            showTrailerPreview(trailerId, card);
+                            isPreviewShown = true;
+                        }
+                    }
+                });
+                
+                // Close preview when touching outside
+                document.addEventListener('touchstart', (e) => {
+                    if (isPreviewShown && !e.target.closest('.movie-card') && !e.target.closest('#trailerPreviewContainer')) {
+                        hideTrailerPreview();
+                        isPreviewShown = false;
+                    }
+                });
+                
+                // Close preview when clicking outside (for both mobile and desktop)
+                document.addEventListener('click', (e) => {
+                    if (isPreviewShown && !e.target.closest('.movie-card') && !e.target.closest('#trailerPreviewContainer')) {
+                        hideTrailerPreview();
+                        isPreviewShown = false;
                     }
                 });
             });
         }
-        if (FEATURED_CONTAINER) {
-            loadFeaturedMovies();
+        
+        // Show trailer preview
+        function showTrailerPreview(trailerId, card) {
+            // Create or update trailer preview container
+            let previewContainer = document.getElementById('trailerPreviewContainer');
+            if (!previewContainer) {
+                previewContainer = document.createElement('div');
+                previewContainer.id = 'trailerPreviewContainer';
+                previewContainer.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    z-index: 10000;
+                    background: rgba(0, 0, 0, 0.9);
+                    border-radius: 12px;
+                    padding: 20px;
+                    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+                    backdrop-filter: blur(10px);
+                `;
+                document.body.appendChild(previewContainer);
+            }
+            
+            // Create iframe for trailer
+            const iframe = document.createElement('iframe');
+            iframe.src = `https://www.youtube.com/embed/${trailerId}?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0`;
+            iframe.style.cssText = `
+                width: 320px;
+                height: 180px;
+                border: none;
+                border-radius: 8px;
+            `;
+            iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+            
+            // Clear and add iframe
+            previewContainer.innerHTML = '';
+            previewContainer.appendChild(iframe);
+            
+            // Add close button
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '✕';
+            closeBtn.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                background: rgba(255, 255, 255, 0.2);
+                border: none;
+                color: white;
+                width: 30px;
+                height: 30px;
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            `;
+            closeBtn.addEventListener('click', hideTrailerPreview);
+            previewContainer.appendChild(closeBtn);
+            
+            // Show container
+            previewContainer.style.display = 'block';
         }
+        
+        // Hide trailer preview
+        function hideTrailerPreview() {
+            const previewContainer = document.getElementById('trailerPreviewContainer');
+            if (previewContainer) {
+                previewContainer.style.display = 'none';
+                previewContainer.innerHTML = '';
+            }
+        }
+        
+        // Setup showcase navigation arrows
+        function setupShowcaseNavigation() {
+            // Popular movies navigation
+            const popularLeftArrow = document.getElementById('popularMoviesLeftArrow');
+            const popularRightArrow = document.getElementById('popularMoviesRightArrow');
+            
+            if (popularLeftArrow && popularRightArrow) {
+                popularLeftArrow.addEventListener('click', () => {
+                    if (currentPopularIndex > 0) {
+                        currentPopularIndex--;
+                        renderShowcaseRow('popularMoviesRow', popularMovies, currentPopularIndex);
+                        updateArrowStates('popularMoviesLeftArrow', 'popularMoviesRightArrow', currentPopularIndex, popularMovies.length);
+                    }
+                });
+                
+                popularRightArrow.addEventListener('click', () => {
+                    if (currentPopularIndex < Math.max(0, popularMovies.length - 4)) {
+                        currentPopularIndex++;
+                        renderShowcaseRow('popularMoviesRow', popularMovies, currentPopularIndex);
+                        updateArrowStates('popularMoviesLeftArrow', 'popularMoviesRightArrow', currentPopularIndex, popularMovies.length);
+                    }
+                });
+                
+                // Set initial arrow states
+                updateArrowStates('popularMoviesLeftArrow', 'popularMoviesRightArrow', currentPopularIndex, popularMovies.length);
+            }
+            
+            // Trending movies navigation
+            const trendingLeftArrow = document.getElementById('trendingMoviesLeftArrow');
+            const trendingRightArrow = document.getElementById('trendingMoviesRightArrow');
+            
+            if (trendingLeftArrow && trendingRightArrow) {
+                trendingLeftArrow.addEventListener('click', () => {
+                    if (currentTrendingIndex > 0) {
+                        currentTrendingIndex--;
+                        renderShowcaseRow('trendingMoviesRow', trendingMovies, currentTrendingIndex);
+                        updateArrowStates('trendingMoviesLeftArrow', 'trendingMoviesRightArrow', currentTrendingIndex, trendingMovies.length);
+                    }
+                });
+                
+                trendingRightArrow.addEventListener('click', () => {
+                    if (currentTrendingIndex < Math.max(0, trendingMovies.length - 4)) {
+                        currentTrendingIndex++;
+                        renderShowcaseRow('trendingMoviesRow', trendingMovies, currentTrendingIndex);
+                        updateArrowStates('trendingMoviesLeftArrow', 'trendingMoviesRightArrow', currentTrendingIndex, trendingMovies.length);
+                    }
+                });
+                
+                // Set initial arrow states
+                updateArrowStates('trendingMoviesLeftArrow', 'trendingMoviesRightArrow', currentTrendingIndex, trendingMovies.length);
+            }
+        }
+        
+        // Update arrow states (enabled/disabled)
+        function updateArrowStates(leftArrowId, rightArrowId, currentIndex, totalMovies) {
+            const leftArrow = document.getElementById(leftArrowId);
+            const rightArrow = document.getElementById(rightArrowId);
+            
+            if (leftArrow) {
+                leftArrow.disabled = currentIndex === 0;
+            }
+            
+            if (rightArrow) {
+                rightArrow.disabled = currentIndex >= Math.max(0, totalMovies - 4);
+            }
+        }
+        
+        // Movie details function (placeholder)
+        function showMovieDetails(movieId, mediaType) {
+            console.log(`Show details for ${mediaType} ${movieId}`);
+            // This would typically open a modal or navigate to a detail page
+        }
+        
+        // Legacy function for backward compatibility with search
+        function renderFeaturedMovies(movies) {
+            if (movies && movies.length > 0) {
+                popularMovies = movies.slice(0, 20);
+                currentPopularIndex = 0;
+                renderShowcaseRow('popularMoviesRow', popularMovies, 0);
+                updateArrowStates('popularMoviesLeftArrow', 'popularMoviesRightArrow', 0, popularMovies.length);
+            }
+        }
+        
+        if (FEATURED_CONTAINER) {
+            loadShowcaseMovies();
+        }
+
         // Search functionality
         let searchTimeout;
         let lastSearchController = null;
@@ -1882,15 +2202,21 @@ setTimeout(() => {
             searchTimeout = setTimeout(async () => {
                 const query = FEATURED_SEARCH_INPUT.value.trim();
                 if (!query || query.length < 2) {
-                    renderFeaturedMovies(allFeaturedMovies);
+                    // Reset to original popular movies
+                    currentPopularIndex = 0;
+                    renderShowcaseRow('popularMoviesRow', popularMovies, 0);
+                    updateArrowStates('popularMoviesLeftArrow', 'popularMoviesRightArrow', 0, popularMovies.length);
                     return;
                 }
                 
                 // Add loading state
                 searchBar.classList.add('loading');
                 
-                // Show loading spinner
-                FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;"><span class="loading-spinner"></span></div>';
+                // Show loading spinner in popular movies row
+                const popularRow = document.getElementById('popularMoviesRow');
+                if (popularRow) {
+                    popularRow.innerHTML = '<div class="loading-indicator"><div class="spinner"></div></div>';
+                }
                 
                 // Fetch from TMDb search/multi
                 try {
@@ -1901,32 +2227,43 @@ setTimeout(() => {
                     // Only show movies and TV shows
                     const results = (data.results || []).filter(item => item.media_type === 'movie' || item.media_type === 'tv');
                     if (results.length === 0) {
-                        FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-secondary);">No results found.</div>';
+                        if (popularRow) {
+                            popularRow.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-secondary);">No results found.</div>';
+                        }
                         return;
                     }
                     renderFeaturedMovies(results);
                 } catch (e) {
                     if (e.name === 'AbortError') return;
                     // Silently fail - don't show error message
-                    renderFeaturedMovies(allFeaturedMovies);
+                    currentPopularIndex = 0;
+                    renderShowcaseRow('popularMoviesRow', popularMovies, 0);
+                    updateArrowStates('popularMoviesLeftArrow', 'popularMoviesRightArrow', 0, popularMovies.length);
                 } finally {
                     // Remove loading state
                     searchBar.classList.remove('loading');
                 }
             }, 300);
         });
+        
         mainSearchBar.addEventListener('submit', async e => {
             e.preventDefault();
             const query = FEATURED_SEARCH_INPUT.value.trim();
             if (!query || query.length < 2) {
-                renderFeaturedMovies(allFeaturedMovies);
+                currentPopularIndex = 0;
+                renderShowcaseRow('popularMoviesRow', popularMovies, 0);
+                updateArrowStates('popularMoviesLeftArrow', 'popularMoviesRightArrow', 0, popularMovies.length);
                 return;
             }
             
             // Add loading state
             searchBar.classList.add('loading');
             
-            FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;"><span class="loading-spinner"></span></div>';
+            const popularRow = document.getElementById('popularMoviesRow');
+            if (popularRow) {
+                popularRow.innerHTML = '<div class="loading-indicator"><div class="spinner"></div></div>';
+            }
+            
             try {
                 lastSearchController = new AbortController();
                 const res = await fetch(`${TMDB_BASE_URL}/search/multi?api_key=${TMDB_API_KEY}&language=en-US&query=${encodeURIComponent(query)}&page=1`, { signal: lastSearchController.signal });
@@ -1934,14 +2271,18 @@ setTimeout(() => {
                 const data = await res.json();
                 const results = (data.results || []).filter(item => item.media_type === 'movie' || item.media_type === 'tv');
                 if (results.length === 0) {
-                    FEATURED_ROWS.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-secondary);">No results found.</div>';
+                    if (popularRow) {
+                        popularRow.innerHTML = '<div style="text-align:center;padding:2rem;color:var(--text-secondary);">No results found.</div>';
+                    }
                     return;
                 }
                 renderFeaturedMovies(results);
             } catch (e) {
                 if (e.name === 'AbortError') return;
                 // Silently fail - don't show error message
-                renderFeaturedMovies(allFeaturedMovies);
+                currentPopularIndex = 0;
+                renderShowcaseRow('popularMoviesRow', popularMovies, 0);
+                updateArrowStates('popularMoviesLeftArrow', 'popularMoviesRightArrow', 0, popularMovies.length);
             } finally {
                 // Remove loading state
                 searchBar.classList.remove('loading');
