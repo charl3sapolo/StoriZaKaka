@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -54,6 +54,42 @@
         </nav>
     </header>
 
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Menu Panel -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="menu-header">
+            <span id="menu-time">14:30</span>
+            <button class="close-menu" id="closeMenuBtn">✕</button>
+        </div>
+        
+        <nav class="vertical-nav">
+            <a href="#home" class="menu-item">
+                <i class="fas fa-home"></i>
+                <span data-en="Home" data-sw="Nyumbani">Home</span>
+            </a>
+            <a href="#showcase" class="menu-item">
+                <i class="fas fa-film"></i>
+                <span data-en="Showcase" data-sw="Maonesho">Showcase</span>
+            </a>
+            <a href="#discover" class="menu-item">
+                <i class="fas fa-search"></i>
+                <span data-en="Discover" data-sw="Gundua">Discover</span>
+            </a>
+            <a href="#features" class="menu-item">
+                <i class="fas fa-star"></i>
+                <span data-en="Features" data-sw="Vipengele">Features</span>
+            </a>
+            <a href="#contact" class="menu-item">
+                <i class="fas fa-envelope"></i>
+                <span data-en="Contact" data-sw="Mawasiliano">Contact</span>
+            </a>
+        </nav>
+    </div>
+
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-bg-slider"></div>
@@ -85,6 +121,7 @@
                 <div class="hero-actions">
                     <a href="#discover" class="btn btn-primary" data-en="Find My Movie" data-sw="Tafuta Filamu Yangu">
                         <i class="fas fa-play"></i> Find My Movie
+                        <i class="fas fa-arrow-right pulse-arrow"></i>
                     </a>
                     <a href="#showcase" class="btn btn-secondary" data-en="Browse Movies" data-sw="Vinjari Filamu">
                         <i class="fas fa-film"></i> Browse Movies
@@ -94,35 +131,41 @@
         </div>
     </section>
 
-    <!-- Movie Modal System -->
+    <!-- Enhanced Movie Modal System -->
     <div class="movie-modal" id="movieModal">
-        <button class="modal-close" id="modalClose">✕</button>
+        <!-- Dynamic Blurred Backdrop -->
+        <div class="modal-backdrop" id="modalBackdrop"></div>
         
-        <!-- Modal Navigation Arrows -->
-        <button class="modal-arrow modal-arrow-left" id="modalArrowLeft">
-            <i class="fas fa-chevron-left"></i>
-        </button>
-        <button class="modal-arrow modal-arrow-right" id="modalArrowRight">
-            <i class="fas fa-chevron-right"></i>
-        </button>
-        
-        <div class="modal-poster" id="modalPoster">
-            <!-- Movie poster will be inserted here -->
-        </div>
-        
-        <div class="modal-content">
-            <h3 id="modalTitle">Movie Title</h3>
-            <div class="modal-meta" id="modalMeta">
-                <span class="modal-rating">⭐ 8.5</span>
-                <span class="modal-year">2023</span>
-                <span class="modal-genre">Action</span>
-            </div>
-            <p class="modal-desc" id="modalDesc">
-                Movie description will be inserted here...
-            </p>
-            <button class="watch-trailer" id="watchTrailer" data-yt-id="">
-                <i class="fas fa-play"></i> ▶ Play Trailer
+        <!-- Modal Container -->
+        <div class="modal-container">
+            <button class="modal-close" id="modalClose">✕</button>
+            
+            <!-- Modal Navigation Arrows -->
+            <button class="modal-arrow modal-arrow-left" id="modalArrowLeft">
+                <i class="fas fa-chevron-left"></i>
             </button>
+            <button class="modal-arrow modal-arrow-right" id="modalArrowRight">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            
+            <div class="modal-poster" id="modalPoster">
+                <!-- Movie poster will be inserted here -->
+            </div>
+            
+            <div class="modal-content">
+                <h3 id="modalTitle">Movie Title</h3>
+                <div class="modal-meta" id="modalMeta">
+                    <span class="modal-rating">⭐ 8.5</span>
+                    <span class="modal-year">2023</span>
+                    <span class="modal-genre">Action</span>
+                </div>
+                <p class="modal-desc" id="modalDesc">
+                    Movie description will be inserted here...
+                </p>
+                <button class="watch-trailer" id="watchTrailer" data-yt-id="">
+                    <i class="fas fa-play"></i> ▶ Play Trailer
+                </button>
+            </div>
         </div>
     </div>
 
@@ -227,6 +270,18 @@
                         <i class="fa fa-search"></i>
                     </button>
                 </form>
+                
+                <!-- Movie Carousel with Navigation Arrows -->
+                <div class="movie-carousel-container">
+                    <button class="carousel-arrow left" id="trendingMoviesLeftArrow" aria-label="Previous movies">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <div class="movie-carousel" id="trendingMoviesCarousel"></div>
+                    <button class="carousel-arrow right" id="trendingMoviesRightArrow" aria-label="Next movies">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
                 <div class="movie-grid" id="featuredRows"></div>
             </div>
         </div>
@@ -1075,6 +1130,117 @@ setTimeout(() => {
         // Trigger once on page load
         animateOnScroll();
 
+        // === STRICT TRAILER ENFORCEMENT ===
+        // YouTube ID validation pattern
+        const YOUTUBE_ID_PATTERN = /^[a-zA-Z0-9_-]{11}$/;
+        
+        // Enhanced trailer filtering function with strict validation
+        function filterMoviesWithTrailers(movies) {
+            const validMovies = movies.filter(movie => {
+                // Check if movie has a valid trailerId
+                if (!movie.trailerId) return false;
+                
+                // Validate YouTube ID format
+                if (!movie.trailerId.match(YOUTUBE_ID_PATTERN)) return false;
+                
+                // Additional validation: ensure it's not a placeholder
+                if (movie.trailerId === 'dQw4w9WgXcQ') return false;
+                
+                return true;
+            });
+            
+            const removedCount = movies.length - validMovies.length;
+            if (removedCount > 0) {
+                console.warn(`🚫 Trailer Enforcement: Removed ${removedCount} trailer-less movies from display`);
+            }
+            
+            return validMovies;
+        }
+        
+        // YouTube ID validation helper
+        function isValidYouTubeId(trailerId) {
+            return trailerId && trailerId.match(YOUTUBE_ID_PATTERN) && trailerId !== 'dQw4w9WgXcQ';
+        }
+        
+        // Responsive poster system
+        function getOptimalPoster(movie) {
+            const isMobile = window.innerWidth < 600;
+            
+            // Check for smallPoster field first (mobile-optimized)
+            if (isMobile && movie.smallPoster) {
+                return movie.smallPoster;
+            }
+            
+            // Fallback to regular poster with appropriate sizing
+            if (movie.poster_path) {
+                const baseUrl = 'https://image.tmdb.org/t/p/';
+                const size = isMobile ? 'w342' : 'w500'; // Smaller for mobile
+                return `${baseUrl}${size}${movie.poster_path}`;
+            }
+            
+            return '/static/img/placeholder.png';
+        }
+        
+        // Enhanced YouTube API implementation (mirroring discover.html)
+        function loadTrailer(id) {
+            const trailerContainer = document.getElementById('youtubeContainer');
+            if (!trailerContainer) return;
+            
+            // Show loading skeleton
+            trailerContainer.innerHTML = `
+                <div class="youtube-skeleton">
+                    <div class="loader"></div>
+                </div>
+            `;
+            
+            // Display container
+            trailerContainer.style.display = 'flex';
+            
+            // Load trailer after a brief delay for smooth transition
+            setTimeout(() => {
+                trailerContainer.innerHTML = `
+                    <button class="youtube-close" id="youtubeClose">✕</button>
+                    <iframe 
+                        src="https://www.youtube.com/embed/${id}?autoplay=1" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; encrypted-media; gyroscope"
+                        class="youtube-iframe"
+                    ></iframe>
+                `;
+                
+                // Add close functionality
+                const closeBtn = document.getElementById('youtubeClose');
+                if (closeBtn) {
+                    closeBtn.addEventListener('click', () => {
+                        trailerContainer.style.display = 'none';
+                    });
+                }
+                
+                // Close on backdrop click
+                trailerContainer.addEventListener('click', (e) => {
+                    if (e.target === trailerContainer) {
+                        trailerContainer.style.display = 'none';
+                    }
+                });
+            }, 300);
+        }
+        
+        // Responsive poster update on resize
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                // Update all movie cards with optimal posters
+                const movieCards = document.querySelectorAll('.movie-card img');
+                movieCards.forEach(img => {
+                    const movieCard = img.closest('.movie-card');
+                    if (movieCard && movieCard.dataset.movie) {
+                        const movie = JSON.parse(movieCard.dataset.movie);
+                        img.src = getOptimalPoster(movie);
+                    }
+                });
+            }, 250);
+        });
+        
         // TMDB Hero Background Slider (daily, random, high-quality, no consecutive repeats)
         const TMDB_API_KEY = 'b6e814a0b9ff291122e8a05a0f206cd8';
         const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
@@ -1310,7 +1476,7 @@ setTimeout(() => {
             });
         }
 
-        // Show movie modal
+        // Show movie modal with dynamic backdrop
         function showMovieModal(movieIndex) {
             if (!heroMedia || !heroMedia[movieIndex]) return;
             
@@ -1320,9 +1486,23 @@ setTimeout(() => {
             // Update modal content
             modalTitle.textContent = movie.title || movie.name || 'Untitled';
             
-            // Update poster
-            const posterPath = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : '/static/img/placeholder.png';
+            // Update poster with responsive system
+            const posterPath = getOptimalPoster(movie);
             modalPoster.innerHTML = `<img src="${posterPath}" alt="${movie.title || movie.name}" />`;
+            
+            // Update dynamic backdrop with movie poster
+            const modalBackdrop = document.getElementById('modalBackdrop');
+            if (modalBackdrop && movie.poster_path) {
+                const backdropPath = `https://image.tmdb.org/t/p/original${movie.poster_path}`;
+                modalBackdrop.style.backgroundImage = `url(${backdropPath})`;
+                
+                // Pre-load image for better performance
+                const img = new Image();
+                img.onload = () => {
+                    modalBackdrop.style.backgroundImage = `url(${backdropPath})`;
+                };
+                img.src = backdropPath;
+            }
             
             // Update meta information
             const rating = typeof movie.vote_average === 'number' ? movie.vote_average.toFixed(1) : 'N/A';
@@ -1391,7 +1571,7 @@ setTimeout(() => {
             watchTrailer.addEventListener('click', () => {
                 const youtubeId = watchTrailer.getAttribute('data-yt-id');
                 if (youtubeId) {
-                    showYouTubeTrailer(youtubeId);
+                    loadTrailer(youtubeId);
                 }
             });
         }
@@ -1551,7 +1731,22 @@ setTimeout(() => {
             try {
                 const res = await fetch(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=1`);
                 const data = await res.json();
-                allFeaturedMovies = data.results.slice(0, 8); // 8 movies for 2 rows
+                // Strict trailer enforcement
+                const filtered = filterMoviesWithTrailers(data.results.slice(0, 8));
+                
+                // Fallback behavior if no valid trailer movies
+                if (filtered.length === 0) {
+                    console.error('🚫 Trailer Enforcement: No valid trailer movies available for hero section');
+                    // Apply fallback styling
+                    const hero = document.querySelector('.hero');
+                    if (hero) {
+                        hero.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    }
+                    FEATURED_ROWS.innerHTML = '<p>No movies with trailers available at the moment.</p>';
+                    return;
+                }
+                
+                allFeaturedMovies = filtered; // 8 movies for 2 rows, filtered
                 renderFeaturedMovies(allFeaturedMovies);
             } catch (e) {
                 FEATURED_ROWS.innerHTML = '<p>Could not load featured movies.</p>';
@@ -1564,7 +1759,7 @@ setTimeout(() => {
                 const isTV = movie.media_type === 'tv' || movie.first_air_date;
                 const title = movie.title || movie.name || 'Untitled';
                 const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
-                const poster = movie.poster_path ? `${TMDB_IMAGE_BASE_W780}${movie.poster_path}` : '/static/img/placeholder.png';
+                const poster = getOptimalPoster(movie);
                 const genre = Array.isArray(movie.genre_ids) && movie.genre_ids.length ? getGenreName(movie.genre_ids[0]) : 'Other';
                 const rating = typeof movie.vote_average === 'number' ? movie.vote_average : 'N/A';
                 const votes = typeof movie.vote_count === 'number' ? movie.vote_count : 'N/A';
@@ -1866,7 +2061,7 @@ setTimeout(() => {
           // Use existing card HTML structure, lazy load images
           const title = item.title || item.name || 'Untitled';
           const year = (item.release_date || item.first_air_date || '').slice(0, 4);
-          const poster = item.poster_path ? `${imgBase}${item.poster_path}` : '/static/img/placeholder.png';
+          const poster = getOptimalPoster(item);
           const rating = typeof item.vote_average === 'number' ? item.vote_average.toFixed(1) : 'N/A';
           return `
             <div class="movie-card" tabindex="0">
@@ -1903,8 +2098,8 @@ setTimeout(() => {
         // Carousel Navigation
         const trendingMoviesCarousel = document.getElementById('trendingMoviesCarousel');
         const trendingTVCarousel = document.getElementById('trendingTVCarousel');
-        const trendingMoviesLeftArrow = document.querySelector('.carousel-arrow.left');
-        const trendingMoviesRightArrow = document.querySelector('.carousel-arrow.right');
+        const trendingMoviesLeftArrow = document.getElementById('trendingMoviesLeftArrow');
+        const trendingMoviesRightArrow = document.getElementById('trendingMoviesRightArrow');
         const trendingTVLeftArrow = document.querySelector('.carousel-arrow.left');
         const trendingTVRightArrow = document.querySelector('.carousel-arrow.right');
 
@@ -2040,7 +2235,188 @@ setTimeout(() => {
                 behavior: 'auto'
             });
         });
+
+        // === MOBILE NAVIGATION OVERHAUL - HAMBURGER MENU SYSTEM ===
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+        const menuTime = document.getElementById('menu-time');
+
+        // Update menu time every minute
+        function updateMenuTime() {
+            if (menuTime) {
+                menuTime.textContent = new Date().toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+            }
+        }
+
+        // Initial time update
+        updateMenuTime();
+        // Update time every minute
+        setInterval(updateMenuTime, 60000);
+
+        // Toggle menu open/close with immediate response
+        function toggleMenu() {
+            const isOpen = document.body.classList.contains('menu-open');
+            if (isOpen) {
+                closeMenu();
+            } else {
+                openMenu();
+            }
+        }
+
+        // Open menu with immediate visual feedback
+        function openMenu() {
+            document.body.classList.add('menu-open');
+            document.body.style.overflow = 'hidden';
+            // Add immediate visual feedback
+            mobileMenuBtn.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                mobileMenuBtn.style.transform = '';
+            }, 150);
+        }
+
+        // Close menu with immediate visual feedback
+        function closeMenu() {
+            document.body.classList.remove('menu-open');
+            document.body.style.overflow = '';
+            // Add immediate visual feedback
+            mobileMenuBtn.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                mobileMenuBtn.style.transform = '';
+            }, 150);
+        }
+
+        // Mobile menu button click with touch optimization
+        if (mobileMenuBtn) {
+            // Touch events for better mobile response
+            mobileMenuBtn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                mobileMenuBtn.style.transform = 'scale(0.9)';
+            }, { passive: false });
+
+            mobileMenuBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                mobileMenuBtn.style.transform = '';
+                toggleMenu();
+            }, { passive: false });
+
+            // Mouse events for desktop
+            mobileMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleMenu();
+            });
+        }
+
+        // Close menu button click
+        if (closeMenuBtn) {
+            closeMenuBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                closeMenu();
+            });
+        }
+
+        // Close menu on backdrop click
+        if (mobileMenu) {
+            mobileMenu.addEventListener('click', (e) => {
+                if (e.target === mobileMenu) {
+                    closeMenu();
+                }
+            });
+        }
+
+        // Close menu when clicking on backdrop overlay
+        document.addEventListener('click', (e) => {
+            if (document.body.classList.contains('menu-open') && 
+                !mobileMenu.contains(e.target) && 
+                !mobileMenuBtn.contains(e.target)) {
+                closeMenu();
+            }
+        });
+
+        // Smooth scroll functionality for menu items with immediate response
+        document.querySelectorAll('.menu-item').forEach(item => {
+            // Touch events for better mobile response
+            item.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                item.style.transform = 'translateX(8px) scale(0.98)';
+            }, { passive: false });
+
+            item.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                item.style.transform = '';
+                navigateToSection(item);
+            }, { passive: false });
+
+            // Mouse events for desktop
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                navigateToSection(item);
+            });
+        });
+
+        // Navigation function with immediate feedback
+        function navigateToSection(menuItem) {
+            const targetId = menuItem.getAttribute('href');
+            const target = document.querySelector(targetId);
+            
+            // Close menu immediately for better UX
+            closeMenu();
+            
+            if (target) {
+                // Add a small delay to allow menu to close first
+                setTimeout(() => {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }, 200);
+            }
+        }
+
+        // Watch window resize to enforce visibility rules with throttling
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (window.innerWidth > 600) {
+                    closeMenu();
+                }
+            }, 100);
+        });
+
+        // Keyboard navigation for menu
+        document.addEventListener('keydown', (e) => {
+            if (document.body.classList.contains('menu-open')) {
+                if (e.key === 'Escape') {
+                    closeMenu();
+                }
+            }
+        });
+
+        // Update menu item text on language change
+        function updateMenuLanguage() {
+            const currentLang = document.body.getAttribute('data-lang') || 'en';
+            document.querySelectorAll('.menu-item span').forEach(span => {
+                const attr = `data-${currentLang}`;
+                if (span.hasAttribute(attr)) {
+                    span.textContent = span.getAttribute(attr);
+                }
+            });
+        }
+
+        // Call on language change
+        if (langToggle) {
+            langToggle.addEventListener('click', updateMenuLanguage);
+        }
         
+        // Initial call
+        updateMenuLanguage();
 
     </script>
 </body>
