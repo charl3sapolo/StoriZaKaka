@@ -59,35 +59,64 @@
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Mobile Menu Panel -->
+    <!-- Enhanced Mobile Menu Panel -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="menu-header">
-            <span id="menu-time">14:30</span>
-            <button class="close-menu" id="closeMenuBtn">✕</button>
+            <div class="menu-time-container">
+                <i class="fas fa-clock"></i>
+                <span id="menu-time">14:30</span>
+            </div>
+            <button class="close-menu" id="closeMenuBtn" aria-label="Close menu">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
         
         <nav class="vertical-nav">
-            <a href="#home" class="menu-item">
+            <a href="#home" class="menu-item" aria-label="Go to Home section">
                 <i class="fas fa-home"></i>
                 <span data-en="Home" data-sw="Nyumbani">Home</span>
             </a>
-            <a href="#showcase" class="menu-item">
+            <a href="#showcase" class="menu-item" aria-label="Go to Showcase section">
                 <i class="fas fa-film"></i>
                 <span data-en="Showcase" data-sw="Maonesho">Showcase</span>
             </a>
-            <a href="#discover" class="menu-item">
+            <a href="#discover" class="menu-item" aria-label="Go to Discover section">
                 <i class="fas fa-search"></i>
                 <span data-en="Discover" data-sw="Gundua">Discover</span>
             </a>
-            <a href="#features" class="menu-item">
+            <a href="#features" class="menu-item" aria-label="Go to Features section">
                 <i class="fas fa-star"></i>
                 <span data-en="Features" data-sw="Vipengele">Features</span>
             </a>
-            <a href="#contact" class="menu-item">
+            <a href="#contact" class="menu-item" aria-label="Go to Contact section">
                 <i class="fas fa-envelope"></i>
                 <span data-en="Contact" data-sw="Mawasiliano">Contact</span>
             </a>
+            
+            <!-- Additional menu items -->
+            <div class="menu-divider"></div>
+            
+            <a href="#about" class="menu-item" aria-label="Go to About section">
+                <i class="fas fa-info-circle"></i>
+                <span data-en="About" data-sw="Kuhusu">About</span>
+            </a>
+            <a href="#help" class="menu-item" aria-label="Go to Help section">
+                <i class="fas fa-question-circle"></i>
+                <span data-en="Help" data-sw="Msaada">Help</span>
+            </a>
+            <a href="#settings" class="menu-item" aria-label="Go to Settings">
+                <i class="fas fa-cog"></i>
+                <span data-en="Settings" data-sw="Mipangilio">Settings</span>
+            </a>
         </nav>
+        
+        <!-- Menu footer -->
+        <div class="menu-footer">
+            <div class="menu-version">
+                <span data-en="Version" data-sw="Toleo">Version</span>
+                <span>1.0.0</span>
+            </div>
+        </div>
     </div>
 
     <!-- Hero Section -->
@@ -2496,19 +2525,39 @@ setTimeout(() => {
             });
         });
         
-        // === MOBILE NAVIGATION OVERHAUL - HAMBURGER MENU SYSTEM ===
+        // === ENHANCED RESPONSIVE SIDEBAR MENU SYSTEM ===
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
         const mobileMenu = document.getElementById('mobileMenu');
         const closeMenuBtn = document.getElementById('closeMenuBtn');
         const menuTime = document.getElementById('menu-time');
 
-        // Update menu time every minute
+        // Debug: Check if elements exist
+        console.log('Mobile menu elements check:');
+        console.log('- mobileMenuBtn:', mobileMenuBtn);
+        console.log('- mobileMenu:', mobileMenu);
+        console.log('- closeMenuBtn:', closeMenuBtn);
+        console.log('- menuTime:', menuTime);
+
+        // Menu state management
+        let isMenuOpen = false;
+        let menuAnimationTimeout;
+
+        // Enhanced time update with animation
         function updateMenuTime() {
             if (menuTime) {
-                menuTime.textContent = new Date().toLocaleTimeString([], { 
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('en-US', { 
                     hour: '2-digit', 
-                    minute: '2-digit' 
+                    minute: '2-digit',
+                    hour12: true 
                 });
+                
+                // Add fade animation
+                menuTime.style.opacity = '0';
+                setTimeout(() => {
+                    menuTime.textContent = timeString;
+                    menuTime.style.opacity = '1';
+                }, 150);
             }
         }
 
@@ -2517,44 +2566,106 @@ setTimeout(() => {
         // Update time every minute
         setInterval(updateMenuTime, 60000);
 
-        // Toggle menu open/close with immediate response
+        // Enhanced menu toggle with animations
         function toggleMenu() {
-            const isOpen = document.body.classList.contains('menu-open');
-            if (isOpen) {
+            console.log('Toggle menu called, isMenuOpen:', isMenuOpen);
+            if (isMenuOpen) {
                 closeMenu();
             } else {
                 openMenu();
             }
         }
 
-        // Open menu with immediate visual feedback
+        // Enhanced open menu with animations
         function openMenu() {
+            console.log('Opening menu...');
+            if (isMenuOpen) return;
+            
+            isMenuOpen = true;
             document.body.classList.add('menu-open');
             document.body.style.overflow = 'hidden';
-            // Add immediate visual feedback
-            mobileMenuBtn.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                mobileMenuBtn.style.transform = '';
-            }, 150);
+            
+            // Animate hamburger to X
+            mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+            mobileMenuBtn.style.transform = 'rotate(180deg)';
+            
+            // Add haptic feedback if available
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+            
+            // Add focus trap for accessibility
+            trapFocus(mobileMenu);
+            console.log('Menu opened successfully');
         }
 
-        // Close menu with immediate visual feedback
+        // Enhanced close menu with animations
         function closeMenu() {
+            console.log('Closing menu...');
+            if (!isMenuOpen) return;
+            
+            isMenuOpen = false;
             document.body.classList.remove('menu-open');
             document.body.style.overflow = '';
-            // Add immediate visual feedback
-            mobileMenuBtn.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                mobileMenuBtn.style.transform = '';
-            }, 150);
+            
+            // Animate X back to hamburger
+            mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            mobileMenuBtn.style.transform = 'rotate(0deg)';
+            
+            // Remove focus trap
+            removeFocusTrap();
+            
+            // Clear any pending animations
+            if (menuAnimationTimeout) {
+                clearTimeout(menuAnimationTimeout);
+            }
+            console.log('Menu closed successfully');
         }
 
-        // Mobile menu button click with touch optimization
+        // Focus trap for accessibility
+        let handleTabKey; // Declare in outer scope
+
+        function trapFocus(element) {
+            const focusableElements = element.querySelectorAll(
+                'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+            );
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            // Define handleTabKey in outer scope
+            handleTabKey = function(e) {
+                if (e.key === 'Tab') {
+                    if (e.shiftKey) {
+                        if (document.activeElement === firstElement) {
+                            e.preventDefault();
+                            lastElement.focus();
+                        }
+                    } else {
+                        if (document.activeElement === lastElement) {
+                            e.preventDefault();
+                            firstElement.focus();
+                        }
+                    }
+                }
+            };
+
+            element.addEventListener('keydown', handleTabKey);
+        }
+
+        function removeFocusTrap() {
+            if (mobileMenu && handleTabKey) {
+                mobileMenu.removeEventListener('keydown', handleTabKey);
+            }
+        }
+
+        // Enhanced mobile menu button interactions
         if (mobileMenuBtn) {
+            console.log('Mobile menu button found and initialized');
+            
             // Touch events for better mobile response
             mobileMenuBtn.addEventListener('touchstart', (e) => {
                 e.preventDefault();
-                mobileMenuBtn.style.transform = 'scale(0.9)';
+                mobileMenuBtn.style.transform = 'scale(0.95)';
             }, { passive: false });
 
             mobileMenuBtn.addEventListener('touchend', (e) => {
@@ -2567,15 +2678,23 @@ setTimeout(() => {
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                console.log('Mobile menu button clicked');
                 toggleMenu();
             });
+        } else {
+            console.error('Mobile menu button not found!');
         }
 
-        // Close menu button click
+        // Enhanced close menu button
         if (closeMenuBtn) {
             closeMenuBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                
+                if (navigator.vibrate) {
+                    navigator.vibrate(30);
+                }
+                
                 closeMenu();
             });
         }
@@ -2591,25 +2710,46 @@ setTimeout(() => {
 
         // Close menu when clicking on backdrop overlay
         document.addEventListener('click', (e) => {
-            if (document.body.classList.contains('menu-open') && 
+            if (isMenuOpen && 
                 !mobileMenu.contains(e.target) && 
                 !mobileMenuBtn.contains(e.target)) {
                 closeMenu();
             }
         });
 
-        // Smooth scroll functionality for menu items with immediate response
+        // Enhanced menu item interactions
         document.querySelectorAll('.menu-item').forEach(item => {
+            let touchStartTime = 0;
+            let touchStartY = 0;
+
             // Touch events for better mobile response
             item.addEventListener('touchstart', (e) => {
-                e.preventDefault();
+                touchStartTime = Date.now();
+                touchStartY = e.touches[0].clientY;
                 item.style.transform = 'translateX(8px) scale(0.98)';
+                item.style.transition = 'transform 0.1s ease';
+            }, { passive: false });
+
+            item.addEventListener('touchmove', (e) => {
+                const touchY = e.touches[0].clientY;
+                const deltaY = Math.abs(touchY - touchStartY);
+                
+                if (deltaY > 10) {
+                    item.style.transform = '';
+                }
             }, { passive: false });
 
             item.addEventListener('touchend', (e) => {
-                e.preventDefault();
+                const touchEndTime = Date.now();
+                const touchDuration = touchEndTime - touchStartTime;
+                
                 item.style.transform = '';
-                navigateToSection(item);
+                item.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                
+                if (touchDuration < 300) {
+                    e.preventDefault();
+                    navigateToSection(item);
+                }
             }, { passive: false });
 
             // Mouse events for desktop
@@ -2618,28 +2758,44 @@ setTimeout(() => {
                 e.stopPropagation();
                 navigateToSection(item);
             });
+
+            // Hover effects for desktop
+            item.addEventListener('mouseenter', () => {
+                if (!isMenuOpen) return;
+                item.style.transform = 'translateX(8px)';
+            });
+
+            item.addEventListener('mouseleave', () => {
+                if (!isMenuOpen) return;
+                item.style.transform = '';
+            });
         });
 
-        // Navigation function with immediate feedback
+        // Enhanced navigation function
         function navigateToSection(menuItem) {
             const targetId = menuItem.getAttribute('href');
             const target = document.querySelector(targetId);
+            
+            // Add haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(20);
+            }
             
             // Close menu immediately for better UX
             closeMenu();
             
             if (target) {
                 // Add a small delay to allow menu to close first
-                setTimeout(() => {
+                menuAnimationTimeout = setTimeout(() => {
                     target.scrollIntoView({
                         behavior: 'smooth',
                         block: 'start'
                     });
-                }, 200);
+                }, 300);
             }
         }
 
-        // Watch window resize to enforce visibility rules with throttling
+        // Enhanced window resize handler
         let resizeTimeout;
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
@@ -2647,7 +2803,19 @@ setTimeout(() => {
                 if (window.innerWidth > 600) {
                     closeMenu();
                 }
-            }, 100);
+            }, 150);
+        });
+
+        // Enhanced keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (isMenuOpen) {
+                if (e.key === 'Escape') {
+                    closeMenu();
+                } else if (e.key === 'Tab') {
+                    // Let the focus trap handle Tab navigation
+                    return;
+                }
+            }
         });
 
         // Keyboard navigation for menu
