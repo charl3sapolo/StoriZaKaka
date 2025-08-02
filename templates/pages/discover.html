@@ -11,18 +11,90 @@
 <body>
   <div class="container">
     <!-- Header Section -->
-    <div class="header">
-      <a href="/" class="logo-link">
-        <img src="{% static 'logo.kakaflix.jpg' %}" alt="Stori za Kaka" class="site-logo" style="height:48px;display:block;margin:0 auto;">
-      </a>
-      <button class="back-button" onclick="goHome()">
-        <i class="fas fa-arrow-left"></i>
-        <span>Home</span>
-      </button>
-      <h1>Discover</h1>
-      <p>Browse trending content and get personalized recommendations based on your mood</p>
-    </div>
+   
+<!-- Scroll Progress Bar -->
+<div class="scroll-progress" id="scrollProgress"></div>
+ <!-- Header -->
+ <header class="header">
+  <nav class="nav">
+      <div class="logo">
+          <a href="/" class="logo-link">
+              <span class="logo-icon">🎬</span>
+              <span>Stori za Kaka</span>
+          </a>
+      </div>
+      
+      <ul class="nav-center">
+          <li><a href="/" class="nav-link" data-en="Home" data-sw="Nyumbani">Home</a></li>
+          <li><a href="/discover/" class="nav-link active" data-en="Discover" data-sw="Gundua">Discover</a></li>
+          <li><a href="/movie-details/" class="nav-link" data-en="My Movies" data-sw="Filamu Zangu">My Movies <span class="badge" id="savedCount">3</span></a></li>
+          <li><a href="/profile/" class="nav-link" data-en="Profile" data-sw="Wasifu">Profile</a></li>
+      </ul>
+      
+      <div class="nav-controls">
+          <button class="hero-refresh" id="heroRefreshBtn" aria-label="Refresh content">
+              <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+              <span class="theme-icon">🌙</span>
+          </button>
+          <button class="language-toggle" id="languageToggle">
+              <span data-en="SW" data-sw="EN">SW</span>
+          </button>
+      </div>
+  </nav>
+</header>
 
+<!-- Mobile Menu Button -->
+<button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="menu-header">
+      <div class="logo">
+          <span class="logo-icon">🎬</span>
+          <span>Stori za Kaka</span>
+      </div>
+      <button class="close-menu" id="closeMenuBtn" aria-label="Close menu">
+          <i class="fas fa-times"></i>
+      </button>
+  </div>
+  
+  <nav class="vertical-nav">
+      <a href="/" class="menu-item" aria-label="Go to Home">
+          <i class="fas fa-home"></i>
+          <span data-en="Home" data-sw="Nyumbani">Home</span>
+      </a>
+      <a href="/discover/" class="menu-item active" aria-label="Go to Discover">
+          <i class="fas fa-search"></i>
+          <span data-en="Discover" data-sw="Gundua">Discover</span>
+      </a>
+      <a href="/movie-details/" class="menu-item" aria-label="Go to My Movies">
+          <i class="fas fa-heart"></i>
+          <span data-en="My Movies" data-sw="Filamu Zangu">My Movies <span class="badge" id="mobileSavedCount">3</span></span>
+      </a>
+      <a href="/profile/" class="menu-item" aria-label="Go to Profile">
+          <i class="fas fa-user"></i>
+          <span data-en="Profile" data-sw="Wasifu">Profile</span>
+      </a>
+  </nav>
+
+  <div class="menu-footer">
+      <div class="menu-version">
+          <span data-en="Version" data-sw="Toleo">Version</span>
+          <span>1.0.0</span>
+      </div>
+  </div>
+</div>
+  <br>
+  <br>
+<div class="h1">
+  <h1>Discover</h1>
+  <p>Browse trending content and get personalized recommendations based on your mood</p>
+</div>
+    
     <!-- Mood Selector -->
     <div class="mood-selector">
       <h2><i class="fas fa-heart"></i> Select Your Moods</h2>

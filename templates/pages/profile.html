@@ -1,0 +1,544 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Stori za Kaka</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/discover.css' %}">
+    <style>
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .profile-header {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            backdrop-filter: var(--glass-blur);
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            color: var(--dark);
+        }
+
+        .profile-name {
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .profile-email {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .profile-sections {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .profile-section {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+        }
+
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .movie-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--soft-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .movie-info {
+            padding: 12px;
+        }
+
+        .movie-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            line-height: 1.3;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .empty-state p {
+            margin-bottom: 20px;
+            font-size: 1rem;
+        }
+
+        .discover-btn {
+            background: var(--gradient-primary);
+            color: var(--dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .discover-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        @media (max-width: 768px) {
+            .profile-sections {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .profile-stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .movies-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 10px;
+            }
+
+            .movie-poster {
+                height: 160px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-header {
+                padding: 20px;
+            }
+
+            .profile-name {
+                font-size: 1.5rem;
+            }
+
+            .profile-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2rem;
+            }
+
+            .movies-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo">
+                <a href="/" class="logo-link">
+                    <span class="logo-icon">🎬</span>
+                    <span>Stori za Kaka</span>
+                </a>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <ul class="nav-center">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/movie-details/" class="nav-link">My Movies <span class="badge" id="savedCount">0</span></a></li>
+                <li><a href="/discover/" class="nav-link">Discover</a></li>
+                <li><a href="/profile/" class="nav-link">Profile</a></li>
+            </ul>
+            
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                    <span class="theme-icon">🌙</span>
+                </button>
+                <button class="language-toggle" id="languageToggle">
+                    <span data-en="SW" data-sw="EN">SW</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu Button -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="menu-header">
+            <div class="menu-time-container">
+                <i class="fas fa-clock"></i>
+                <span id="menu-time">14:30</span>
+            </div>
+            <button class="close-menu" id="closeMenuBtn" aria-label="Close menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="vertical-nav">
+            <a href="/" class="menu-item" aria-label="Go to Home">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="/movie-details/" class="menu-item" aria-label="Go to My Movies">
+                <i class="fas fa-heart"></i>
+                <span>My Movies <span class="badge" id="mobileSavedCount">0</span></span>
+            </a>
+            <a href="/profile/" class="menu-item" aria-label="Go to Profile">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+            <a href="/discover/" class="menu-item" aria-label="Go to Discover">
+                <i class="fas fa-search"></i>
+                <span>Discover</span>
+            </a>
+        </nav>
+        
+        <div class="menu-footer">
+            <div class="menu-version">
+                <span>Version</span>
+                <span>1.0.0</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <!-- Profile Header -->
+        <div class="profile-header">
+            <div class="profile-avatar">
+                <i class="fas fa-user"></i>
+            </div>
+            <h1 class="profile-name">Movie Lover</h1>
+            <p class="profile-email">user@example.com</p>
+            
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <span class="stat-number" id="savedCountStat">0</span>
+                    <span class="stat-label">Saved Movies</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="watchLaterCountStat">0</span>
+                    <span class="stat-label">Watch Later</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">1</span>
+                    <span class="stat-label">Days Active</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Sections -->
+        <div class="profile-sections">
+            <!-- Saved Movies Section -->
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="fas fa-heart"></i>
+                    Saved Movies
+                </h2>
+                <div class="movies-grid" id="savedMoviesGrid">
+                    <!-- Movies will be loaded here -->
+                </div>
+                
+                <div class="empty-state" id="savedEmptyState" style="display: none;">
+                    <i class="fas fa-heart-broken"></i>
+                    <h3>No saved movies yet</h3>
+                    <p>Start discovering and save your favorite movies!</p>
+                    <a href="/discover/" class="discover-btn">
+                        <i class="fas fa-search"></i>
+                        Discover Movies
+                    </a>
+                </div>
+            </div>
+
+            <!-- Watch Later Section -->
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="fas fa-clock"></i>
+                    Watch Later
+                </h2>
+                <div class="movies-grid" id="watchLaterGrid">
+                    <!-- Movies will be loaded here -->
+                </div>
+                
+                <div class="empty-state" id="watchLaterEmptyState" style="display: none;">
+                    <i class="fas fa-clock"></i>
+                    <h3>No movies in watchlist</h3>
+                    <p>Add movies to your watchlist to watch them later!</p>
+                    <a href="/discover/" class="discover-btn">
+                        <i class="fas fa-search"></i>
+                        Discover Movies
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme and Language Toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const languageToggle = document.getElementById('languageToggle');
+        const body = document.body;
+
+        // Theme toggle
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = body.getAttribute('data-theme') || 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            body.setAttribute('data-theme', newTheme);
+            themeToggle.querySelector('.theme-icon').textContent = newTheme === 'dark' ? '🌙' : '☀️';
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Language toggle
+        languageToggle.addEventListener('click', () => {
+            const currentLang = body.getAttribute('data-lang') || 'en';
+            const newLang = currentLang === 'en' ? 'sw' : 'en';
+            body.setAttribute('data-lang', newLang);
+            languageToggle.querySelector('span').textContent = newLang === 'en' ? 'SW' : 'EN';
+            localStorage.setItem('language', newLang);
+        });
+
+        // Mobile menu
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+        });
+
+        closeMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+        });
+
+        // Profile functionality
+        class ProfileManager {
+            constructor() {
+                this.savedMovies = this.loadMovies('savedMovies') || [];
+                this.watchLater = this.loadMovies('watchLater') || [];
+                this.updateStats();
+                this.renderMovies();
+            }
+
+            loadMovies(key) {
+                try {
+                    const data = localStorage.getItem(key);
+                    return data ? JSON.parse(data) : [];
+                } catch (error) {
+                    console.error('Error loading movies:', error);
+                    return [];
+                }
+            }
+
+            updateStats() {
+                document.getElementById('savedCountStat').textContent = this.savedMovies.length;
+                document.getElementById('watchLaterCountStat').textContent = this.watchLater.length;
+                
+                // Update header counts
+                const savedCount = document.getElementById('savedCount');
+                const mobileSavedCount = document.getElementById('mobileSavedCount');
+                
+                if (savedCount) savedCount.textContent = this.savedMovies.length;
+                if (mobileSavedCount) mobileSavedCount.textContent = this.savedMovies.length;
+            }
+
+            renderMovies() {
+                this.renderMovieGrid('savedMoviesGrid', this.savedMovies);
+                this.renderMovieGrid('watchLaterGrid', this.watchLater);
+                
+                // Show/hide empty states
+                document.getElementById('savedEmptyState').style.display = 
+                    this.savedMovies.length === 0 ? 'block' : 'none';
+                document.getElementById('watchLaterEmptyState').style.display = 
+                    this.watchLater.length === 0 ? 'block' : 'none';
+            }
+
+            renderMovieGrid(gridId, movies) {
+                const grid = document.getElementById(gridId);
+                if (!grid) return;
+
+                if (movies.length === 0) {
+                    grid.innerHTML = '';
+                    return;
+                }
+
+                const movieCards = movies.map(movie => this.createMovieCard(movie)).join('');
+                grid.innerHTML = movieCards;
+            }
+
+            createMovieCard(movie) {
+                const poster = movie.poster_path 
+                    ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+                    : '/static/img/placeholder.png';
+                
+                const title = movie.title || movie.name || 'Untitled';
+                const year = (movie.release_date || movie.first_air_date || '').slice(0, 4);
+                const rating = movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A';
+
+                return `
+                    <div class="movie-card" data-movie-id="${movie.id}">
+                        <img src="${poster}" alt="${title}" class="movie-poster" loading="lazy">
+                        <div class="movie-info">
+                            <h3 class="movie-title">${title}</h3>
+                            <div class="movie-meta">
+                                <span class="movie-year">${year}</span>
+                                <span class="movie-rating">⭐ ${rating}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Initialize profile manager
+        const profileManager = new ProfileManager();
+
+        // Load saved theme and language
+        const savedTheme = localStorage.getItem('theme');
+        const savedLang = localStorage.getItem('language');
+
+        if (savedTheme) {
+            body.setAttribute('data-theme', savedTheme);
+            themeToggle.querySelector('.theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+        }
+
+        if (savedLang) {
+            body.setAttribute('data-lang', savedLang);
+            languageToggle.querySelector('span').textContent = savedLang === 'en' ? 'SW' : 'EN';
+        }
+
+        // Update menu time
+        function updateMenuTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
+            document.getElementById('menu-time').textContent = timeString;
+        }
+
+        updateMenuTime();
+        setInterval(updateMenuTime, 1000);
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                mobileMenu.classList.remove('open');
+            }
+        });
+
+        // Close mobile menu on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                mobileMenu.classList.remove('open');
+            }
+        });
+    </script>
+    <script src="{% static 'js/movie-manager.js' %}"></script>
+</body>
+</html>
