@@ -431,7 +431,7 @@
 <!-- Question 3: Preferred Era -->
 <div class="question" id="question3">
     <h3><span class="emoji">📅</span> <span data-en="Preferred era?" data-sw="Era unayopenda?">Preferred era?</span></h3>
-    <div class="mood-options" data-question="intensity"> <!-- Changed to match working question's data attribute -->
+    <div class="mood-options" data-question="era">
         <div class="mood-btn" data-value="classic">
             <span class="emoji">🎭</span>
             <span data-en="Classic (pre-1980)" data-sw="Klasiki (kabla ya 1980)">Classic (pre-1980)</span>
@@ -734,8 +734,7 @@
                     }
                 }
             });
-        }
-// Enhanced Discover Questionnaire Logic
+        }// Enhanced Discover Questionnaire Logic
 const questions = document.querySelectorAll('.question');
 const nextBtn = document.getElementById('nextBtn');
 const prevBtn = document.getElementById('prevBtn');
@@ -757,10 +756,18 @@ const mandatoryQuestions = [0, 1, 2, 3, 4]; // Questions 1-5 (0-indexed)
 
 // Initialize first question
 console.log('Questions found:', questions.length);
+console.log('Total questions expected:', totalQuestions);
 console.log('First question:', questions[0]);
+console.log('All questions:', questions);
+
+// Debug: Log all question elements
+questions.forEach((q, index) => {
+    console.log(`Question ${index + 1}:`, q);
+});
+
 showQuestion(currentQuestion);
 
-// Double-tap detection for mood options
+// Enhanced mood options handler with special handling for question 2 (intensity)
 moodOptions.forEach(option => {
     option.addEventListener('click', function(e) {
         const now = new Date().getTime();
@@ -773,7 +780,26 @@ moodOptions.forEach(option => {
             btn.classList.remove('selected');
         });
         this.classList.add('selected');
-        answers[question] = value;
+        
+        // Special handling for intensity question (question 2)
+        if (question === 'intensity') {
+            // Initialize or update the intensity object
+            if (!answers.intensity) {
+                answers.intensity = {};
+            }
+            answers.intensity.mood = value;
+            
+            // Preserve existing energy level if it exists
+            const energySlider = document.getElementById('energyLevel');
+            if (energySlider && !answers.intensity.energyLevel) {
+                answers.intensity.energyLevel = energySlider.value;
+            }
+        } else {
+            // Handle other questions normally
+            answers[question] = value;
+        }
+        
+        console.log('Updated answers after mood selection:', answers);
         
         // Check for double-tap (300ms threshold)
         if (timeDiff < 300 && timeDiff > 0) {
@@ -823,17 +849,27 @@ prevBtn.addEventListener('click', () => {
     }
 });
 
-// Enhanced slider initialization with proper event handling
+// Enhanced slider initialization with combined storage for question 2 (intensity)
 const energySlider = document.getElementById('energyLevel');
 if (energySlider) {
-    // Handle both 'input' and 'change' events for immediate feedback
     const handleSliderChange = function() {
         const value = this.value;
         console.log('Slider changed to:', value);
         
-        // Store the value in answers object
-        answers.energyLevel = value;
-        console.log('Stored in answers:', answers);
+        // Special handling for intensity question (question 2)
+        // Initialize or update the intensity object
+        if (!answers.intensity) {
+            answers.intensity = {};
+        }
+        answers.intensity.energyLevel = value;
+        
+        // Preserve existing mood selection if it exists
+        const selectedMood = document.querySelector('.mood-options[data-question="intensity"] .mood-btn.selected');
+        if (selectedMood && !answers.intensity.mood) {
+            answers.intensity.mood = selectedMood.getAttribute('data-value');
+        }
+        
+        console.log('Updated answers after slider change:', answers);
         
         // Update UI effects
         const lowLabel = document.querySelector('.low-label');
@@ -844,9 +880,9 @@ if (energySlider) {
             highLabel.classList.remove('glow', 'highlight-missing');
             
             const numValue = parseInt(value);
-            if (numValue <= 40) {
+            if (numValue <= 4) {
                 lowLabel.classList.add('glow');
-            } else if (numValue >= 60) {
+            } else if (numValue >= 7) {
                 highLabel.classList.add('glow');
             }
         }
@@ -859,8 +895,11 @@ if (energySlider) {
     energySlider.addEventListener('change', handleSliderChange);
     
     // Initialize with default value if not already set
-    if (!answers.energyLevel) {
-        answers.energyLevel = energySlider.value;
+    if (!answers.intensity) {
+        answers.intensity = {};
+    }
+    if (!answers.intensity.energyLevel) {
+        answers.intensity.energyLevel = energySlider.value;
     }
 }
 
@@ -896,9 +935,7 @@ discoverBtn.addEventListener('click', () => {
         }, 100);
     }
     
-    if (movieMatch) {
-        movieMatch.style.display = 'none';
-    }
+    // Continue with movie recommendation logic here...
     
     // After 2 seconds, redirect to about page
     setTimeout(() => {
@@ -906,307 +943,253 @@ discoverBtn.addEventListener('click', () => {
     }, 2000);
 });
 
-// Try again button click handler
-if (tryAgainBtn) {
-    tryAgainBtn.addEventListener('click', () => {
-        currentQuestion = 0;
-        showQuestion(currentQuestion);
-        if (movieMatch) {
-            movieMatch.classList.remove('show');
-        }
-        
-        // Hide recommendation preview when resetting
-        if (recommendationPreview) {
-            recommendationPreview.style.display = 'none';
-            recommendationPreview.style.opacity = '0';
-        }
-        
-        document.querySelectorAll('.mood-btn').forEach(btn => {
-            btn.classList.remove('selected');
-        });
-        if (energySlider) {
-            energySlider.value = 50; // Reset to middle
-        }
-        if (currentThoughts) {
-            currentThoughts.value = '';
-        }
-        // Clear answers object
-        Object.keys(answers).forEach(key => delete answers[key]);
-        questions[0].scrollIntoView({ behavior: 'smooth' });
-        updateProgress();
-    });
-}
-
-// Enhanced Validation Functions
+// Updated validation function with special handling for question 2 (intensity)
 function validateCurrentQuestion() {
-    const currentQuestionEl = questions[currentQuestion];
+    console.log('Validating question:', currentQuestion, 'Answers:', answers);
     
-    // Check if current question is mandatory
-    if (!mandatoryQuestions.includes(currentQuestion)) {
-        return true; // Optional question
-    }
-    
-    // Validate based on question type
-    if (currentQuestion === 1) { // Energy level (slider)
-        // Check if answer exists in answers object OR if slider has been moved
-        const slider = document.getElementById('energyLevel');
-        const hasAnswer = answers.energyLevel !== undefined;
-        const sliderMoved = slider && slider.value !== '50'; // 50 is middle value
-        
-        console.log('Slider validation:', {
-            hasAnswer,
-            sliderMoved,
-            currentValue: slider?.value,
-            storedAnswer: answers.energyLevel
-        });
-        
-        return hasAnswer || sliderMoved;
-    } else if (currentQuestion === 5) { // Current thoughts (text input)
-        return true; // Optional
-    } else { // Mood options
-        const questionName = getQuestionName(currentQuestion);
-        const isValid = answers[questionName] !== undefined;
-        console.log(`Question ${currentQuestion} (${questionName}) validation:`, isValid);
-        return isValid;
+    switch (currentQuestion) {
+        case 0: // Question 1 - Current Mood
+            return answers.currentMood !== undefined;
+            
+        case 1: // Question 2 - Intensity (requires both mood and energy level)
+            return answers.intensity && 
+                   answers.intensity.mood !== undefined && 
+                   answers.intensity.energyLevel !== undefined;
+            
+        case 2: // Question 3 - Era
+            return answers.era !== undefined;
+            
+        case 3: // Question 4 - Watching With
+            return answers.watchingWith !== undefined;
+            
+        case 4: // Question 5 - Time Available
+            return answers.timeAvailable !== undefined;
+            
+        case 5: // Question 6 - Current thoughts (optional)
+            return true; // Always valid since it's optional
+            
+        default:
+            return false;
     }
 }
 
+// Helper function to check if question 2 (intensity) is complete
+function isQuestion2Complete() {
+    return answers.intensity && 
+           answers.intensity.mood && 
+           answers.intensity.energyLevel;
+}
+
+// Validate all mandatory questions
 function validateAllMandatoryQuestions() {
-    console.log('Validating all mandatory questions...');
-    
-    for (let i = 0; i < mandatoryQuestions.length; i++) {
-        const questionIndex = mandatoryQuestions[i];
-        const questionName = getQuestionName(questionIndex);
-        
-        if (questionIndex === 1) { // Energy level
-            const slider = document.getElementById('energyLevel');
-            const hasAnswer = answers.energyLevel !== undefined;
-            const sliderMoved = slider && slider.value !== '50';
-            
-            if (!hasAnswer && !sliderMoved) {
-                console.log('Energy level question not answered');
-                return false;
-            }
-        } else if (questionIndex === 5) { // Current thoughts
-            continue; // Skip optional question
-        } else { // Mood options
-            if (!answers[questionName]) {
-                console.log(`Question ${questionIndex} (${questionName}) not answered`);
-                return false;
-            }
-        }
-    }
-    
-    console.log('All mandatory questions validated successfully');
-    return true;
-}
-
-function getQuestionName(questionIndex) {
-    const questionNames = ['currentMood', 'energyLevel', 'thinkingLevel', 'watchingWith', 'timeAvailable', 'currentThoughts'];
-    return questionNames[questionIndex];
-}
-
-function showValidationFeedback() {
-    const currentQuestionEl = questions[currentQuestion];
-    
-    if (!validateCurrentQuestion()) {
-        // Highlight current question if invalid
-        currentQuestionEl.classList.add('invalid-question');
-        
-        // Special handling for slider question
-        if (currentQuestion === 1) {
-            const sliderContainer = currentQuestionEl.querySelector('.slider-container');
-            if (sliderContainer) {
-                sliderContainer.classList.add('shake');
-                setTimeout(() => {
-                    sliderContainer.classList.remove('shake');
-                }, 500);
-            }
-            
-            // Add visual feedback for slider
-            const slider = document.getElementById('energyLevel');
-            if (slider && slider.value === '50') {
-                const lowLabel = currentQuestionEl.querySelector('.low-label');
-                const highLabel = currentQuestionEl.querySelector('.high-label');
-                
-                if (lowLabel && highLabel) {
-                    lowLabel.classList.add('highlight-missing');
-                    highLabel.classList.add('highlight-missing');
-                    
-                    setTimeout(() => {
-                        lowLabel.classList.remove('highlight-missing');
-                        highLabel.classList.remove('highlight-missing');
-                    }, 2000);
-                }
-            }
+    return mandatoryQuestions.every(questionIndex => {
+        if (questionIndex === 1) { // Question 2 - Intensity
+            return isQuestion2Complete();
         } else {
-            // Add shake animation for other questions
-            currentQuestionEl.classList.add('shake');
-            setTimeout(() => {
-                currentQuestionEl.classList.remove('shake');
-            }, 500);
-            
-            // Highlight unanswered options
-            if (currentQuestion !== 5) { // Not text input
-                const options = currentQuestionEl.querySelectorAll('.mood-btn');
-                options.forEach(option => {
-                    if (!option.classList.contains('selected')) {
-                        option.classList.add('highlight-missing');
-                        setTimeout(() => {
-                            option.classList.remove('highlight-missing');
-                        }, 2000);
-                    }
-                });
-            }
-        }
-        
-        return false;
-    }
-    
-    currentQuestionEl.classList.remove('invalid-question');
-    return true;
-}
-
-// Show question function
-function showQuestion(index) {
-    console.log('Showing question:', index);
-    questions.forEach((question, i) => {
-        question.classList.remove('active', 'previous', 'next');
-        if (i < index) {
-            question.classList.add('previous');
-        } else if (i > index) {
-            question.classList.add('next');
-        } else {
-            question.classList.add('active');
-            console.log('Question', i, 'is now active');
+            const questionKey = getQuestionKey(questionIndex);
+            return answers[questionKey] !== undefined;
         }
     });
-    updateProgress();
 }
 
-// Enhanced progress update function
+// Helper function to get question key by index
+function getQuestionKey(questionIndex) {
+    const questionKeys = ['currentMood', 'intensity', 'era', 'watchingWith', 'timeAvailable', 'currentThoughts'];
+    return questionKeys[questionIndex];
+}
+
+// Updated progress function with special handling for question 2 (intensity)
 function updateProgress() {
-    const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+    let completedQuestions = 0;
+    
+    // Check each mandatory question
+    mandatoryQuestions.forEach(questionIndex => {
+        if (questionIndex === 1) { // Question 2 - Intensity
+            if (isQuestion2Complete()) {
+                completedQuestions++;
+            }
+        } else {
+            // Check other questions normally
+            const questionKey = getQuestionKey(questionIndex);
+            if (answers[questionKey] !== undefined) {
+                completedQuestions++;
+            }
+        }
+    });
+    
+    const progress = (completedQuestions / mandatoryQuestions.length) * 100;
     if (progressFill) {
         progressFill.style.width = `${progress}%`;
     }
-    
     if (progressText) {
-        const currentLang = document.body.getAttribute('data-lang') || 'en';
-        const langPrefix = currentLang === 'en' ? 'Question' : 'Swali';
-        const langSuffix = currentLang === 'en' ? 'of' : 'la';
-        progressText.textContent = `${langPrefix} ${currentQuestion + 1} ${langSuffix} ${totalQuestions}`;
+        progressText.textContent = `${Math.round(progress)}%`;
     }
     
-    // Show/hide navigation buttons
-    if (prevBtn) {
-        if (currentQuestion === 0) {
-            prevBtn.style.display = 'none';
+    // Enable/disable buttons based on current question validation
+    const isCurrentValid = validateCurrentQuestion();
+    if (nextBtn) {
+        nextBtn.disabled = !isCurrentValid;
+    }
+    
+    // Enable discover button only if all mandatory questions are complete
+    const allMandatoryComplete = validateAllMandatoryQuestions();
+    if (discoverBtn) {
+        discoverBtn.disabled = !allMandatoryComplete;
+    }
+    
+    console.log('Progress updated:', {
+        completedQuestions,
+        progress,
+        isCurrentValid,
+        allMandatoryComplete,
+        currentAnswers: answers
+    });
+}
+
+// Show question function with enhanced debugging
+function showQuestion(questionIndex) {
+    console.log(`Showing question ${questionIndex + 1} of ${totalQuestions}`);
+    
+    questions.forEach((question, index) => {
+        question.classList.remove('active', 'previous', 'next');
+        if (index === questionIndex) {
+            question.classList.add('active');
+            console.log(`Question ${index + 1} set to active:`, question);
+        } else if (index < questionIndex) {
+            question.classList.add('previous');
         } else {
-            prevBtn.style.display = 'inline-flex';
+            question.classList.add('next');
         }
+    });
+    
+    // Update button states
+    if (prevBtn) {
+        prevBtn.disabled = questionIndex === 0;
     }
     
+    // Show/hide next button vs discover button
     if (nextBtn && discoverBtn) {
-        if (currentQuestion === totalQuestions - 1) {
+        if (questionIndex === totalQuestions - 1) {
+            // Last question - show discover button, hide next
             nextBtn.style.display = 'none';
-            discoverBtn.style.display = 'flex';
+            discoverBtn.style.display = 'inline-block';
         } else {
-            nextBtn.style.display = 'inline-flex';
+            // Not last question - show next button, hide discover
+            nextBtn.style.display = 'inline-block';
             discoverBtn.style.display = 'none';
         }
     }
     
-    // Update button states based on validation
-    if (nextBtn && currentQuestion < totalQuestions - 1) {
-        const isValid = validateCurrentQuestion();
-        nextBtn.disabled = !isValid;
-        console.log('Next button disabled:', !isValid);
-    }
-    
-    if (discoverBtn && currentQuestion === totalQuestions - 1) {
-        discoverBtn.disabled = !validateAllMandatoryQuestions();
-    }
-
-    // Enhanced Discover button click handler
-discoverBtn.addEventListener('click', () => {
-    // Validate all mandatory questions first
-    if (!validateAllMandatoryQuestions()) {
-        showValidationFeedback();
-        return;
-    }
-    
-    // Show loading state on button
-    discoverBtn.innerHTML = '<div class="loading-spinner"></div> <span data-en="Redirecting..." data-sw="Inaelekeza...">Redirecting...</span>';
-    discoverBtn.disabled = true;
-    
-    // Show the recommendation preview
-    const recommendationPreview = document.getElementById('recommendationPreview');
-    recommendationPreview.style.display = 'block';
-    recommendationPreview.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
-    // Hide the movie match section if it was shown
-    const movieMatch = document.getElementById('movieMatch');
-    movieMatch.style.display = 'none';
-    
-    // After 2 seconds, redirect to about page
-    setTimeout(() => {
-        window.location.href = '/about/';
-    }, 2000);
-});
-// Inside discoverBtn click handler:
-const recommendationPreview = document.getElementById('recommendationPreview');
-recommendationPreview.style.display = 'block';
-setTimeout(() => {
-    recommendationPreview.classList.add('show');
-}, 50);
-
+    updateProgress();
 }
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    targetElement.scrollIntoView({
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // Animate elements when they come into view
-        const animateOnScroll = () => {
-            const elements = document.querySelectorAll('.feature-card, .movie-card');
-            
-            elements.forEach(element => {
-                const elementPosition = element.getBoundingClientRect().top;
-                const windowHeight = window.innerHeight;
-                
-                if (elementPosition < windowHeight - 100) {
-                    element.style.opacity = '1';
-                    element.style.transform = 'translateY(0)';
-                }
-            });
-        };
-        
-        // Set initial state for animation
-        document.querySelectorAll('.feature-card, .movie-card').forEach(element => {
-            element.style.opacity = '0';
-            element.style.transform = 'translateY(20px)';
-            element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        });
-        
-        // Add scroll event listener
-        window.addEventListener('scroll', animateOnScroll);
-        
-        // Trigger once on page load
-        animateOnScroll();
 
+// Show validation feedback with special handling for question 2 (intensity)
+function showValidationFeedback() {
+    console.log('Showing validation feedback for question:', currentQuestion);
+    
+    // Add visual feedback for missing selections
+    const currentQuestionElement = questions[currentQuestion];
+    
+    if (currentQuestion === 1) { // Question 2 - Intensity (special handling)
+        // Check what's missing
+        const hasMood = answers.intensity && answers.intensity.mood;
+        const hasEnergyLevel = answers.intensity && answers.intensity.energyLevel;
+        
+        if (!hasMood) {
+            const moodOptions = currentQuestionElement.querySelectorAll('.mood-btn');
+            moodOptions.forEach(btn => btn.classList.add('highlight-missing'));
+            setTimeout(() => {
+                moodOptions.forEach(btn => btn.classList.remove('highlight-missing'));
+            }, 3000);
+        }
+        
+        if (!hasEnergyLevel) {
+            const sliderLabels = currentQuestionElement.querySelectorAll('.slider-label');
+            sliderLabels.forEach(label => label.classList.add('highlight-missing'));
+            setTimeout(() => {
+                sliderLabels.forEach(label => label.classList.remove('highlight-missing'));
+            }, 3000);
+        }
+    } else {
+        // Handle other questions
+        const options = currentQuestionElement.querySelectorAll('.mood-btn');
+        options.forEach(option => option.classList.add('highlight-missing'));
+        setTimeout(() => {
+            options.forEach(option => option.classList.remove('highlight-missing'));
+        }, 3000);
+    }
+}
+
+// Try again button handler (if it exists)
+if (tryAgainBtn) {
+    tryAgainBtn.addEventListener('click', () => {
+        // Reset questionnaire
+        currentQuestion = 0;
+        Object.keys(answers).forEach(key => delete answers[key]);
+        
+        // Hide recommendation preview
+        if (recommendationPreview) {
+            recommendationPreview.style.display = 'none';
+        }
+        
+        // Reset discover button
+        if (discoverBtn) {
+            discoverBtn.innerHTML = '<span data-en="Discover My Movie" data-sw="Gundua Filamu Yangu">Discover My Movie</span>';
+            discoverBtn.disabled = true;
+        }
+        
+        // Show first question
+        showQuestion(0);
+    });
+}
+
+// Smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+        
+        const targetElement = document.querySelector(targetId);
+        if (targetElement) {
+            targetElement.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+    });
+});
+
+// Animate elements when they come into view
+const animateOnScroll = () => {
+    const elements = document.querySelectorAll('.feature-card, .movie-card');
+    
+    elements.forEach(element => {
+        const elementPosition = element.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (elementPosition < windowHeight - 100) {
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }
+    });
+};
+
+// Set initial state for animation
+document.querySelectorAll('.feature-card, .movie-card').forEach(element => {
+    element.style.opacity = '0';
+    element.style.transform = 'translateY(20px)';
+    element.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+});
+
+// Add scroll event listener
+window.addEventListener('scroll', animateOnScroll);
+
+// Trigger once on page load
+animateOnScroll();
+
+// Initialize the questionnaire
+updateProgress();
         // === STRICT TRAILER ENFORCEMENT ===
         // YouTube ID validation pattern
         const YOUTUBE_ID_PATTERN = /^[a-zA-Z0-9_-]{11}$/;
