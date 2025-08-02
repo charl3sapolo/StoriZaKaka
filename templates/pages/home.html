@@ -319,7 +319,7 @@
                 </section>
 
                 <section class="movie-section" id="showcase-trending">
-                    <h2 class="section-title">Trending Movies</h2>
+                    <h2 class="section-title">Trending Tvshows</h2>
                     <div class="movie-row-container">
                         <button class="row-nav-arrow left" id="trendingMoviesLeftArrow" aria-label="Previous trending movies">
                             <i class="fas fa-chevron-left"></i>
@@ -391,40 +391,66 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Question 2: Energy Level -->
-                        <div class="question" id="question2">
-    <h3><span class="emoji">⚡</span> <span data-en="What's your energy level?" data-sw="Kiwango chako cha nishati ni kipi?">What's your energy level?</span></h3>
-    <div class="slider-container">
+<!-- Question 2: Energy/Intensity -->
+<div class="question" id="question2">
+    <h3><span class="emoji">⚡</span> <span data-en="How intense? (Pacing/energy)" data-sw="Kiwango cha ukali? (Nguvu/Mwendo)">How intense? (Pacing/energy)</span></h3>
+    
+    <!-- Emoji Intensity Options -->
+    <div class="mood-options" data-question="intensity">
+        <div class="mood-btn" data-value="light">
+            <span class="emoji">🍃</span>
+            <span data-en="Light & Easy" data-sw="Mwepesi na Rahisi">Light & Easy</span>
+        </div>
+        <div class="mood-btn" data-value="medium">
+            <span class="emoji">⚖️</span>
+            <span data-en="Medium" data-sw="Kati">Medium</span>
+        </div>
+        <div class="mood-btn" data-value="dark">
+            <span class="emoji">🌑</span>
+            <span data-en="Dark/Heavy" data-sw="Giza/Mzito">Dark/Heavy</span>
+        </div>
+        <div class="mood-btn" data-value="epic">
+            <span class="emoji">🏔️</span>
+            <span data-en="Epic Journey" data-sw="Safari Kubwa">Epic Journey</span>
+        </div>
+    </div>
+    
+    <!-- Energy Level Slider -->
+    <div class="slider-container" style="margin-top: 1.5rem;">
         <div class="slider-layout">
-            <div class="slider-label low-label" data-en="Low" data-sw="Chini">Low</div>
+            <div class="slider-label low-label" data-en="Low Energy" data-sw="Nishati Ndogo">Low Energy</div>
             <div class="slider-track-wrapper">
                 <div class="slider-track"></div>
                 <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" />
             </div>
-            <div class="slider-label high-label" data-en="High" data-sw="Juu">High</div>
+            <div class="slider-label high-label" data-en="High Energy" data-sw="Nishati Nyingi">High Energy</div>
         </div>
     </div>
 </div>
 
-                        <!-- Question 3: Thinking Level -->
-                        <div class="question" id="question3">
-                            <h3><span class="emoji">🧠</span> <span data-en="Do you want something that makes you think?" data-sw="Unataka kitu ambacho kitakufanya ufikirie?">Do you want something that makes you think?</span></h3>
-                            <div class="mood-options" data-question="thinkingLevel">
-                                <div class="mood-btn" data-value="light">
-                                    <span class="emoji">🍿</span>
-                                    <span data-en="Light & Fun" data-sw="Mwepesi na Wa Kufurahisha">Light & Fun</span>
-                                </div>
-                                <div class="mood-btn" data-value="moderate">
-                                    <span class="emoji">🤔</span>
-                                    <span data-en="Some Depth" data-sw="Kina Fulani">Some Depth</span>
-                                </div>
-                                <div class="mood-btn" data-value="deep">
-                                    <span class="emoji">🧩</span>
-                                    <span data-en="Mind-Bending" data-sw="Ya Kuvuruga Akili">Mind-Bending</span>
-                                </div>
-                            </div>
-                        </div>
+<!-- Question 3: Preferred Era -->
+<div class="question" id="question3">
+    <h3><span class="emoji">📅</span> <span data-en="Preferred era?" data-sw="Era unayopenda?">Preferred era?</span></h3>
+    <div class="mood-options" data-question="intensity"> <!-- Changed to match working question's data attribute -->
+        <div class="mood-btn" data-value="classic">
+            <span class="emoji">🎭</span>
+            <span data-en="Classic (pre-1980)" data-sw="Klasiki (kabla ya 1980)">Classic (pre-1980)</span>
+        </div>
+        <div class="mood-btn" data-value="90s">
+            <span class="emoji">📼</span>
+            <span data-en="90s" data-sw="Miaka 90">90s</span>
+        </div>
+        <div class="mood-btn" data-value="2000s">
+            <span class="emoji">📱</span>
+            <span data-en="2000s" data-sw="Miaka 2000">2000s</span>
+        </div>
+        <div class="mood-btn" data-value="recent">
+            <span class="emoji">🎬</span>
+            <span data-en="Recent (2020s)" data-sw="Hivi karibuni (2020s)">Recent (2020s)</span>
+        </div>
+    </div>
+</div>
+
 
                         <!-- Question 4: Watching With -->
                         <div class="question" id="question4">
