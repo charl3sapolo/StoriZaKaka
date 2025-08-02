@@ -475,24 +475,29 @@
                             </div>
                         </div>
 
-                        <!-- Question 5: Time Available -->
+                        <!-- Question 5: Watch duration? -->
                         <div class="question" id="question5">
-                            <h3><span class="emoji">⏰</span> <span data-en="How much time do you have?" data-sw="Una muda gani?">How much time do you have?</span></h3>
-                            <div class="mood-options" data-question="timeAvailable">
+                            <h3><span class="emoji">⏰</span> <span data-en="Watch duration?" data-sw="Muda wa kuangalia?">Watch duration?</span></h3>
+                            <div class="mood-options" data-question="duration">
                                 <div class="mood-btn" data-value="short">
                                     <span class="emoji">⚡</span>
-                                    <span data-en="Quick (&lt; 90 min)" data-sw="Haraka (&lt; 90 dakika)">Quick (&lt; 90 min)</span>
+                                    <span data-en="&lt; 90min" data-sw="&lt; 90 dakika">&lt; 90min</span>
                                 </div>
-                                <div class="mood-btn" data-value="medium">
+                                <div class="mood-btn" data-value="standard">
                                     <span class="emoji">🎬</span>
-                                    <span data-en="Standard (90-150 min)" data-sw="Kawaida (90-150 dakika)">Standard (90-150 min)</span>
+                                    <span data-en="90-120min" data-sw="90-120 dakika">90-120min</span>
                                 </div>
                                 <div class="mood-btn" data-value="long">
                                     <span class="emoji">📽️</span>
-                                    <span data-en="Epic (150+ min)" data-sw="Kubwa (150+ dakika)">Epic (150+ min)</span>
+                                    <span data-en="&gt; 2hrs" data-sw="&gt; 2 saa">&gt; 2hrs</span>
+                                </div>
+                                <div class="mood-btn" data-value="series">
+                                    <span class="emoji">📺</span>
+                                    <span data-en="Binge Series" data-sw="Mfululizo">Binge Series</span>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
                         <!-- Question 6: Current Thoughts 
                           <div class="question" id="question6">
@@ -547,35 +552,8 @@
     </p>
 </div>
 
-                    <!-- Movie Match Result -->
-                    <div class="movie-match" id="movieMatch">
-                        <div class="movie-match-header">
-                            <h4 data-en="Your Perfect Match" data-sw="Mechi Yako Kamili">Your Perfect Match</h4>
-                            <span class="match-percentage">92% Match</span>
-                        </div>
-                        <div class="movie-match-content">
-                            <div class="movie-match-poster">
-                                <div style="width:150px;height:225px;background:linear-gradient(135deg, #8B5CF6, #3B82F6);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem;">Binti</div>
-                            </div>
-                            <div class="movie-match-details">
-                                <h4>Binti</h4>
-                                <div class="movie-match-meta">
-                                    <span>2021 • 98 <span data-en="min" data-sw="dakika">min</span></span>
-                                    <span class="movie-match-rating">
-                                        <i class="fas fa-star"></i> 8.2
-                                    </span>
-                                    <span>Tanzania</span>
-                                </div>
-                                <p class="movie-match-description" data-en="A heartwarming coming-of-age story about a young Tanzanian woman navigating love, family expectations, and her dreams in modern Dar es Salaam."
-                                   data-sw="Hadithi ya kuvutia ya ukuaji wa msichana wa Kitanzania anayepambana na mapenzi, matarajio ya familia, na ndoto zake katika Dar es Salaam ya kisasa.">
-                                    A heartwarming coming-of-age story about a young Tanzanian woman navigating love, family expectations, and her dreams in modern Dar es Salaam.
-                                </p>
-                                <div class="movie-match-tags">
-                                    <span class="match-tag" data-en="Emotional" data-sw="Ya Kihisia">Emotional</span>
-                                    <span class="match-tag" data-en="Uplifting" data-sw="Ya Kukuza">Uplifting</span>
-                                    <span class="match-tag" data-en="Cultural" data-sw="Ya Kitamaduni">Cultural</span>
-                                </div>
-                                <div class="movie-match-actions">
+                    <!-- Movie Match Result 
+                     <div class="movie-match-actions">
                                     <a href="#" class="watch-now-btn">
                                         <i class="fas fa-play"></i> <span data-en="Watch Now" data-sw="Angalia Sasa">Trailer</span>
                                     </a>
@@ -583,12 +561,10 @@
                                         <i class="fas fa-redo"></i> <span data-en="Try Again" data-sw="Jaribu Tena">Try Again</span>
                                     </a>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                          </div> -->
+                   
+                                
+
     </section>
 
     <!-- Statistics Section -->
@@ -734,7 +710,9 @@
                     }
                 }
             });
-        }// Enhanced Discover Questionnaire Logic
+        }
+        
+       // Enhanced Discover Questionnaire Logic
 const questions = document.querySelectorAll('.question');
 const nextBtn = document.getElementById('nextBtn');
 const prevBtn = document.getElementById('prevBtn');
@@ -921,10 +899,16 @@ discoverBtn.addEventListener('click', () => {
     }
     
     // Show loading state
-    discoverBtn.innerHTML = '<div class="loading-spinner"></div> <span data-en="Redirecting..." data-sw="Inaelekeza...">Redirecting...</span>';
+    discoverBtn.innerHTML = '<div class="loading-spinner"></div> <span data-en="Analyzing..." data-sw="Tunachambua...">Analyzing...</span>';
     discoverBtn.disabled = true;
     
-    // NOW show recommendation preview (only after discover button is clicked)
+    // Hide analysis text and show recommendation preview
+    const analysisText = document.getElementById('analysis-text');
+    if (analysisText) {
+        analysisText.style.display = 'none';
+    }
+    
+    // Show recommendation preview (analyzing phase)
     if (recommendationPreview) {
         recommendationPreview.style.display = 'block';
         recommendationPreview.style.opacity = '0';
@@ -933,15 +917,118 @@ discoverBtn.addEventListener('click', () => {
             recommendationPreview.style.transition = 'opacity 0.5s ease-in-out';
             recommendationPreview.style.opacity = '1';
         }, 100);
+        
+        recommendationPreview.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
     
-    // Continue with movie recommendation logic here...
-    
-    // After 2 seconds, redirect to about page
+    // After 3 seconds of "analyzing", show the movie match modal
     setTimeout(() => {
-        window.location.href = '/about/';
-    }, 2000);
+        showMovieMatchModal();
+    }, 3000);
 });
+
+// Function to show movie match modal
+function showMovieMatchModal() {
+    // Create modal if it doesn't exist
+    let modal = document.getElementById('movieMatchModal');
+    if (!modal) {
+        modal = createMovieMatchModal();
+        document.body.appendChild(modal);
+    }
+    
+    // Show modal with animation
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('show');
+    }, 10);
+    
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+}
+
+// Function to create movie match modal
+function createMovieMatchModal() {
+    const modal = document.createElement('div');
+    modal.id = 'movieMatchModal';
+    modal.className = 'movie-modal';
+    
+      
+    // Add event listeners to modal buttons
+    modal.querySelector('#modalCloseBtn').addEventListener('click', closeMovieMatchModal);
+    modal.querySelector('#tryAnotherBtn').addEventListener('click', () => {
+        closeMovieMatchModal();
+        // Could trigger another recommendation here
+    });
+    modal.querySelector('#startOverBtn').addEventListener('click', () => {
+        closeMovieMatchModal();
+        resetQuestionnaire();
+    });
+    
+    // Close modal when clicking backdrop
+    modal.querySelector('.modal-backdrop').addEventListener('click', closeMovieMatchModal);
+    
+    return modal;
+}
+
+// Function to close movie match modal
+function closeMovieMatchModal() {
+    const modal = document.getElementById('movieMatchModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+    
+    // Restore body scroll
+    document.body.style.overflow = '';
+}
+
+// Function to reset questionnaire
+function resetQuestionnaire() {
+    // Reset current question
+    currentQuestion = 0;
+    
+    // Clear all answers
+    Object.keys(answers).forEach(key => delete answers[key]);
+    
+    // Reset all UI elements
+    document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+    
+    if (energySlider) {
+        energySlider.value = 5; // Reset to middle
+    }
+    
+    if (currentThoughts) {
+        currentThoughts.value = '';
+    }
+    
+    // Hide recommendation preview and analysis text
+    if (recommendationPreview) {
+        recommendationPreview.style.display = 'none';
+        recommendationPreview.style.opacity = '0';
+    }
+    
+    const analysisText = document.getElementById('analysis-text');
+    if (analysisText) {
+        analysisText.style.display = 'none';
+        analysisText.classList.add('hidden');
+    }
+    
+    // Reset discover button
+    if (discoverBtn) {
+        discoverBtn.innerHTML = '<span class="emoji">🎯</span> <span data-en="Discover My Perfect Movie" data-sw="Gundua Filamu Yangu Kamili">Discover My Perfect Movie</span>';
+        discoverBtn.disabled = true;
+    }
+    
+    // Show first question
+    showQuestion(0);
+    
+    // Scroll to top
+    questions[0].scrollIntoView({ behavior: 'smooth' });
+}
 
 // Updated validation function with special handling for question 2 (intensity)
 function validateCurrentQuestion() {
@@ -1065,6 +1152,12 @@ function showQuestion(questionIndex) {
     // Update button states
     if (prevBtn) {
         prevBtn.disabled = questionIndex === 0;
+        // Show/hide previous button
+        if (questionIndex === 0) {
+            prevBtn.style.display = 'none';
+        } else {
+            prevBtn.style.display = 'inline-flex';
+        }
     }
     
     // Show/hide next button vs discover button
@@ -1073,10 +1166,24 @@ function showQuestion(questionIndex) {
             // Last question - show discover button, hide next
             nextBtn.style.display = 'none';
             discoverBtn.style.display = 'inline-block';
+            
+            // Show analysis text on last question
+            const analysisText = document.getElementById('analysis-text');
+            if (analysisText) {
+                analysisText.classList.remove('hidden');
+                analysisText.style.display = 'block';
+            }
         } else {
             // Not last question - show next button, hide discover
             nextBtn.style.display = 'inline-block';
             discoverBtn.style.display = 'none';
+            
+            // Hide analysis text on other questions
+            const analysisText = document.getElementById('analysis-text');
+            if (analysisText) {
+                analysisText.classList.add('hidden');
+                analysisText.style.display = 'none';
+            }
         }
     }
     
@@ -1123,23 +1230,7 @@ function showValidationFeedback() {
 // Try again button handler (if it exists)
 if (tryAgainBtn) {
     tryAgainBtn.addEventListener('click', () => {
-        // Reset questionnaire
-        currentQuestion = 0;
-        Object.keys(answers).forEach(key => delete answers[key]);
-        
-        // Hide recommendation preview
-        if (recommendationPreview) {
-            recommendationPreview.style.display = 'none';
-        }
-        
-        // Reset discover button
-        if (discoverBtn) {
-            discoverBtn.innerHTML = '<span data-en="Discover My Movie" data-sw="Gundua Filamu Yangu">Discover My Movie</span>';
-            discoverBtn.disabled = true;
-        }
-        
-        // Show first question
-        showQuestion(0);
+        resetQuestionnaire();
     });
 }
 
@@ -1190,6 +1281,9 @@ animateOnScroll();
 
 // Initialize the questionnaire
 updateProgress();
+// Initialize the questionnaire
+updateProgress();
+
         // === STRICT TRAILER ENFORCEMENT ===
         // YouTube ID validation pattern
         const YOUTUBE_ID_PATTERN = /^[a-zA-Z0-9_-]{11}$/;
