@@ -803,4 +803,51 @@ async function watchTrailer(id, type) {
 
 function saveToWatchlist(id, type) {
   alert(`Would save ${type} ID: ${id} to watchlist\n(Need to implement storage)`);
+
+   // Simple and working mobile menu
+   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+   const mobileMenu = document.getElementById('mobileMenu');
+   const closeMenuBtn = document.getElementById('closeMenuBtn');
+   const menuOverlay = document.getElementById('menuOverlay');
+
+   // Open menu
+   function openMenu() {
+       mobileMenu.classList.add('active');
+       menuOverlay.classList.add('active');
+       document.body.style.overflow = 'hidden';
+   }
+
+   // Close menu
+   function closeMenu() {
+       mobileMenu.classList.remove('active');
+       menuOverlay.classList.remove('active');
+       document.body.style.overflow = '';
+   }
+
+   // Event listeners
+   mobileMenuBtn.addEventListener('click', openMenu);
+   closeMenuBtn.addEventListener('click', closeMenu);
+   menuOverlay.addEventListener('click', closeMenu);
+
+   // Close on escape key
+   document.addEventListener('keydown', function(e) {
+       if (e.key === 'Escape') {
+           closeMenu();
+       }
+   });
+
+   // Close menu when clicking menu items (optional)
+   const menuItems = document.querySelectorAll('.menu-item');
+   menuItems.forEach(item => {
+       item.addEventListener('click', function() {
+           setTimeout(closeMenu, 200);
+       });
+   });
+
+   // Close menu on window resize to desktop
+   window.addEventListener('resize', function() {
+       if (window.innerWidth > 768) {
+           closeMenu();
+       }
+   });
 }
