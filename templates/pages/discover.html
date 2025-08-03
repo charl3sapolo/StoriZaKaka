@@ -245,6 +245,7 @@
     </div>
   </div>
 
+  {% csrf_token %}
   <script>
     window.TMDB_API_KEY = "{{ TMDB_API_KEY|escapejs }}";
   </script>

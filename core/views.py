@@ -16,6 +16,18 @@ def discover(request):
         'is_discover': True
     })
 
+def movie_details(request):
+    return render(request, 'pages/movie_detail.html', {
+        'page_title': 'My Movies',
+        'is_movie_details': True
+    })
+
+def profile(request):
+    return render(request, 'pages/profile.html', {
+        'page_title': 'Profile',
+        'is_profile': True
+    })
+
 def fetch_trending(request, media_type):
     page = request.GET.get('page', 1)
     

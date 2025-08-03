@@ -3,6 +3,346 @@ const TMDB_API_KEY = window.TMDB_API_KEY || '';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
 
+// Mood to Genre Mapping
+const MOOD_TO_GENRE = {
+  comedy: [35], 
+  drama: [18],
+  action: [28],
+  romance: [10749],
+  adventure: [12],
+  thriller: [53, 9648],
+  family: [10751],
+  horror: [27]
+};
+
+// Enhanced Mood Selector State Management
+class MoodSelector {
+  constructor() {
+    this.selectedMoods = new Set();
+    this.isAnalyzing = false;
+    this.analysisDuration = 4500; // 4.5 seconds
+    this.init();
+  }
+
+  init() {
+    this.setupMoodOptions();
+    this.setupAnalyzeButton();
+    this.loadStoredPreferences();
+  }
+
+  setupMoodOptions() {
+    const moodOptions = document.querySelectorAll('.mood-option');
+    moodOptions.forEach(option => {
+      option.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.toggleMood(option);
+      });
+    });
+  }
+
+  toggleMood(moodElement) {
+    const mood = moodElement.dataset.mood;
+    
+    if (this.selectedMoods.has(mood)) {
+      this.selectedMoods.delete(mood);
+      moodElement.classList.remove('selected');
+    } else {
+      this.selectedMoods.add(mood);
+      moodElement.classList.add('selected');
+    }
+
+    this.updateAnalyzeButton();
+    this.savePreferences();
+  }
+
+  updateAnalyzeButton() {
+    const analyzeBtn = document.getElementById('getRecommendations');
+    if (analyzeBtn) {
+      const hasSelections = this.selectedMoods.size > 0;
+      analyzeBtn.disabled = !hasSelections;
+      
+      if (hasSelections) {
+        analyzeBtn.classList.remove('disabled');
+        analyzeBtn.classList.add('enabled');
+      } else {
+        analyzeBtn.classList.remove('enabled');
+        analyzeBtn.classList.add('disabled');
+      }
+    }
+  }
+
+  setupAnalyzeButton() {
+    const analyzeBtn = document.getElementById('getRecommendations');
+    if (analyzeBtn) {
+      analyzeBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (!this.isAnalyzing && this.selectedMoods.size > 0) {
+          this.startAnalysis();
+        }
+      });
+    }
+  }
+
+  async startAnalysis() {
+    if (this.isAnalyzing) return;
+    
+    this.isAnalyzing = true;
+    const analyzeBtn = document.getElementById('getRecommendations');
+    const originalContent = analyzeBtn.innerHTML;
+    
+    // Show loading state
+    analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+    analyzeBtn.disabled = true;
+    analyzeBtn.classList.add('analyzing');
+
+    try {
+      // Simulate analysis delay
+      await this.simulateAnalysis();
+      
+      // Fetch recommendations based on selected moods
+      const recommendations = await this.fetchMoodRecommendations();
+      
+      // Store preferences
+      await this.storeMoodPreferences();
+      
+      // Display results
+      this.displayCuratedResults(recommendations);
+      
+      // Reset selections
+      this.resetSelections();
+      
+    } catch (error) {
+      console.error('Analysis failed:', error);
+      this.showError('Analysis failed. Please try again.');
+    } finally {
+      // Restore button state
+      analyzeBtn.innerHTML = originalContent;
+      analyzeBtn.disabled = false;
+      analyzeBtn.classList.remove('analyzing');
+      this.isAnalyzing = false;
+    }
+  }
+
+  async simulateAnalysis() {
+    return new Promise(resolve => {
+      setTimeout(resolve, this.analysisDuration);
+    });
+  }
+
+  async fetchMoodRecommendations() {
+    const genreIds = [];
+    this.selectedMoods.forEach(mood => {
+      if (MOOD_TO_GENRE[mood]) {
+        genreIds.push(...MOOD_TO_GENRE[mood]);
+      }
+    });
+
+    if (genreIds.length === 0) {
+      throw new Error('No valid genres found for selected moods');
+    }
+
+    const uniqueGenreIds = [...new Set(genreIds)];
+    const url = `${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}&with_genres=${uniqueGenreIds.join(',')}&sort_by=popularity.desc&page=1`;
+
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`TMDB API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.results || [];
+  }
+
+  async storeMoodPreferences() {
+    const moodPreferences = Array.from(this.selectedMoods);
+    const sessionId = this.getSessionId();
+    const isLoggedIn = this.checkIfLoggedIn();
+
+    try {
+      const response = await fetch('/api/mood-preferences/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': this.getCSRFToken(),
+        },
+        body: JSON.stringify({
+          mood_preferences: moodPreferences,
+          session_id: sessionId,
+          is_logged_in: isLoggedIn
+        })
+      });
+
+      if (!response.ok) {
+        console.warn('Failed to store mood preferences:', response.status);
+      }
+    } catch (error) {
+      console.warn('Error storing mood preferences:', error);
+    }
+  }
+
+  getSessionId() {
+    let sessionId = localStorage.getItem('movie_picker_session_id');
+    if (!sessionId) {
+      sessionId = 'anon_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+      localStorage.setItem('movie_picker_session_id', sessionId);
+    }
+    return sessionId;
+  }
+
+  checkIfLoggedIn() {
+    // Check if user is logged in by looking for auth token or user data
+    return document.querySelector('[data-user-id]') !== null;
+  }
+
+  getCSRFToken() {
+    const token = document.querySelector('[name=csrfmiddlewaretoken]');
+    return token ? token.value : '';
+  }
+
+  displayCuratedResults(recommendations) {
+    const curatedSection = document.getElementById('curatedSection');
+    const curatedGrid = document.getElementById('curatedGrid');
+    
+    if (!curatedSection || !curatedGrid) {
+      console.error('Curated section elements not found');
+      return;
+    }
+
+    // Clear existing content
+    curatedGrid.innerHTML = '';
+
+    if (recommendations.length === 0) {
+      curatedGrid.innerHTML = `
+        <div class="no-results">
+          <i class="fas fa-search"></i>
+          <p>No recommendations found for your selected moods.</p>
+        </div>
+      `;
+    } else {
+      // Limit to 4 movies for better user experience
+      const limitedRecommendations = recommendations.slice(0, 4);
+      
+      // Add movie cards
+      limitedRecommendations.forEach(movie => {
+        const card = this.createMovieCard(movie);
+        curatedGrid.appendChild(card);
+      });
+    }
+
+    // Show the curated section
+    curatedSection.style.display = 'block';
+    curatedSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  createMovieCard(movie) {
+    const card = document.createElement('div');
+    card.className = 'movie-card';
+    card.innerHTML = `
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="${TMDB_IMAGE_BASE}${movie.poster_path}" 
+               alt="${movie.title}" 
+               class="movie-poster"
+               onerror="this.src='/static/logo.kakaflix.jpg'">
+          <div class="movie-info">
+            <div class="movie-title">${movie.title}</div>
+            <div class="movie-meta">
+              <span class="movie-year">${movie.release_date ? movie.release_date.split('-')[0] : 'N/A'}</span>
+              <span class="movie-rating">
+                <i class="fas fa-star"></i>
+                ${movie.vote_average ? movie.vote_average.toFixed(1) : 'N/A'}
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-back">
+          <div class="movie-title">${movie.title}</div>
+          <div class="movie-overview">${movie.overview || 'No overview available.'}</div>
+          <div class="card-actions">
+            <button class="action-btn" onclick="watchTrailer(${movie.id}, 'movie')">
+              <i class="fas fa-play"></i> Trailer
+            </button>
+            <button class="action-btn secondary" onclick="saveToWatchlist(${movie.id}, 'movie')">
+              <i class="fas fa-heart"></i> Save
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // ENHANCED FLIP FUNCTIONALITY - Single-flip enforcement
+    card.addEventListener('click', (e) => {
+      if (!e.target.closest('.action-btn')) {
+        // Close all other flipped cards first (single-flip enforcement)
+        document.querySelectorAll('#curatedSection .movie-card.flipped').forEach(flipped => {
+          if (flipped !== card) flipped.classList.remove('flipped');
+        });
+        card.classList.toggle('flipped');
+      }
+    });
+
+    return card;
+  }
+
+  resetSelections() {
+    this.selectedMoods.clear();
+    document.querySelectorAll('.mood-option.selected').forEach(option => {
+      option.classList.remove('selected');
+    });
+    this.updateAnalyzeButton();
+  }
+
+  showError(message) {
+    // Create and show error toast
+    const toast = document.createElement('div');
+    toast.className = 'error-toast';
+    toast.innerHTML = `
+      <i class="fas fa-exclamation-triangle"></i>
+      <span>${message}</span>
+    `;
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+      toast.classList.add('show');
+    }, 100);
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+        document.body.removeChild(toast);
+      }, 300);
+    }, 4000);
+  }
+
+  loadStoredPreferences() {
+    // Load any previously stored mood preferences
+    const stored = localStorage.getItem('movie_picker_mood_preferences');
+    if (stored) {
+      try {
+        const preferences = JSON.parse(stored);
+        preferences.forEach(mood => {
+          const moodElement = document.querySelector(`[data-mood="${mood}"]`);
+          if (moodElement) {
+            this.selectedMoods.add(mood);
+            moodElement.classList.add('selected');
+          }
+        });
+        this.updateAnalyzeButton();
+      } catch (error) {
+        console.warn('Failed to load stored preferences:', error);
+      }
+    }
+  }
+
+  savePreferences() {
+    // Save current selections to localStorage
+    const preferences = Array.from(this.selectedMoods);
+    localStorage.setItem('movie_picker_mood_preferences', JSON.stringify(preferences));
+  }
+}
+
+// Global mood selector instance
+let moodSelector;
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -56,18 +396,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 });
-
-// Mood to Genre Mapping
-const MOOD_TO_GENRE = {
-  comedy: [35], 
-  drama: [18],
-  action: [28],
-  romance: [10749],
-  adventure: [12],
-  thriller: [53, 9648],
-  family: [10751],
-  horror: [27]
-};
 
 class MediaLoader {
   constructor(mediaType, gridId) {
@@ -209,6 +537,60 @@ window.moodAnalysis = { completed: false };
 
 
 // === TRENDING ROWS: FIRST ROW = MOST RECENT, SECOND ROW = OLDER TRENDING ===
+// ENSURE createMediaCard FUNCTION EXISTS FOR TRENDING ROWS
+function createMediaCard(item, mediaType) {
+  const isTV = mediaType === 'tv';
+  const title = item.title || item.name || 'Untitled';
+  const year = (item.release_date || item.first_air_date || '').slice(0, 4);
+  const poster = item.poster_path 
+    ? `${TMDB_IMAGE_BASE}${item.poster_path}`
+    : 'https://via.placeholder.com/500x750/1A1A1A/B3B3B3?text=No+Poster';
+  const rating = item.vote_average?.toFixed(1) || 'N/A';
+  const overview = item.overview || 'No description available.';
+
+  const card = document.createElement('div');
+  card.className = 'movie-card';
+  card.innerHTML = `
+    <div class="card-inner">
+      <div class="card-front">
+        <img src="${poster}" alt="${title}" class="movie-poster" loading="lazy"
+             onerror="this.src='https://via.placeholder.com/500x750/1A1A1A/B3B3B3?text=No+Poster'">
+        <div class="movie-info">
+          <h3 class="movie-title">${title}</h3>
+          <div class="movie-meta">
+            <span>${year}</span>
+            <div class="movie-rating">
+              <i class="fas fa-star"></i>
+              <span>${rating}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-back">
+        <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '...' : title}</h3>
+        <div class="movie-overview">${overview}</div>
+        <div class="card-actions">
+          <button class="action-btn" onclick="watchTrailer(${item.id}, '${mediaType}')">
+            <i class="fas fa-play"></i> Trailer
+          </button>
+          <button class="action-btn secondary" onclick="saveToWatchlist(${item.id}, '${mediaType}')">
+            <i class="fas fa-bookmark"></i> Save
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  card.addEventListener('click', (e) => {
+    if (!e.target.closest('.action-btn')) {
+      document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('flipped'));
+      card.classList.add('flipped');
+    }
+  });
+
+  return card;
+}
+
 async function fillTrendingRows(mediaType, rowId1, rowId2, loadingId1, loadingId2) {
   const row1 = document.getElementById(rowId1);
   const row2 = document.getElementById(rowId2);
@@ -600,19 +982,43 @@ function showCuratedSection(moodAnalysis) {
   }
 }
 
+// Function to get curated recommendations (placeholder for existing functionality)
+async function getCuratedRecommendations() {
+  // This function can be enhanced to load curated content
+  // For now, it's a placeholder to maintain existing functionality
+  console.log('Loading curated recommendations...');
+}
+
 // Initialize the app
 
 document.addEventListener('DOMContentLoaded', function() {
-  setupMoodSelection();
+  // Initialize enhanced mood selector
+  moodSelector = new MoodSelector();
+  
   populateGenreDropdown();
   populateYearDropdown();
   populateLanguageDropdown();
   setupExploreDropdowns();
+  
+  // RESTORE ORIGINAL TRENDING LOADER (exact previous implementation)
   fillTrendingRows('movie', 'moviesRow1', 'moviesRow2', 'moviesLoading1', 'moviesLoading2');
   fillTrendingRows('tv', 'tvRow1', 'tvRow2', 'tvLoading1', 'tvLoading2');
+  
   setupGlobalUnflip();
   showCuratedSection(window.moodAnalysis); // Initial check
-  // Keep curated and mood logic
+  
+  // Setup global unflip function
+  function setupGlobalUnflip() {
+    // Close all flipped cards when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.movie-card')) {
+        document.querySelectorAll('.movie-card.flipped').forEach(card => {
+          card.classList.remove('flipped');
+        });
+      }
+    });
+  }
+  
   // Retry button handler
   document.querySelector('.retry-btn')?.addEventListener('click', () => {
     document.querySelector('.error-state').classList.add('hidden');
@@ -725,6 +1131,133 @@ async function watchTrailer(id, type) {
   document.head.appendChild(style);
 })();
 
-function saveToWatchlist(id, type) {
-  alert(`Would save ${type} ID: ${id} to watchlist\n(Need to implement storage)`);
+async function saveToWatchlist(id, type) {
+  try {
+    // ENHANCED SAVING LOGIC - Guaranteed persistence
+    const key = `saved_${type}s`;
+    const saved = JSON.parse(localStorage.getItem(key) || '[]');
+    
+    if (!saved.includes(id)) {
+      localStorage.setItem(key, JSON.stringify([...saved, id]));
+      
+      // Get movie details from TMDB API for enhanced storage
+      const response = await fetch(`${TMDB_BASE_URL}/${type}/${id}?api_key=${TMDB_API_KEY}`);
+      const movieData = await response.json();
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch movie data');
+      }
+
+      // Prepare movie data for storage
+      const movieToSave = {
+        tmdb_id: movieData.id,
+        title: movieData.title || movieData.name,
+        overview: movieData.overview,
+        poster_path: movieData.poster_path,
+        backdrop_path: movieData.backdrop_path,
+        release_date: movieData.release_date || movieData.first_air_date,
+        vote_average: movieData.vote_average,
+        vote_count: movieData.vote_count,
+        genre_ids: movieData.genre_ids || [],
+        media_type: type,
+        saved_at: new Date().toISOString()
+      };
+
+      // Check if user is logged in
+      const isLoggedIn = checkIfLoggedIn();
+      
+      if (isLoggedIn) {
+        // Save to database for logged-in users
+        await saveMovieToDatabase(movieToSave);
+      } else {
+        // Save to localStorage for anonymous users (expires in 1 day)
+        await saveMovieToLocalStorage(movieToSave);
+      }
+
+      // Show success message
+      showSaveSuccess(movieToSave.title);
+    } else {
+      showSaveSuccess('Movie already saved!');
+    }
+    
+  } catch (error) {
+    console.error('Error saving movie:', error);
+    showError('Failed to save movie. Please try again.');
+  }
+}
+
+async function saveMovieToDatabase(movieData) {
+  const csrfToken = getCSRFToken();
+  
+  const response = await fetch('/api/save-movie/', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-CSRFToken': csrfToken
+    },
+    body: JSON.stringify(movieData)
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to save movie to database');
+  }
+
+  return await response.json();
+}
+
+async function saveMovieToLocalStorage(movieData) {
+  const savedMovies = JSON.parse(localStorage.getItem('savedMovies') || '[]');
+  
+  // Add expiration date (1 day from now)
+  const expirationDate = new Date();
+  expirationDate.setDate(expirationDate.getDate() + 1);
+  movieData.expires_at = expirationDate.toISOString();
+  
+  // Check if movie already exists
+  const existingIndex = savedMovies.findIndex(movie => movie.tmdb_id === movieData.tmdb_id);
+  
+  if (existingIndex >= 0) {
+    // Update existing movie
+    savedMovies[existingIndex] = movieData;
+  } else {
+    // Add new movie
+    savedMovies.push(movieData);
+  }
+  
+  // Clean up expired movies
+  const now = new Date();
+  const validMovies = savedMovies.filter(movie => {
+    if (!movie.expires_at) return true; // Keep movies without expiration
+    return new Date(movie.expires_at) > now;
+  });
+  
+  localStorage.setItem('savedMovies', JSON.stringify(validMovies));
+}
+
+function showSaveSuccess(movieTitle) {
+  // Create success toast
+  const toast = document.createElement('div');
+  toast.className = 'success-toast';
+  toast.innerHTML = `
+    <i class="fas fa-check-circle"></i>
+    <span>"${movieTitle}" saved to your movies!</span>
+  `;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('show');
+  }, 100);
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      document.body.removeChild(toast);
+    }, 300);
+  }, 3000);
+}
+
+function checkIfLoggedIn() {
+  // Check for user authentication indicator
+  const userIndicator = document.querySelector('[data-user-id]');
+  return userIndicator && userIndicator.getAttribute('data-user-id') !== '';
 }
