@@ -1131,59 +1131,32 @@ async function watchTrailer(id, type) {
   document.head.appendChild(style);
 })();
 
-async function saveToWatchlist(id, type) {
+function saveToWatchlist(id, type) {
+  if (!id || !type) return;
+  
   try {
-    // ENHANCED SAVING LOGIC - Guaranteed persistence
-    const key = `saved_${type}s`;
-    const saved = JSON.parse(localStorage.getItem(key) || '[]');
+    const key = `saved_${type}s`; // Note plural 's'
+    const current = JSON.parse(localStorage.getItem(key) || '[]');
     
-    if (!saved.includes(id)) {
-      localStorage.setItem(key, JSON.stringify([...saved, id]));
+    // Validate ID doesn't exist
+    if (!current.some(item => item.id === id)) {
+      const updated = [...current, { id, timestamp: Date.now() }];
+      localStorage.setItem(key, JSON.stringify(updated));
+      console.log(`Saved ${type} ID: ${id}`); // Verify in console
       
-      // Get movie details from TMDB API for enhanced storage
-      const response = await fetch(`${TMDB_BASE_URL}/${type}/${id}?api_key=${TMDB_API_KEY}`);
-      const movieData = await response.json();
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch movie data');
-      }
-
-      // Prepare movie data for storage
-      const movieToSave = {
-        tmdb_id: movieData.id,
-        title: movieData.title || movieData.name,
-        overview: movieData.overview,
-        poster_path: movieData.poster_path,
-        backdrop_path: movieData.backdrop_path,
-        release_date: movieData.release_date || movieData.first_air_date,
-        vote_average: movieData.vote_average,
-        vote_count: movieData.vote_count,
-        genre_ids: movieData.genre_ids || [],
-        media_type: type,
-        saved_at: new Date().toISOString()
-      };
-
-      // Check if user is logged in
-      const isLoggedIn = checkIfLoggedIn();
-      
-      if (isLoggedIn) {
-        // Save to database for logged-in users
-        await saveMovieToDatabase(movieToSave);
-      } else {
-        // Save to localStorage for anonymous users (expires in 1 day)
-        await saveMovieToLocalStorage(movieToSave);
-      }
-
       // Show success message
-      showSaveSuccess(movieToSave.title);
+      showSaveSuccess(`Movie saved successfully!`);
+      
+      return true;
     } else {
+      // Movie already saved
       showSaveSuccess('Movie already saved!');
     }
-    
-  } catch (error) {
-    console.error('Error saving movie:', error);
+  } catch (e) {
+    console.error("Save failed:", e);
     showError('Failed to save movie. Please try again.');
   }
+  return false;
 }
 
 async function saveMovieToDatabase(movieData) {
@@ -1254,6 +1227,28 @@ function showSaveSuccess(movieTitle) {
       document.body.removeChild(toast);
     }, 300);
   }, 3000);
+}
+
+function showError(message) {
+  // Create and show error toast
+  const toast = document.createElement('div');
+  toast.className = 'error-toast';
+  toast.innerHTML = `
+    <i class="fas fa-exclamation-triangle"></i>
+    <span>${message}</span>
+  `;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('show');
+  }, 100);
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      document.body.removeChild(toast);
+    }, 300);
+  }, 4000);
 }
 
 function checkIfLoggedIn() {

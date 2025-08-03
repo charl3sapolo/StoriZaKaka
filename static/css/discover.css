@@ -819,13 +819,25 @@ body {
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90vw !important;
-    height: 80vh !important;
+    transform: translate(-50%, -50%) scale(1.05); /* Subtle zoom */
+    width: 50vw !important;  /* Reduced from 85vw */
+    height: 40vh !important; /* Reduced from 60vh */
+    min-height: 300px;       /* Absolute minimum */
     z-index: 1000;
     background: #1a1a1a;
     border-radius: 12px;
     box-shadow: 0 0 50px rgba(0,0,0,0.9);
+    padding: 12px;
+    overflow-y: auto;
+  }
+  
+  #curatedSection .card-back {
+    gap: 8px; /* Tighter spacing */
+  }
+  
+  #curatedSection .movie-overview {
+    font-size: 0.9rem; /* Slightly smaller text */
+    padding-right: 5px; /* Prevent text clipping */
   }
 }
 
