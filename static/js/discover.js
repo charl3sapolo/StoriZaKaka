@@ -237,6 +237,7 @@ class MoodSelector {
   createMovieCard(movie) {
     const card = document.createElement('div');
     card.className = 'movie-card';
+    card.setAttribute('data-movie-id', movie.id);
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front">
@@ -473,6 +474,7 @@ class MediaLoader {
 
     const card = document.createElement('div');
     card.className = 'movie-card';
+    card.setAttribute('data-movie-id', item.id);
     card.innerHTML = `
       <div class="card-inner">
         <div class="card-front">
@@ -550,6 +552,7 @@ function createMediaCard(item, mediaType) {
 
   const card = document.createElement('div');
   card.className = 'movie-card';
+  card.setAttribute('data-movie-id', item.id);
   card.innerHTML = `
     <div class="card-inner">
       <div class="card-front">
@@ -1135,14 +1138,55 @@ function saveToWatchlist(id, type) {
   if (!id || !type) return;
   
   try {
-    const key = `saved_${type}s`; // Note plural 's'
+    // Get the movie data from the card
+    const movieCard = document.querySelector(`[data-${type}-id="${id}"]`);
+    if (!movieCard) {
+      console.error(`Movie card not found for ${type} ID: ${id}`);
+      return false;
+    }
+    
+    console.log('Found movie card:', movieCard);
+    
+    // Extract movie data from the card with better error handling
+    const titleElement = movieCard.querySelector('.movie-title');
+    const posterElement = movieCard.querySelector('.movie-poster');
+    const yearElement = movieCard.querySelector('.movie-year');
+    const ratingElement = movieCard.querySelector('.movie-rating');
+    
+    console.log('Extracted elements:', {
+      titleElement: titleElement?.textContent,
+      posterElement: posterElement?.src,
+      yearElement: yearElement?.textContent,
+      ratingElement: ratingElement?.textContent
+    });
+    
+    const movieData = {
+      id: parseInt(id),
+      tmdb_id: parseInt(id),
+      title: titleElement?.textContent?.trim() || 'Unknown Title',
+      poster_path: posterElement?.src || null,
+      release_date: yearElement?.textContent?.trim() || null,
+      vote_average: parseFloat(ratingElement?.textContent?.replace(/[^\d.]/g, '')) || 0,
+      genre_ids: [], // Will be populated from TMDB API
+      mediaType: type,
+      user_saved_date: new Date().toISOString(),
+      is_watch_later: false,
+      is_liked: false,
+      timestamp: Date.now()
+    };
+    
+    console.log('Created movie data:', movieData);
+    
+    // Save to localStorage with consistent key
+    const key = 'saved_movies';
     const current = JSON.parse(localStorage.getItem(key) || '[]');
     
-    // Validate ID doesn't exist
-    if (!current.some(item => item.id === id)) {
-      const updated = [...current, { id, timestamp: Date.now() }];
+    // Check if movie already exists
+    if (!current.some(item => item.id === parseInt(id))) {
+      const updated = [...current, movieData];
       localStorage.setItem(key, JSON.stringify(updated));
-      console.log(`Saved ${type} ID: ${id}`); // Verify in console
+      console.log(`Saved ${type} with full data:`, movieData);
+      console.log('Updated localStorage:', updated);
       
       // Show success message
       showSaveSuccess(`Movie saved successfully!`);

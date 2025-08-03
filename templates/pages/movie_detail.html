@@ -362,9 +362,44 @@
             border-radius: 4px;
         }
 
+        .skeleton-year {
+            height: 12px;
+            width: 30px;
+            background: linear-gradient(90deg, var(--soft-gray) 25%, var(--glass-border) 50%, var(--soft-gray) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+            margin-right: 8px;
+        }
+
+        .skeleton-rating {
+            height: 12px;
+            width: 40px;
+            background: linear-gradient(90deg, var(--soft-gray) 25%, var(--glass-border) 50%, var(--soft-gray) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
         @keyframes skeleton-loading {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
+        }
+
+        /* Lazy Loading */
+        .movie-poster.lazy {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .movie-poster.lazy.loaded {
+            opacity: 1;
+        }
+
+        .movie-poster.skeleton-poster {
+            background: linear-gradient(90deg, var(--soft-gray) 25%, var(--glass-border) 50%, var(--soft-gray) 75%);
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
         }
 
         /* Empty States */
