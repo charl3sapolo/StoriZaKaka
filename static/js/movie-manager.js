@@ -353,8 +353,8 @@ class MovieManager {
 
   // ENHANCED SAVED MOVIES DISPLAY FUNCTIONS
   async loadSavedMoviesEnhanced() {
-    const savedMovies = JSON.parse(localStorage.getItem('saved_movies') || '[]');
-    const savedTV = JSON.parse(localStorage.getItem('saved_tvs') || '[]');
+    const savedMovies = JSON.parse(localStorage.getItem('user_saved_movie') || '[]');
+    const savedTV = JSON.parse(localStorage.getItem('user_saved_tv') || '[]');
     
     if (savedMovies.length) {
       const movieData = await this.fetchAllSavedMedia(savedMovies, 'movie');
@@ -423,7 +423,314 @@ class MovieManager {
   }
 }
 
+// NEW DISPLAY FUNCTIONS FOR MOVIE-DETAIL PAGE (from user's "Debugged Load Function")
+function loadSavedMedia() {
+  const savedContainer = document.getElementById('savedMoviesGrid');
+  const watchLaterContainer = document.getElementById('watchLaterGrid');
+  
+  if (!savedContainer || !watchLaterContainer) return;
+
+  // 1. Get ALL saved items (movies + TV)
+  const savedMovies = JSON.parse(localStorage.getItem('saved_movies') || '[]');
+  const savedTVs = JSON.parse(localStorage.getItem('saved_tvs') || '[]');
+  const watchLaterMovies = JSON.parse(localStorage.getItem('watch_later_movies') || '[]');
+  const watchLaterTVs = JSON.parse(localStorage.getItem('watch_later_tvs') || '[]');
+
+  // Combine and sort by timestamp
+  const allSaved = [...savedMovies, ...savedTVs].sort((a,b) => b.timestamp - a.timestamp);
+  const allWatchLater = [...watchLaterMovies, ...watchLaterTVs].sort((a,b) => b.timestamp - a.timestamp);
+
+  // Update counts
+  updateMovieCounts(allSaved.length, allWatchLater.length);
+
+  // Display saved movies
+  displaySavedSection(savedContainer, allSaved, 'saved');
+  
+  // Display watch later
+  displaySavedSection(watchLaterContainer, allWatchLater, 'watchlater');
+}
+
+function displaySavedSection(container, items, type) {
+  if (items.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+        <i class="fas fa-${type === 'saved' ? 'heart-broken' : 'clock'}" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
+        <h3>No ${type === 'saved' ? 'movies saved' : 'movies in watchlist'} yet</h3>
+        <p>${type === 'saved' ? 'Start discovering amazing movies and save your favorites!' : 'Add movies to your watchlist to watch them later!'}</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Batch fetch details
+  Promise.all(
+    items.map(item => {
+      const isTV = item.id.toString().includes('tv_');
+      const cleanId = isTV ? item.id.toString().replace('tv_', '') : item.id;
+      const mediaType = isTV ? 'tv' : 'movie';
+      
+      return fetch(`${TMDB_BASE_URL}/${mediaType}/${cleanId}?api_key=${TMDB_API_KEY}`)
+        .then(res => res.json())
+        .then(data => ({ ...data, mediaType, originalId: item.id, timestamp: item.timestamp }))
+        .catch(e => {
+          console.error(`Failed to fetch ${mediaType} ${cleanId}:`, e);
+          return null;
+        });
+    })
+  ).then(results => {
+    const validResults = results.filter(Boolean);
+    if (validResults.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" style="text-align: center; padding: 40px; color: var(--text-secondary);">
+          <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.5;"></i>
+          <h3>Failed to load ${type === 'saved' ? 'saved movies' : 'watchlist'}</h3>
+          <p>Please try refreshing the page.</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container.innerHTML = validResults.map(item => createEnhancedMovieCard(item, type)).join('');
+    
+    // Add event listeners for the new cards
+    container.querySelectorAll('.movie-card').forEach(card => {
+      const movieId = card.dataset.id;
+      
+      // Remove button
+      card.querySelector('.remove-btn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeMovie(movieId, type);
+      });
+      
+      // Watch later toggle
+      card.querySelector('.watch-later-btn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleWatchLater(movieId, item.mediaType);
+      });
+      
+      // Like button
+      card.querySelector('.like-btn')?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleLike(movieId);
+      });
+    });
+  });
+}
+
+function createEnhancedMovieCard(item, type) {
+  const title = item.title || item.name || 'Unknown Title';
+  const year = (item.release_date || item.first_air_date || '').slice(0, 4) || 'N/A';
+  const rating = item.vote_average?.toFixed(1) || 'N/A';
+  const poster = item.poster_path ? `${TMDB_IMAGE_BASE}w185${item.poster_path}` : 'https://via.placeholder.com/185x278/1A1A1A/B3B3B3?text=No+Poster';
+  const overview = item.overview || 'No overview available.';
+  const genres = item.genres ? item.genres.map(g => g.name).join(', ') : 'Unknown';
+  
+  return `
+    <div class="movie-card" data-id="${item.originalId}" style="
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      position: relative;
+      cursor: pointer;
+    ">
+      <button class="remove-btn" style="
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(220, 38, 38, 0.9);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8rem;
+        z-index: 10;
+      " title="Remove">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="${poster}" 
+               onerror="this.src='https://via.placeholder.com/185x278/1A1A1A/B3B3B3?text=No+Poster'"
+               style="width: 100%; height: 280px; object-fit: cover;">
+          <div style="padding: 15px;">
+            <h4 style="margin: 0 0 8px 0; font-size: 1rem; color: var(--text-primary); line-height: 1.3; height: 2.6em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">
+              ${title}
+            </h4>
+            <div style="display: flex; justify-content: space-between; align-items: center; color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 10px;">
+              <span>${year}</span>
+              <span style="color: var(--primary); font-weight: 600;">
+                <i class="fas fa-star"></i> ${rating}
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card-back">
+          <h3 style="margin: 0 0 10px 0; font-size: 1.1rem; color: var(--text-primary);">${title}</h3>
+          <div style="margin-bottom: 10px; color: var(--text-secondary); font-size: 0.9rem;">
+            <div style="margin-bottom: 5px;"><strong>Genre:</strong> ${genres}</div>
+            <div style="margin-bottom: 5px;"><strong>Year:</strong> ${year}</div>
+            <div><strong>Rating:</strong> <span style="color: var(--primary);">${rating}</span></div>
+          </div>
+          <p style="font-size: 0.9rem; color: var(--text-secondary); line-height: 1.4; margin-bottom: 15px; max-height: 80px; overflow-y: auto;">
+            ${overview}
+          </p>
+          
+          <div style="display: flex; gap: 8px; justify-content: space-between;">
+            <button class="action-btn" onclick="watchTrailer(${item.originalId}, '${item.mediaType}')" style="
+              background: var(--soft-gray);
+              border: none;
+              border-radius: 6px;
+              padding: 8px 12px;
+              color: var(--text-primary);
+              cursor: pointer;
+              transition: all 0.3s ease;
+              font-size: 0.8rem;
+              flex: 1;
+            ">
+              <i class="fas fa-play"></i> Trailer
+            </button>
+            
+            <button class="watch-later-btn" style="
+              background: var(--primary);
+              border: none;
+              border-radius: 6px;
+              padding: 8px 12px;
+              color: var(--dark);
+              cursor: pointer;
+              transition: all 0.3s ease;
+              font-size: 0.8rem;
+              flex: 1;
+            " title="${type === 'saved' ? 'Add to Watch Later' : 'Remove from Watch Later'}">
+              <i class="fas fa-${type === 'saved' ? 'clock' : 'check'}"></i> 
+              ${type === 'saved' ? 'Watchlist' : 'Watching'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function updateMovieCounts(savedCount, watchLaterCount) {
+  // Update all count displays
+  const countElements = [
+    document.getElementById('savedCount'),
+    document.getElementById('mobileSavedCount')
+  ];
+  
+  countElements.forEach(element => {
+    if (element) {
+      element.textContent = savedCount + watchLaterCount;
+    }
+  });
+}
+
+function removeMovie(movieId, type) {
+  const key = type === 'saved' ? 'saved_movies' : 'watch_later_movies';
+  const current = JSON.parse(localStorage.getItem(key) || '[]');
+  const updated = current.filter(item => item.id !== movieId);
+  localStorage.setItem(key, JSON.stringify(updated));
+  
+  // Refresh the display
+  loadSavedMedia();
+  
+  // Show success message
+  showSuccess(`Movie removed from ${type === 'saved' ? 'saved movies' : 'watchlist'}!`);
+}
+
+function toggleWatchLater(movieId, mediaType) {
+  const savedKey = `saved_${mediaType}s`;
+  const watchLaterKey = `watch_later_${mediaType}s`;
+  
+  const saved = JSON.parse(localStorage.getItem(savedKey) || '[]');
+  const watchLater = JSON.parse(localStorage.getItem(watchLaterKey) || '[]');
+  
+  const movieData = { id: movieId, timestamp: Date.now() };
+  
+  // Check if movie is in saved
+  const isInSaved = saved.some(item => item.id === movieId);
+  const isInWatchLater = watchLater.some(item => item.id === movieId);
+  
+  if (isInSaved && !isInWatchLater) {
+    // Move from saved to watch later
+    const updatedSaved = saved.filter(item => item.id !== movieId);
+    const updatedWatchLater = [...watchLater, movieData];
+    
+    localStorage.setItem(savedKey, JSON.stringify(updatedSaved));
+    localStorage.setItem(watchLaterKey, JSON.stringify(updatedWatchLater));
+    
+    showSuccess('Movie moved to watch later!');
+  } else if (isInWatchLater) {
+    // Remove from watch later
+    const updatedWatchLater = watchLater.filter(item => item.id !== movieId);
+    localStorage.setItem(watchLaterKey, JSON.stringify(updatedWatchLater));
+    
+    showSuccess('Movie removed from watch later!');
+  } else {
+    // Add to watch later
+    const updatedWatchLater = [...watchLater, movieData];
+    localStorage.setItem(watchLaterKey, JSON.stringify(updatedWatchLater));
+    
+    showSuccess('Movie added to watch later!');
+  }
+  
+  // Refresh display
+  loadSavedMedia();
+}
+
+function toggleLike(movieId) {
+  // For now, just show a message (you can implement like functionality later)
+  showSuccess('Like feature coming soon!');
+}
+
+function showSuccess(message) {
+  const toast = document.createElement('div');
+  toast.className = 'success-toast';
+  toast.innerHTML = `
+    <i class="fas fa-check-circle"></i>
+    <span>${message}</span>
+  `;
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+    toast.classList.add('show');
+  }, 100);
+
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => {
+      document.body.removeChild(toast);
+    }, 300);
+  }, 3000);
+}
+
+// Helper function for fetching movie details (used by loadSavedMedia)
+async function fetchMovieDetails(id, type) {
+  try {
+    const res = await fetch(`${TMDB_BASE_URL}/${type}/${id}?api_key=${TMDB_API_KEY}`);
+    return await res.json();
+  } catch (error) {
+    console.error(`Failed to load ${type} ${id}:`, error);
+    return null;
+  }
+}
+
 // Initialize movie manager when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
   window.movieManager = new MovieManager();
+  
+  // Also initialize display functions for movie-detail page
+  if (document.getElementById('savedMoviesGrid')) {
+    loadSavedMedia();
+  }
 }); 

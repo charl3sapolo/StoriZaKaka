@@ -375,6 +375,7 @@
             justify-content: space-between;
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
             .mobile-menu-btn {
                 display: block;
@@ -406,6 +407,14 @@
                 padding: 12px 20px;
                 font-size: 1rem;
             }
+
+            .my-movies-container {
+                padding: 15px;
+            }
+
+            .page-header {
+                margin-bottom: 30px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -421,6 +430,49 @@
             .page-title {
                 font-size: 1.8rem;
             }
+
+            .tab-button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .my-movies-container {
+                padding: 10px;
+            }
+        }
+
+        /* Success Toast Styles */
+        .success-toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transform: translateX(100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            max-width: 400px;
+        }
+
+        .success-toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .success-toast i {
+            font-size: 1.2rem;
+        }
+
+        .success-toast span {
+            font-size: 0.9rem;
+            font-weight: 500;
         }
     </style>
 </head>
