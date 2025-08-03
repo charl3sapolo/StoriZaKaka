@@ -670,6 +670,19 @@
             }
         }
 
+        /* Content Container */
+        .content-container {
+            margin-top: 20px;
+        }
+
+        .content-view {
+            display: none;
+        }
+
+        .content-view.active {
+            display: block;
+        }
+
         /* Performance Optimizations */
         .content-hidden {
             opacity: 0;
@@ -815,36 +828,39 @@
             <div class="loading-spinner"></div>
         </div>
 
-        <!-- Genre View -->
-        <div class="content-hidden" id="genreView">
-            <div id="genreContainer">
-                <!-- Genre rows will be dynamically generated -->
+        <!-- Content Container -->
+        <div class="content-container">
+            <!-- Genre View -->
+            <div class="content-view active" id="genreView">
+                <div id="genreContainer">
+                    <!-- Genre rows will be dynamically generated -->
+                </div>
             </div>
-        </div>
 
-        <!-- Stack View -->
-        <div class="content-hidden" id="stackView">
-            <div class="stack-view" id="stackContainer">
-                <!-- Stack cards will be dynamically generated -->
+            <!-- Stack View -->
+            <div class="content-view" id="stackView">
+                <div class="stack-view" id="stackContainer">
+                    <!-- Stack cards will be dynamically generated -->
+                </div>
             </div>
-        </div>
 
-        <!-- Timeline View -->
-        <div class="content-hidden" id="timelineView">
-            <div class="timeline-view" id="timelineContainer">
-                <!-- Timeline groups will be dynamically generated -->
+            <!-- Timeline View -->
+            <div class="content-view" id="timelineView">
+                <div class="timeline-view" id="timelineContainer">
+                    <!-- Timeline groups will be dynamically generated -->
+                </div>
             </div>
-        </div>
 
-        <!-- Empty State -->
-        <div class="empty-state" id="emptyState" style="display: none;">
-            <i class="fas fa-heart-broken"></i>
-            <h3>No movies saved yet</h3>
-            <p>Start discovering amazing movies and save your favorites!</p>
-            <a href="/discover/" class="discover-btn">
-                <i class="fas fa-search"></i>
-                Discover Movies
-            </a>
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <i class="fas fa-heart-broken"></i>
+                <h3>No movies saved yet</h3>
+                <p>Start discovering amazing movies and save your favorites!</p>
+                <a href="/discover/" class="discover-btn">
+                    <i class="fas fa-search"></i>
+                    Discover Movies
+                </a>
+            </div>
         </div>
     </div>
 

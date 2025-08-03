@@ -130,14 +130,43 @@ class UltimateMovieGallery {
         const userSavedMovie = JSON.parse(localStorage.getItem('user_saved_movie') || '[]');
         const userSavedTV = JSON.parse(localStorage.getItem('user_saved_tv') || '[]');
         
-        // Combine all sources and remove duplicates
-        const allItems = [...savedMovies, ...savedTVs, ...userSavedMovie, ...userSavedTV];
+        // Also check for watch later and liked movies
+        const watchLaterMovies = JSON.parse(localStorage.getItem('watchlist') || '[]');
+        const likedMovies = JSON.parse(localStorage.getItem('liked_movies') || '[]');
+        
+        console.log('Storage data found:', {
+            savedMovies: savedMovies.length,
+            savedTVs: savedTVs.length,
+            userSavedMovie: userSavedMovie.length,
+            userSavedTV: userSavedTV.length,
+            watchLaterMovies: watchLaterMovies.length,
+            likedMovies: likedMovies.length
+        });
+        
+        // Combine all sources and add proper flags
+        const allItems = [
+            ...savedMovies.map(item => ({ ...item, is_watch_later: false, is_liked: false })),
+            ...savedTVs.map(item => ({ ...item, is_watch_later: false, is_liked: false })),
+            ...userSavedMovie.map(item => ({ ...item, is_watch_later: false, is_liked: false })),
+            ...userSavedTV.map(item => ({ ...item, is_watch_later: false, is_liked: false })),
+            ...watchLaterMovies.map(item => ({ ...item, is_watch_later: true, is_liked: false })),
+            ...likedMovies.map(item => ({ ...item, is_watch_later: false, is_liked: true }))
+        ];
+        
         const uniqueItems = this.removeDuplicates(allItems);
         
         console.log(`Found ${uniqueItems.length} unique saved items`);
         
         // Fetch detailed data for each item
         this.savedMovies = await this.fetchDetailedData(uniqueItems);
+        
+        // Log the final results
+        console.log('Final movie data:', {
+            total: this.savedMovies.length,
+            watchLater: this.savedMovies.filter(m => m.is_watch_later).length,
+            liked: this.savedMovies.filter(m => m.is_liked).length,
+            saved: this.savedMovies.filter(m => !m.is_watch_later).length
+        });
     }
 
     removeDuplicates(items) {
@@ -198,13 +227,15 @@ class UltimateMovieGallery {
                 return null;
             }
             
+            // Preserve the original flags from the saved item
             return {
                 ...data,
                 mediaType,
                 originalId: itemId,
                 is_saved: true,
                 is_watch_later: item.is_watch_later || false,
-                is_liked: item.is_liked || false
+                is_liked: item.is_liked || false,
+                date_added: item.date_added || item.timestamp || Date.now()
             };
             
         } catch (error) {
@@ -280,14 +311,14 @@ class UltimateMovieGallery {
         document.querySelector(`[data-layout="${layout}"]`).classList.add('active');
         
         // Hide all views
-        document.querySelectorAll('.content-hidden').forEach(view => {
-            view.classList.remove('content-visible');
+        document.querySelectorAll('.content-view').forEach(view => {
+            view.classList.remove('active');
         });
         
         // Show selected view
         const targetView = document.getElementById(`${layout}View`);
         if (targetView) {
-            targetView.classList.add('content-visible');
+            targetView.classList.add('active');
         }
         
         this.currentLayout = layout;
@@ -315,10 +346,17 @@ class UltimateMovieGallery {
 
     renderCurrentLayout() {
         const filteredMovies = this.getFilteredMovies();
+        console.log(`Rendering ${this.currentTab} tab with ${filteredMovies.length} movies`);
         
         if (filteredMovies.length === 0) {
             this.showEmptyState();
             return;
+        }
+
+        // Hide empty state
+        const emptyState = document.getElementById('emptyState');
+        if (emptyState) {
+            emptyState.style.display = 'none';
         }
 
         switch (this.currentLayout) {
@@ -335,16 +373,30 @@ class UltimateMovieGallery {
     }
 
     getFilteredMovies() {
+        console.log(`Filtering movies for tab: ${this.currentTab}`);
+        console.log(`Total movies: ${this.savedMovies.length}`);
+        
+        let filtered = [];
+        
         switch (this.currentTab) {
             case 'saved':
-                return this.savedMovies.filter(movie => !movie.is_watch_later);
+                filtered = this.savedMovies.filter(movie => !movie.is_watch_later);
+                console.log(`Saved movies (excluding watch later): ${filtered.length}`);
+                break;
             case 'watchlater':
-                return this.savedMovies.filter(movie => movie.is_watch_later);
+                filtered = this.savedMovies.filter(movie => movie.is_watch_later === true);
+                console.log(`Watch later movies: ${filtered.length}`);
+                break;
             case 'liked':
-                return this.savedMovies.filter(movie => movie.is_liked);
+                filtered = this.savedMovies.filter(movie => movie.is_liked === true);
+                console.log(`Liked movies: ${filtered.length}`);
+                break;
             default:
-                return this.savedMovies;
+                filtered = this.savedMovies;
+                console.log(`All movies: ${filtered.length}`);
         }
+        
+        return filtered;
     }
 
     renderGenreLayout(movies) {
@@ -673,8 +725,8 @@ class UltimateMovieGallery {
         `;
         
         emptyState.style.display = 'block';
-        document.querySelectorAll('.content-hidden').forEach(view => {
-            view.classList.remove('content-visible');
+        document.querySelectorAll('.content-view').forEach(view => {
+            view.classList.remove('active');
         });
     }
 
