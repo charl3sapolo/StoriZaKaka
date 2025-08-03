@@ -30,6 +30,7 @@ class UltimateMovieGallery {
     constructor() {
         this.savedMovies = [];
         this.currentLayout = 'genre';
+        this.currentTab = 'saved';
         this.isLoggedIn = this.checkIfLoggedIn();
         this.sessionId = this.getSessionId();
         this.preloadedData = null;
@@ -44,6 +45,7 @@ class UltimateMovieGallery {
         
         // Initialize layout controls
         this.setupLayoutControls();
+        this.setupTabControls();
         
         // Load saved movies with performance optimization
         await this.loadSavedMoviesOptimized();
@@ -257,6 +259,17 @@ class UltimateMovieGallery {
         });
     }
 
+    setupTabControls() {
+        const tabButtons = document.querySelectorAll('.tab-btn');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tab = button.getAttribute('data-tab');
+                this.switchTab(tab);
+            });
+        });
+    }
+
     switchLayout(layout) {
         console.log(`Switching to ${layout} layout...`);
         
@@ -284,74 +297,112 @@ class UltimateMovieGallery {
         localStorage.setItem('lastLayout', layout);
     }
 
+    switchTab(tab) {
+        console.log(`Switching to ${tab} tab...`);
+        
+        // Update active tab button
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+        
+        this.currentTab = tab;
+        this.renderCurrentLayout();
+        
+        // Save tab preference
+        localStorage.setItem('lastTab', tab);
+    }
+
     renderCurrentLayout() {
-        if (this.savedMovies.length === 0) {
+        const filteredMovies = this.getFilteredMovies();
+        
+        if (filteredMovies.length === 0) {
             this.showEmptyState();
             return;
         }
 
         switch (this.currentLayout) {
             case 'genre':
-                this.renderGenreLayout();
+                this.renderGenreLayout(filteredMovies);
                 break;
             case 'stack':
-                this.renderStackLayout();
+                this.renderStackLayout(filteredMovies);
                 break;
             case 'timeline':
-                this.renderTimelineLayout();
+                this.renderTimelineLayout(filteredMovies);
                 break;
         }
     }
 
-    renderGenreLayout() {
+    getFilteredMovies() {
+        switch (this.currentTab) {
+            case 'saved':
+                return this.savedMovies.filter(movie => !movie.is_watch_later);
+            case 'watchlater':
+                return this.savedMovies.filter(movie => movie.is_watch_later);
+            case 'liked':
+                return this.savedMovies.filter(movie => movie.is_liked);
+            default:
+                return this.savedMovies;
+        }
+    }
+
+    renderGenreLayout(movies) {
         console.log('Rendering genre layout...');
         const container = document.getElementById('genreContainer');
         if (!container) return;
         
         // Group movies by genre
-        const genreGroups = this.groupMoviesByGenre();
+        const genreGroups = this.groupMoviesByGenre(movies);
         
         container.innerHTML = '';
         
-        Object.entries(genreGroups).forEach(([genreName, movies]) => {
+        Object.entries(genreGroups).forEach(([genreName, genreMovies]) => {
             const genreRow = document.createElement('div');
             genreRow.className = 'genre-row';
             genreRow.setAttribute('data-genre', genreName);
             
-            const movieCards = movies.map(movie => this.createMovieCard(movie)).join('');
+            const movieCards = genreMovies.map(movie => this.createMovieCard(movie)).join('');
             genreRow.innerHTML = movieCards;
             
             container.appendChild(genreRow);
         });
     }
 
-    renderStackLayout() {
+    renderStackLayout(movies) {
         console.log('Rendering stack layout...');
         const container = document.getElementById('stackContainer');
         if (!container) return;
         
-        const movieCards = this.savedMovies.map(movie => this.createMovieCard(movie)).join('');
+        const movieCards = movies.map(movie => this.createMovieCard(movie)).join('');
         container.innerHTML = movieCards;
     }
 
-    renderTimelineLayout() {
+    renderTimelineLayout(movies) {
         console.log('Rendering timeline layout...');
         const container = document.getElementById('timelineContainer');
         if (!container) return;
         
+        // Sort movies by date added (newest first)
+        const sortedMovies = [...movies].sort((a, b) => {
+            const dateA = new Date(a.date_added || a.created_at || Date.now());
+            const dateB = new Date(b.date_added || b.created_at || Date.now());
+            return dateB - dateA;
+        });
+        
         // Group movies by year
-        const yearGroups = this.groupMoviesByYear();
+        const yearGroups = this.groupMoviesByYear(sortedMovies);
         
         container.innerHTML = '';
         
-        Object.entries(yearGroups).forEach(([year, movies]) => {
+        Object.entries(yearGroups).forEach(([year, yearMovies]) => {
             const timelineGroup = document.createElement('div');
             timelineGroup.className = 'timeline-group';
             
             timelineGroup.innerHTML = `
                 <div class="timeline-header">${year}</div>
                 <div class="timeline-grid">
-                    ${movies.map(movie => this.createMovieCard(movie)).join('')}
+                    ${yearMovies.map(movie => this.createMovieCard(movie)).join('')}
                 </div>
             `;
             
@@ -359,10 +410,10 @@ class UltimateMovieGallery {
         });
     }
 
-    groupMoviesByGenre() {
+    groupMoviesByGenre(movies) {
         const groups = {};
         
-        this.savedMovies.forEach(movie => {
+        movies.forEach(movie => {
             if (movie.genre_ids && movie.genre_ids.length > 0) {
                 const primaryGenre = movie.genre_ids[0];
                 const genreName = GENRE_MAP[primaryGenre] || 'Other';
@@ -382,10 +433,10 @@ class UltimateMovieGallery {
         return groups;
     }
 
-    groupMoviesByYear() {
+    groupMoviesByYear(movies) {
         const groups = {};
         
-        this.savedMovies.forEach(movie => {
+        movies.forEach(movie => {
             const year = movie.release_date ? movie.release_date.split('-')[0] : 'Unknown';
             
             if (!groups[year]) {
@@ -587,7 +638,41 @@ class UltimateMovieGallery {
     }
 
     showEmptyState() {
-        document.getElementById('emptyState').style.display = 'block';
+        const emptyState = document.getElementById('emptyState');
+        if (!emptyState) return;
+        
+        let message = '';
+        let icon = '';
+        
+        switch (this.currentTab) {
+            case 'saved':
+                message = 'No movies saved yet';
+                icon = 'fas fa-heart-broken';
+                break;
+            case 'watchlater':
+                message = 'No movies in watchlist';
+                icon = 'fas fa-clock';
+                break;
+            case 'liked':
+                message = 'No liked movies yet';
+                icon = 'fas fa-thumbs-down';
+                break;
+            default:
+                message = 'No movies found';
+                icon = 'fas fa-film';
+        }
+        
+        emptyState.innerHTML = `
+            <i class="${icon}"></i>
+            <h3>${message}</h3>
+            <p>Start discovering amazing movies and save your favorites!</p>
+            <a href="/discover/" class="discover-btn">
+                <i class="fas fa-search"></i>
+                Discover Movies
+            </a>
+        `;
+        
+        emptyState.style.display = 'block';
         document.querySelectorAll('.content-hidden').forEach(view => {
             view.classList.remove('content-visible');
         });
@@ -614,6 +699,10 @@ class UltimateMovieGallery {
         const lastLayout = localStorage.getItem('lastLayout') || 'genre';
         this.switchLayout(lastLayout);
         
+        // Restore tab preference
+        const lastTab = localStorage.getItem('lastTab') || 'saved';
+        this.switchTab(lastTab);
+        
         // Restore scroll position
         const scrollPos = localStorage.getItem('scrollPos');
         if (scrollPos) {
@@ -627,6 +716,7 @@ class UltimateMovieGallery {
         // Save state before unload
         window.addEventListener('beforeunload', () => {
             localStorage.setItem('lastLayout', this.currentLayout);
+            localStorage.setItem('lastTab', this.currentTab);
             localStorage.setItem('scrollPos', window.scrollY.toString());
         });
 
