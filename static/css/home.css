@@ -2260,23 +2260,7 @@
 }
 
 /* Enhanced Movie Match Card *//* Movie Match Modal Styles */
-.movie-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.movie-modal.show {
-    opacity: 1;
-}
+/* REMOVED DUPLICATE - Using enhanced modal system below */
 
 .modal-backdrop {
     position: absolute;
@@ -3633,257 +3617,258 @@
                 max-width: 100vw;
             }
         }
+/* REMOVED DUPLICATE - Using enhanced modal system above */
 
-/* Smooth transitions for state changes */
-.movie-modal,
-.youtube-container {
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+.modal-backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    z-index: -1;
 }
 
-.mobile-details-btn,
-.modal-close,
-.watch-trailer,
-.modal-arrow,
-.youtube-close {
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+.modal-container {
+    position: relative;
+    background: var(--dark);
+    border-radius: 12px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    display: flex;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    animation: modalFadeIn 0.3s ease-out;
 }
 
-/* Color contrast for accessibility */
-.modal-close,
-.modal-arrow,
-.youtube-close {
-    color: #ffffff;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: var(--primary);
+    transform: rotate(90deg);
+}
+
+.modal-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-arrow:hover {
+    background: var(--primary);
+}
+
+.modal-arrow-left {
+    left: 15px;
+}
+
+.modal-arrow-right {
+    right: 15px;
+}
+
+.modal-poster {
+    flex: 0 0 40%;
+    background-size: cover;
+    background-position: center;
+    min-height: 300px;
+}
+
+.modal-content {
+    flex: 1;
+    padding: 30px;
+    overflow-y: auto;
+}
+
+#modalTitle {
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+    color: white;
+}
+
+.modal-meta {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.modal-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.modal-rating {
+    color: var(--primary);
+}
+
+.modal-desc {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 30px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
 }
 
 .watch-trailer {
-    color: #ffffff;
-    font-weight: 700;
+    padding: 12px 25px;
+    border-radius: 6px;
+    border: none;
+    background: var(--primary);
+    color: var(--dark);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-/* Viewport units for typography scaling */
-@media (max-width: 600px) {
-            /* Font size hierarchy with viewport units */
-        .hero-title {
-            font-size: clamp(1.5rem, 4vw, 2.5rem);
-        }
-        
-        .hero-subtitle {
-            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
-        }
-        
-        .section-title {
-            font-size: clamp(1.8rem, 4vw, 2.2rem);
-        }
-        
-        .discover-title {
-            font-size: clamp(1.6rem, 4vw, 2rem);
-        }
-        
-        .modal-content h3 {
-            font-size: clamp(1.2rem, 4vw, 1.5rem);
-        }
-        
-        .modal-desc {
-            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
-        }
-        
-        /* Base font size scaling */
-        body {
-            font-size: clamp(14px, 2.5vw, 16px);
-        }
-        
-        .btn {
-            font-size: clamp(14px, 2.5vw, 16px);
-        }
+.watch-trailer:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
 }
 
-/* Additional mobile optimizations */
-@media (max-width: 600px) {
-    /* Ensure proper z-index stacking */
-    .hero {
-        z-index: 1;
-    }
-    
-    .mobile-details-btn {
-        z-index: 15;
-    }
-    
-    .movie-modal {
-        z-index: 1000;
-    }
-    
-    .youtube-container {
-        z-index: 1002;
-    }
-    
-    /* Prevent body scroll when modal is open */
-    body.modal-open {
-        overflow: hidden;
-        position: fixed;
-        width: 100%;
-    }
-    
-    /* Smooth animations for modal */
-    .movie-modal {
-        animation: modalSlideUp 0.3s ease-out;
-    }
-    
-    @keyframes modalSlideUp {
-        from {
-            opacity: 0;
-            transform: translateY(100%);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-    
-    /* Ensure modal content is scrollable */
-    .modal-content {
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
-        scrollbar-color: var(--color-purple) transparent;
-    }
-    
-    .modal-content::-webkit-scrollbar {
-        width: 4px;
-    }
-    
-    .modal-content::-webkit-scrollbar-track {
-        background: transparent;
-    }
-    
-    .modal-content::-webkit-scrollbar-thumb {
-        background: var(--color-purple);
-        border-radius: 2px;
-    }
-    
-    /* Improve touch targets */
-    .mobile-details-btn,
-    .modal-close,
-    .watch-trailer,
-    .modal-arrow,
-    .youtube-close {
-        -webkit-tap-highlight-color: transparent;
-        touch-action: manipulation;
-    }
-    
-    /* Prevent text selection on buttons */
-    .mobile-details-btn,
-    .modal-close,
-    .watch-trailer,
-    .modal-arrow,
-    .youtube-close {
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-}
-
-/* High contrast mode support */
-@media (prefers-contrast: high) {
-    .mobile-details-btn {
-        border: 2px solid currentColor;
-    }
-    
-    .modal-close,
-    .modal-arrow,
-    .youtube-close {
-        border: 2px solid white;
-    }
-    
-    .watch-trailer {
-        border: 2px solid currentColor;
-    }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-    .mobile-details-btn,
-    .modal-close,
-    .watch-trailer,
-    .modal-arrow,
-    .youtube-close,
-    .movie-modal,
-    .youtube-container {
-        animation: none !important;
-        transition: none !important;
-    }
-    
-    .mobile-details-btn:hover {
-        transform: none !important;
-    }
-}
-
-/* Loading states for trailer button */
 .watch-trailer:disabled {
     opacity: 0.6;
     cursor: not-allowed;
     background: var(--text-secondary);
 }
 
-.watch-trailer:disabled:hover {
-    transform: none;
-    box-shadow: none;
+/* YouTube Container Styles */
+.youtube-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-/* Ensure proper focus states for accessibility */
-.mobile-details-btn:focus,
-.modal-close:focus,
-.watch-trailer:focus,
-.modal-arrow:focus,
-.youtube-close:focus {
-    outline: 2px solid var(--color-blue);
-    outline-offset: 2px;
+.youtube-container.active {
+    opacity: 1;
+    display: flex;
 }
 
-/* Dark mode adjustments for modal */
-[data-theme="dark"] .modal-content {
-    background: var(--bg-primary);
-    color: var(--text-primary);
+.youtube-container iframe {
+    width: 90%;
+    max-width: 900px;
+    aspect-ratio: 16/9;
+    border: none;
 }
 
-[data-theme="light"] .modal-content {
-    background: var(--bg-primary);
-    color: var(--text-primary);
+.youtube-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.2rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.3s ease;
 }
 
-/* Ensure modal works well on very small screens */
-@media (max-width: 375px) {
+.youtube-close:hover {
+    background: var(--primary);
+    transform: rotate(90deg);
+}
+
+.youtube-skeleton {
+    width: 90%;
+    max-width: 900px;
+    aspect-ratio: 16/9;
+    background: #1f1f23;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loader {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    border-top: 4px solid var(--primary);
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+
+/* Animations */
+@keyframes modalFadeIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .modal-container {
+        flex-direction: column;
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .modal-poster {
+        flex: 0 0 200px;
+        min-height: 200px;
+    }
+    
     .modal-content {
-        padding: 12px;
+        max-height: calc(90vh - 200px);
     }
     
-    .modal-content h3 {
-        font-size: 1.1rem;
-    }
-    
-    .modal-meta {
-        font-size: 0.8rem;
-        gap: 6px;
-    }
-    
-    .modal-desc {
-        font-size: 0.85rem;
-    }
-    
-    .watch-trailer {
-        height: 40px;
-        font-size: 0.9rem;
-    }
-    
-    .mobile-details-btn {
-        width: 120px;
-        height: 40px;
-        font-size: 0.75rem;
-        bottom: 15px;
-        right: 15px;
+    .youtube-container iframe {
+        width: 95%;
     }
 }
-
 /* ===== COMPREHENSIVE UI/UX OVERHAUL - MOBILE-FIRST WITH TRAILER ENFORCEMENT ===== */
 
 /* === RESPONSIVE SIDEBAR MENU SYSTEM === */
@@ -4473,17 +4458,7 @@
         font-size: 1rem;
     }
     
-    /* Mobile background treatment */
-    .hero-bg-slide {
-        object-fit: contain;
-        filter: brightness(0.6) blur(0px);
-    }
-    
-    .modal-backdrop {
-        background-size: contain;
-        background-repeat: no-repeat;
-        background-position: center top;
-    }
+
 }
 
 /* === CSS VARIABLES & THEME SYSTEM === */
@@ -4817,6 +4792,18 @@ section {
   font-size: 10px;
   animation: pulse 2s infinite;
 }
+
+    /* Mobile background treatment */
+    .hero-bg-slide {
+        object-fit: contain;
+        filter: brightness(0.6) blur(0px);
+    }
+    
+    .modal-backdrop {
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center top;
+    }
 
 /* === EXISTING CODE CONTINUES BELOW === */
 

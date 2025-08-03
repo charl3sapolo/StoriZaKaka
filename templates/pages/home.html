@@ -1675,11 +1675,17 @@ updateProgress();
             });
         }
 
-        // Show movie modal with strict trailer enforcement and dynamic backdrop
+        // Unified movie modal system
         function showMovieModal(movieIndex) {
-            if (!heroMedia || !heroMedia[movieIndex]) return;
+            console.log('🔍 showMovieModal called with index:', movieIndex);
+            
+            if (!heroMedia || !heroMedia[movieIndex]) {
+                console.warn('❌ No hero media available');
+                return;
+            }
             
             const movie = heroMedia[movieIndex];
+            console.log('📽️ Movie data:', movie);
             
             // CRITICAL: Only show movies with valid trailers
             if (!movie.trailerId || !movie.trailerId.match(YOUTUBE_ID_PATTERN) || movie.trailerId === 'dQw4w9WgXcQ') {
@@ -1729,20 +1735,37 @@ updateProgress();
             // Set trailer button with validated YouTube ID
             watchTrailer.setAttribute('data-yt-id', movie.trailerId);
             watchTrailer.disabled = false;
-                    watchTrailer.innerHTML = '<i class="fas fa-play"></i> ▶ Play Trailer';
-                    watchTrailer.style.opacity = '1';
+            watchTrailer.innerHTML = '<i class="fas fa-play"></i> ▶ Play Trailer';
+            watchTrailer.style.opacity = '1';
             
-            // Show modal and prevent background scrolling
+            // Show modal with proper state management
+            console.log('🎬 Showing modal...');
             movieModal.style.display = 'flex';
+            movieModal.style.opacity = '1';
             document.body.classList.add('modal-open');
             document.body.style.overflow = 'hidden';
+            
+            // Prevent any immediate closing
+            setTimeout(() => {
+                if (movieModal.style.display === 'flex') {
+                    movieModal.style.opacity = '1';
+                    console.log('✅ Modal should be visible now');
+                } else {
+                    console.warn('⚠️ Modal was closed unexpectedly');
+                }
+            }, 100);
         }
 
-        // Close modal
+        // Close modal with proper cleanup
         function closeMovieModal() {
-            movieModal.style.display = 'none';
-            document.body.classList.remove('modal-open');
-            document.body.style.overflow = ''; // Restore scrolling
+            console.log('🚪 closeMovieModal called');
+            movieModal.style.opacity = '0';
+            setTimeout(() => {
+                movieModal.style.display = 'none';
+                document.body.classList.remove('modal-open');
+                document.body.style.overflow = '';
+                console.log('✅ Modal closed successfully');
+            }, 300);
         }
 
         // Modal close button
@@ -1831,10 +1854,15 @@ updateProgress();
             });
         }
 
-        // Close modal on outside click
+        // Close modal on outside click (only on backdrop, not content)
         movieModal.addEventListener('click', (e) => {
-            if (e.target === movieModal) {
+            console.log('🖱️ Modal clicked:', e.target);
+            // Only close if clicking on the backdrop itself, not the modal content
+            if (e.target === movieModal && !e.target.closest('.modal-content')) {
+                console.log('🎯 Backdrop clicked, closing modal');
                 closeMovieModal();
+            } else {
+                console.log('🎯 Click was on modal content, not closing');
             }
         });
 
