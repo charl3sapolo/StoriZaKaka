@@ -33,30 +33,47 @@ class UltimateMovieGallery {
         this.currentTab = 'saved';
         this.isLoggedIn = this.checkIfLoggedIn();
         this.sessionId = this.getSessionId();
-        this.preloadedData = null;
         this.init();
     }
 
     async init() {
         console.log('Initializing Ultimate Movie Gallery...');
         
-        // Show loading state
-        this.showLoading(true);
-        
-        // Initialize layout controls
-        this.setupLayoutControls();
-        this.setupTabControls();
-        
-        // Load saved movies with performance optimization
-        await this.loadSavedMoviesOptimized();
-        
-        // Setup event listeners
-        this.setupEventListeners();
-        
-        // Restore previous state
-        this.restoreState();
-        
-        console.log('Ultimate Movie Gallery initialized successfully');
+        try {
+            // Show skeleton loading immediately
+            this.showSkeletonLoading();
+            
+            // Load saved movies with timeout
+            const loadPromise = this.loadSavedMoviesOptimized();
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Loading timeout')), 2800)
+            );
+            
+            await Promise.race([loadPromise, timeoutPromise]);
+            
+            // Restore previous state BEFORE setting up controls
+            this.restoreState();
+            
+            // Initialize layout controls
+            this.setupLayoutControls();
+            this.setupTabControls();
+            
+            // Setup event listeners
+            this.setupEventListeners();
+            
+            // Render initial view
+            this.renderCurrentLayout();
+            
+            console.log('Ultimate Movie Gallery initialized successfully');
+            console.log('Current state:', {
+                tab: this.currentTab,
+                layout: this.currentLayout,
+                movieCount: this.savedMovies.length
+            });
+        } catch (error) {
+            console.error('Error during initialization:', error);
+            this.showError('Failed to initialize movie gallery');
+        }
     }
 
     checkIfLoggedIn() {
@@ -81,8 +98,6 @@ class UltimateMovieGallery {
             if (sessionStorage.getItem('preloadedMovies')) {
                 console.log('Using preloaded data from session storage');
                 this.savedMovies = JSON.parse(sessionStorage.getItem('preloadedMovies'));
-                this.renderCurrentLayout();
-                this.showLoading(false);
                 return;
             }
 
@@ -96,13 +111,9 @@ class UltimateMovieGallery {
             // Cache the data for performance
             sessionStorage.setItem('preloadedMovies', JSON.stringify(this.savedMovies));
             
-            // Render with skeleton loading
-            this.renderWithSkeletonLoading();
-            
         } catch (error) {
             console.error('Error loading saved movies:', error);
             this.showError('Failed to load saved movies');
-            this.showLoading(false);
         }
     }
 
@@ -124,48 +135,41 @@ class UltimateMovieGallery {
     async loadFromLocalStorage() {
         console.log('Loading from localStorage for anonymous user...');
         
-        // Get all saved items from different storage keys
+        // Get saved movies from the main storage key
         const savedMovies = JSON.parse(localStorage.getItem('saved_movies') || '[]');
-        const savedTVs = JSON.parse(localStorage.getItem('saved_tvs') || '[]');
-        const userSavedMovie = JSON.parse(localStorage.getItem('user_saved_movie') || '[]');
-        const userSavedTV = JSON.parse(localStorage.getItem('user_saved_tv') || '[]');
-        
-        // Also check for watch later and liked movies
-        const watchLaterMovies = JSON.parse(localStorage.getItem('watchlist') || '[]');
-        const likedMovies = JSON.parse(localStorage.getItem('liked_movies') || '[]');
         
         console.log('Storage data found:', {
-            savedMovies: savedMovies.length,
-            savedTVs: savedTVs.length,
-            userSavedMovie: userSavedMovie.length,
-            userSavedTV: userSavedTV.length,
-            watchLaterMovies: watchLaterMovies.length,
-            likedMovies: likedMovies.length
+            savedMovies: savedMovies.length
         });
         
-        // Combine all sources and add proper flags
-        const allItems = [
-            ...savedMovies.map(item => ({ ...item, is_watch_later: false, is_liked: false })),
-            ...savedTVs.map(item => ({ ...item, is_watch_later: false, is_liked: false })),
-            ...userSavedMovie.map(item => ({ ...item, is_watch_later: false, is_liked: false })),
-            ...userSavedTV.map(item => ({ ...item, is_watch_later: false, is_liked: false })),
-            ...watchLaterMovies.map(item => ({ ...item, is_watch_later: true, is_liked: false })),
-            ...likedMovies.map(item => ({ ...item, is_watch_later: false, is_liked: true }))
-        ];
+        if (savedMovies.length === 0) {
+            console.log('No saved movies found in localStorage');
+            this.savedMovies = [];
+            return;
+        }
         
-        const uniqueItems = this.removeDuplicates(allItems);
+        // Process saved movies - they should already have the required data
+        this.savedMovies = savedMovies.map(movie => ({
+            ...movie,
+            // Ensure we have all required fields
+            id: movie.id || movie.tmdb_id,
+            tmdb_id: movie.tmdb_id || movie.id,
+            title: movie.title || 'Unknown Title',
+            poster_path: movie.poster_path || null,
+            release_date: movie.release_date || null,
+            vote_average: movie.vote_average || 0,
+            genre_ids: movie.genre_ids || [],
+            user_saved_date: movie.user_saved_date || movie.timestamp || new Date().toISOString(),
+            is_watch_later: movie.is_watch_later || false,
+            is_liked: movie.is_liked || false,
+            mediaType: movie.mediaType || 'movie'
+        }));
         
-        console.log(`Found ${uniqueItems.length} unique saved items`);
-        
-        // Fetch detailed data for each item
-        this.savedMovies = await this.fetchDetailedData(uniqueItems);
-        
-        // Log the final results
-        console.log('Final movie data:', {
+        console.log('Processed saved movies:', {
             total: this.savedMovies.length,
             watchLater: this.savedMovies.filter(m => m.is_watch_later).length,
             liked: this.savedMovies.filter(m => m.is_liked).length,
-            saved: this.savedMovies.filter(m => !m.is_watch_later).length
+            saved: this.savedMovies.filter(m => !m.is_watch_later && !m.is_liked).length
         });
     }
 
@@ -235,48 +239,13 @@ class UltimateMovieGallery {
                 is_saved: true,
                 is_watch_later: item.is_watch_later || false,
                 is_liked: item.is_liked || false,
-                date_added: item.date_added || item.timestamp || Date.now()
+                user_saved_date: item.date_added || item.timestamp || item.user_saved_date || new Date().toISOString()
             };
             
         } catch (error) {
             console.error(`Error fetching item ${item.id || item}:`, error);
             return null;
         }
-    }
-
-    renderWithSkeletonLoading() {
-        console.log('Rendering with skeleton loading...');
-        
-        // Show skeleton loading first
-        this.showSkeletonLoading();
-        
-        // Render actual content after a short delay for smooth transition
-        setTimeout(() => {
-            this.renderCurrentLayout();
-            this.showLoading(false);
-        }, 500);
-    }
-
-    showSkeletonLoading() {
-        const container = this.getCurrentContainer();
-        if (!container) return;
-        
-        const skeletonCount = Math.min(this.savedMovies.length || 10, 20);
-        const skeletonHTML = Array(skeletonCount).fill().map(() => this.createSkeletonCard()).join('');
-        
-        container.innerHTML = skeletonHTML;
-    }
-
-    createSkeletonCard() {
-        return `
-            <div class="skeleton-card">
-                <div class="skeleton-poster"></div>
-                <div class="skeleton-content">
-                    <div class="skeleton-title"></div>
-                    <div class="skeleton-meta"></div>
-                </div>
-            </div>
-        `;
     }
 
     setupLayoutControls() {
@@ -346,7 +315,7 @@ class UltimateMovieGallery {
 
     renderCurrentLayout() {
         const filteredMovies = this.getFilteredMovies();
-        console.log(`Rendering ${this.currentTab} tab with ${filteredMovies.length} movies`);
+        console.log(`Rendering ${this.currentTab} tab with ${filteredMovies.length} movies in ${this.currentLayout} layout`);
         
         if (filteredMovies.length === 0) {
             this.showEmptyState();
@@ -359,16 +328,24 @@ class UltimateMovieGallery {
             emptyState.style.display = 'none';
         }
 
-        switch (this.currentLayout) {
-            case 'genre':
-                this.renderGenreLayout(filteredMovies);
-                break;
-            case 'stack':
-                this.renderStackLayout(filteredMovies);
-                break;
-            case 'timeline':
-                this.renderTimelineLayout(filteredMovies);
-                break;
+        try {
+            switch (this.currentLayout) {
+                case 'genre':
+                    this.renderGenreLayout(filteredMovies);
+                    break;
+                case 'stack':
+                    this.renderStackLayout(filteredMovies);
+                    break;
+                case 'timeline':
+                    this.renderTimelineLayout(filteredMovies);
+                    break;
+                default:
+                    console.warn(`Unknown layout: ${this.currentLayout}, falling back to genre`);
+                    this.renderGenreLayout(filteredMovies);
+            }
+        } catch (error) {
+            console.error('Error rendering layout:', error);
+            this.showError('Failed to render movie layout');
         }
     }
 
@@ -380,14 +357,17 @@ class UltimateMovieGallery {
         
         switch (this.currentTab) {
             case 'saved':
-                filtered = this.savedMovies.filter(movie => !movie.is_watch_later);
-                console.log(`Saved movies (excluding watch later): ${filtered.length}`);
+                // Show ALL saved movies (including watch later and liked)
+                filtered = this.savedMovies;
+                console.log(`All saved movies: ${filtered.length}`);
                 break;
             case 'watchlater':
+                // Show only watch later movies
                 filtered = this.savedMovies.filter(movie => movie.is_watch_later === true);
                 console.log(`Watch later movies: ${filtered.length}`);
                 break;
             case 'liked':
+                // Show only liked movies
                 filtered = this.savedMovies.filter(movie => movie.is_liked === true);
                 console.log(`Liked movies: ${filtered.length}`);
                 break;
@@ -435,26 +415,32 @@ class UltimateMovieGallery {
         const container = document.getElementById('timelineContainer');
         if (!container) return;
         
-        // Sort movies by date added (newest first)
+        // Sort movies by user_saved_date (newest first)
         const sortedMovies = [...movies].sort((a, b) => {
-            const dateA = new Date(a.date_added || a.created_at || Date.now());
-            const dateB = new Date(b.date_added || b.created_at || Date.now());
+            const dateA = new Date(a.user_saved_date || a.date_added || a.created_at || Date.now());
+            const dateB = new Date(b.user_saved_date || b.date_added || b.created_at || Date.now());
             return dateB - dateA;
         });
         
-        // Group movies by year
-        const yearGroups = this.groupMoviesByYear(sortedMovies);
+        // Group movies by month/year
+        const monthGroups = this.groupMoviesByMonth(sortedMovies);
         
         container.innerHTML = '';
         
-        Object.entries(yearGroups).forEach(([year, yearMovies]) => {
+        Object.entries(monthGroups).forEach(([monthKey, monthMovies]) => {
             const timelineGroup = document.createElement('div');
             timelineGroup.className = 'timeline-group';
             
+            const [year, month] = monthKey.split('-');
+            const monthName = new Date(year, month - 1).toLocaleDateString('en-US', { 
+                month: 'long', 
+                year: 'numeric' 
+            });
+            
             timelineGroup.innerHTML = `
-                <div class="timeline-header">${year}</div>
+                <div class="timeline-header">${monthName}</div>
                 <div class="timeline-grid">
-                    ${yearMovies.map(movie => this.createMovieCard(movie)).join('')}
+                    ${monthMovies.map(movie => this.createMovieCard(movie)).join('')}
                 </div>
             `;
             
@@ -485,28 +471,37 @@ class UltimateMovieGallery {
         return groups;
     }
 
-    groupMoviesByYear(movies) {
+    groupMoviesByMonth(movies) {
         const groups = {};
         
         movies.forEach(movie => {
-            const year = movie.release_date ? movie.release_date.split('-')[0] : 'Unknown';
+            const saveDate = new Date(movie.user_saved_date || movie.date_added || movie.created_at || Date.now());
+            const monthKey = `${saveDate.getFullYear()}-${String(saveDate.getMonth() + 1).padStart(2, '0')}`;
             
-            if (!groups[year]) {
-                groups[year] = [];
+            if (!groups[monthKey]) {
+                groups[monthKey] = [];
             }
-            groups[year].push(movie);
+            groups[monthKey].push(movie);
         });
         
-        // Sort years in descending order
+        // Sort months in descending order
         return Object.fromEntries(
-            Object.entries(groups).sort(([a], [b]) => b - a)
+            Object.entries(groups).sort(([a], [b]) => b.localeCompare(a))
         );
     }
 
     createMovieCard(movie) {
-        const posterPath = movie.poster_path ? 
-            `${TMDB_IMAGE_BASE}${movie.poster_path}` : 
-            '/static/logo.kakaflix.jpg';
+        // Handle poster path - could be full URL or just path
+        let posterPath = '/static/logo.kakaflix.jpg';
+        if (movie.poster_path) {
+            if (movie.poster_path.startsWith('http')) {
+                posterPath = movie.poster_path;
+            } else if (movie.poster_path.startsWith('/')) {
+                posterPath = `${TMDB_IMAGE_BASE}${movie.poster_path}`;
+            } else {
+                posterPath = `${TMDB_IMAGE_BASE}/${movie.poster_path}`;
+            }
+        }
         
         const title = movie.title || movie.name || 'Unknown Title';
         const year = (movie.release_date || movie.first_air_date || '').slice(0, 4) || 'N/A';
@@ -634,26 +629,22 @@ class UltimateMovieGallery {
     }
 
     updateMovieStatusInLocalStorage(movieId, field, value) {
-        const storageKeys = ['saved_movies', 'saved_tvs', 'user_saved_movie', 'user_saved_tv'];
-        
-        storageKeys.forEach(key => {
-            const items = JSON.parse(localStorage.getItem(key) || '[]');
-            const item = items.find(item => (item.id || item.tmdb_id) === movieId);
-            if (item) {
-                item[field] = value;
-                localStorage.setItem(key, JSON.stringify(items));
-            }
-        });
+        const key = 'saved_movies';
+        const items = JSON.parse(localStorage.getItem(key) || '[]');
+        const item = items.find(item => (item.id || item.tmdb_id) === movieId);
+        if (item) {
+            item[field] = value;
+            localStorage.setItem(key, JSON.stringify(items));
+            console.log(`Updated ${field} for movie ${movieId} to ${value}`);
+        }
     }
 
     removeMovieFromLocalStorage(movieId) {
-        const storageKeys = ['saved_movies', 'saved_tvs', 'user_saved_movie', 'user_saved_tv'];
-        
-        storageKeys.forEach(key => {
-            const items = JSON.parse(localStorage.getItem(key) || '[]');
-            const filteredItems = items.filter(item => (item.id || item.tmdb_id) !== movieId);
-            localStorage.setItem(key, JSON.stringify(filteredItems));
-        });
+        const key = 'saved_movies';
+        const items = JSON.parse(localStorage.getItem(key) || '[]');
+        const filteredItems = items.filter(item => (item.id || item.tmdb_id) !== movieId);
+        localStorage.setItem(key, JSON.stringify(filteredItems));
+        console.log(`Removed movie ${movieId} from localStorage`);
     }
 
     async updateMovieStatusInDatabase(movieId, isLiked, isWatchLater) {
@@ -673,19 +664,6 @@ class UltimateMovieGallery {
 
         if (!response.ok) {
             throw new Error('Failed to update movie status');
-        }
-    }
-
-    getCurrentContainer() {
-        switch (this.currentLayout) {
-            case 'genre':
-                return document.getElementById('genreContainer');
-            case 'stack':
-                return document.getElementById('stackContainer');
-            case 'timeline':
-                return document.getElementById('timelineContainer');
-            default:
-                return null;
         }
     }
 
@@ -730,13 +708,6 @@ class UltimateMovieGallery {
         });
     }
 
-    showLoading(show) {
-        const loadingContainer = document.getElementById('loadingContainer');
-        if (loadingContainer) {
-            loadingContainer.style.display = show ? 'flex' : 'none';
-        }
-    }
-
     updateCounts() {
         const totalCount = this.savedMovies.length;
         const savedCountElement = document.getElementById('savedCount');
@@ -749,18 +720,44 @@ class UltimateMovieGallery {
     restoreState() {
         // Restore layout preference
         const lastLayout = localStorage.getItem('lastLayout') || 'genre';
-        this.switchLayout(lastLayout);
+        this.currentLayout = lastLayout;
         
         // Restore tab preference
         const lastTab = localStorage.getItem('lastTab') || 'saved';
-        this.switchTab(lastTab);
+        this.currentTab = lastTab;
         
-        // Restore scroll position
-        const scrollPos = localStorage.getItem('scrollPos');
-        if (scrollPos) {
-            setTimeout(() => {
-                window.scrollTo(0, parseInt(scrollPos));
-            }, 100);
+        console.log(`Restored state: tab=${this.currentTab}, layout=${this.currentLayout}`);
+        
+        // Update UI to reflect restored state
+        this.updateUIForState();
+    }
+
+    updateUIForState() {
+        // Update tab buttons
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeTabBtn = document.querySelector(`[data-tab="${this.currentTab}"]`);
+        if (activeTabBtn) {
+            activeTabBtn.classList.add('active');
+        }
+        
+        // Update layout buttons
+        document.querySelectorAll('.layout-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        const activeLayoutBtn = document.querySelector(`[data-layout="${this.currentLayout}"]`);
+        if (activeLayoutBtn) {
+            activeLayoutBtn.classList.add('active');
+        }
+        
+        // Update content views
+        document.querySelectorAll('.content-view').forEach(view => {
+            view.classList.remove('active');
+        });
+        const activeView = document.getElementById(`${this.currentLayout}View`);
+        if (activeView) {
+            activeView.classList.add('active');
         }
     }
 
@@ -769,7 +766,6 @@ class UltimateMovieGallery {
         window.addEventListener('beforeunload', () => {
             localStorage.setItem('lastLayout', this.currentLayout);
             localStorage.setItem('lastTab', this.currentTab);
-            localStorage.setItem('scrollPos', window.scrollY.toString());
         });
 
         // Theme and language toggles
@@ -813,11 +809,6 @@ class UltimateMovieGallery {
                 mobileMenu.classList.remove('open');
             });
         }
-
-        // Auto-refresh every 30 seconds
-        setInterval(() => {
-            this.loadSavedMoviesOptimized();
-        }, 30000);
     }
 
     getCSRFToken() {
@@ -867,6 +858,38 @@ class UltimateMovieGallery {
                 document.body.removeChild(toast);
             }, 300);
         }, 3000);
+    }
+
+    showSkeletonLoading() {
+        const containers = ['genreContainer', 'stackContainer', 'timelineContainer'];
+        
+        containers.forEach(containerId => {
+            const container = document.getElementById(containerId);
+            if (container) {
+                const skeletonCount = 12; // Show 12 skeleton cards
+                const skeletonHTML = Array(skeletonCount).fill().map(() => this.createSkeletonCard()).join('');
+                container.innerHTML = skeletonHTML;
+            }
+        });
+    }
+
+    createSkeletonCard() {
+        return `
+            <div class="movie-card skeleton-card" data-movie-id="skeleton">
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="skeleton-poster"></div>
+                        <div class="movie-info">
+                            <div class="skeleton-title"></div>
+                            <div class="skeleton-meta">
+                                <div class="skeleton-year"></div>
+                                <div class="skeleton-rating"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
     }
 }
 
