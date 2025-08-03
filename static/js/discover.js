@@ -3,6 +3,60 @@ const TMDB_API_KEY = window.TMDB_API_KEY || '';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
 
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const menuBtn = document.getElementById('mobileMenuBtn');
+  const closeBtn = document.getElementById('closeMenuBtn');
+  const menu = document.getElementById('mobileMenu');
+  const overlay = document.getElementById('menuOverlay');
+
+  // Debugging check
+  if (!menuBtn || !menu || !overlay) {
+    console.error('Missing required menu elements!');
+    return;
+  }
+
+  function toggleMenu() {
+    menu.classList.toggle('active');
+    overlay.classList.toggle('active');
+    document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
+  }
+
+  menuBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Menu button clicked'); // Debug
+    toggleMenu();
+  });
+
+  closeBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    toggleMenu();
+  });
+
+  overlay.addEventListener('click', function(e) {
+    e.preventDefault();
+    toggleMenu();
+  });
+
+  // Close when clicking outside
+  document.addEventListener('click', function(e) {
+    if (menu.classList.contains('active') && 
+        !menu.contains(e.target) && 
+        e.target !== menuBtn) {
+      toggleMenu();
+    }
+  });
+
+  // Close on ESC key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && menu.classList.contains('active')) {
+      toggleMenu();
+    }
+  });
+});
+
 // Mood to Genre Mapping
 const MOOD_TO_GENRE = {
   comedy: [35], 
@@ -148,136 +202,11 @@ class MediaLoader {
   }
 }
 
-// Mood Selection State
-let selectedMoods = [];
+// --- Mood Analysis Completion Trigger ---
+// This is a stub. Replace with your real mood analysis completion logic.
+window.moodAnalysis = { completed: false };
+// Example: when mood analysis is done, call showCuratedSection(window.moodAnalysis)
 
-function setupMoodSelection() {
-  const moodOptions = document.querySelectorAll('.mood-option');
-  const getRecsBtn = document.getElementById('getRecommendations');
-  
-  moodOptions.forEach(option => {
-    option.addEventListener('click', function() {
-      const mood = this.dataset.mood;
-      this.classList.toggle('selected');
-      
-      if (this.classList.contains('selected')) {
-        selectedMoods.push(mood);
-      } else {
-        selectedMoods = selectedMoods.filter(m => m !== mood);
-      }
-      
-      getRecsBtn.disabled = selectedMoods.length === 0;
-    });
-  });
-
-  document.getElementById('getRecommendations').addEventListener('click', getCuratedRecommendations);
-  document.getElementById('refreshCurated')?.addEventListener('click', getCuratedRecommendations);
-}
-
-async function getCuratedRecommendations() {
-  const curatedSection = document.getElementById('curatedSection');
-  const curatedGrid = document.getElementById('curatedGrid');
-  
-  curatedSection.classList.remove('hidden');
-  curatedGrid.innerHTML = Array(6).fill(`
-    <div class="skeleton-card">
-      <div class="skeleton-poster"></div>
-      <div class="skeleton-title"></div>
-      <div class="skeleton-meta"></div>
-    </div>
-  `).join('');
-  
-  try {
-    const genreIds = [...new Set(selectedMoods.flatMap(mood => MOOD_TO_GENRE[mood] || []))];
-    
-    if (genreIds.length === 0) {
-      throw new Error('No genres selected');
-    }
-    
-    const response = await fetch(
-      `${TMDB_BASE_URL}/discover/movie?api_key=${TMDB_API_KEY}` +
-      `&with_genres=${genreIds.join(',')}&sort_by=popularity.desc&page=1`
-    );
-    
-    const data = await response.json();
-    
-    curatedGrid.innerHTML = '';
-    if (data.results?.length) {
-      data.results.forEach(movie => {
-        const card = createMediaCard(movie, 'movie');
-        curatedGrid.appendChild(card);
-      });
-    } else {
-      throw new Error('No recommendations found');
-    }
-  } catch (error) {
-    console.error('Error getting recommendations:', error);
-    curatedGrid.innerHTML = `
-      <div class="error-message">
-        <i class="fas fa-exclamation-circle"></i>
-        <p>Could not load recommendations. Please try again.</p>
-      </div>
-    `;
-  }
-}
-
-function createMediaCard(item, type = 'movie') {
-  const isTV = type === 'tv';
-  const title = item.title || item.name || 'Untitled';
-  const year = (item.release_date || item.first_air_date || '').slice(0, 4);
-  const poster = item.poster_path 
-    ? `${TMDB_IMAGE_BASE}${item.poster_path}`
-    : 'https://via.placeholder.com/500x750/1A1A1A/B3B3B3?text=No+Poster';
-  const rating = item.vote_average?.toFixed(1) || 'N/A';
-  const overview = item.overview || 'No description available.';
-
-  const card = document.createElement('div');
-  card.className = 'movie-card';
-  card.innerHTML = `
-    <div class="card-inner">
-      <div class="card-front">
-        <img src="${poster}" alt="${title}" class="movie-poster" loading="lazy"
-             onerror="this.src='https://via.placeholder.com/500x750/1A1A1A/B3B3B3?text=No+Poster'">
-        <div class="movie-info">
-          <h3 class="movie-title">${title}</h3>
-          <div class="movie-meta">
-            <span>${year}</span>
-            <div class="movie-rating">
-              <i class="fas fa-star"></i>
-              <span>${rating}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="card-back">
-        <h3 class="movie-title">${title.length > 32 ? title.slice(0, 29) + '...' : title}</h3>
-        <div class="movie-overview">${overview}</div>
-        <div class="card-actions">
-          <button class="action-btn" onclick="watchTrailer(${item.id}, '${type}')">
-            <i class="fas fa-play"></i> Trailer
-          </button>
-          <button class="action-btn secondary" onclick="saveToWatchlist(${item.id}, '${type}')">
-            <i class="fas fa-bookmark"></i> Save
-          </button>
-        </div>
-      </div>
-    </div>
-  `;
-
-  card.addEventListener('click', (e) => {
-    if (!e.target.closest('.action-btn')) {
-      document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('flipped'));
-      card.classList.add('flipped');
-    }
-  });
-  // Double-click to unflip
-  card.addEventListener('dblclick', (e) => {
-    card.classList.remove('flipped');
-    e.stopPropagation();
-  });
-
-  return card;
-}
 
 // === TRENDING ROWS: FIRST ROW = MOST RECENT, SECOND ROW = OLDER TRENDING ===
 async function fillTrendingRows(mediaType, rowId1, rowId2, loadingId1, loadingId2) {
@@ -671,11 +600,6 @@ function showCuratedSection(moodAnalysis) {
   }
 }
 
-// --- Mood Analysis Completion Trigger ---
-// This is a stub. Replace with your real mood analysis completion logic.
-window.moodAnalysis = { completed: false };
-// Example: when mood analysis is done, call showCuratedSection(window.moodAnalysis)
-
 // Initialize the app
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -803,51 +727,4 @@ async function watchTrailer(id, type) {
 
 function saveToWatchlist(id, type) {
   alert(`Would save ${type} ID: ${id} to watchlist\n(Need to implement storage)`);
-
-   // Simple and working mobile menu
-   const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-   const mobileMenu = document.getElementById('mobileMenu');
-   const closeMenuBtn = document.getElementById('closeMenuBtn');
-   const menuOverlay = document.getElementById('menuOverlay');
-
-   // Open menu
-   function openMenu() {
-       mobileMenu.classList.add('active');
-       menuOverlay.classList.add('active');
-       document.body.style.overflow = 'hidden';
-   }
-
-   // Close menu
-   function closeMenu() {
-       mobileMenu.classList.remove('active');
-       menuOverlay.classList.remove('active');
-       document.body.style.overflow = '';
-   }
-
-   // Event listeners
-   mobileMenuBtn.addEventListener('click', openMenu);
-   closeMenuBtn.addEventListener('click', closeMenu);
-   menuOverlay.addEventListener('click', closeMenu);
-
-   // Close on escape key
-   document.addEventListener('keydown', function(e) {
-       if (e.key === 'Escape') {
-           closeMenu();
-       }
-   });
-
-   // Close menu when clicking menu items (optional)
-   const menuItems = document.querySelectorAll('.menu-item');
-   menuItems.forEach(item => {
-       item.addEventListener('click', function() {
-           setTimeout(closeMenu, 200);
-       });
-   });
-
-   // Close menu on window resize to desktop
-   window.addEventListener('resize', function() {
-       if (window.innerWidth > 768) {
-           closeMenu();
-       }
-   });
 }
