@@ -20,7 +20,7 @@
         <button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
     </form>
     <div class="social-login-separator"><span>{% trans "or" %}</span></div>
-    <a href="{% provider_login_url 'google' %}" class="btn btn-google">
+    <a href="/accounts/google/login/" class="btn btn-google">
         <img src="{% static 'img/google-logo.svg' %}" alt="Google" class="google-logo" />
         {% trans "Continue with Google" %}
     </a>
@@ -28,7 +28,7 @@
         <a href="{% url 'account_reset_password' %}">{% trans "Forgot your password?" %}</a>
     </p>
     <p>
-        {% trans "Don't have an account?" %} <a href="{% url 'account_signup' %}">{% trans "Register" %}</a>
+        {% trans "Don't have an account?" %} <a href="/accounts/signup/">{% trans "Register" %}</a>
     </p>
 </div>
 <style>

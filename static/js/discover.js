@@ -1134,7 +1134,7 @@ async function watchTrailer(id, type) {
   document.head.appendChild(style);
 })();
 
-function saveToWatchlist(id, type) {
+async function saveToWatchlist(id, type) {
   if (!id || !type) return;
   
   try {
@@ -1160,47 +1160,74 @@ function saveToWatchlist(id, type) {
       ratingElement: ratingElement?.textContent
     });
     
+    // Extract poster path from full URL
+    let poster_path = '';
+    if (posterElement?.src) {
+      const posterUrl = posterElement.src;
+      if (posterUrl.includes('image.tmdb.org')) {
+        poster_path = posterUrl.split('/w500/')[1] || posterUrl.split('/original/')[1] || '';
+        poster_path = '/' + poster_path;
+      }
+    }
+    
     const movieData = {
-      id: parseInt(id),
       tmdb_id: parseInt(id),
       title: titleElement?.textContent?.trim() || 'Unknown Title',
-      poster_path: posterElement?.src || null,
+      overview: '', // Will be populated from TMDB API if needed
+      poster_path: poster_path,
+      backdrop_path: '',
       release_date: yearElement?.textContent?.trim() || null,
       vote_average: parseFloat(ratingElement?.textContent?.replace(/[^\d.]/g, '')) || 0,
+      vote_count: 0,
       genre_ids: [], // Will be populated from TMDB API
-      mediaType: type,
-      user_saved_date: new Date().toISOString(),
-      is_watch_later: false,
-      is_liked: false,
-      timestamp: Date.now()
+      media_type: type,
+      is_logged_in: true
     };
     
     console.log('Created movie data:', movieData);
     
-    // Save to localStorage with consistent key
-    const key = 'saved_movies';
-    const current = JSON.parse(localStorage.getItem(key) || '[]');
+    // Check if user is logged in
+    const isLoggedIn = checkIfLoggedIn();
     
-    // Check if movie already exists
-    if (!current.some(item => item.id === parseInt(id))) {
-      const updated = [...current, movieData];
-      localStorage.setItem(key, JSON.stringify(updated));
-      console.log(`Saved ${type} with full data:`, movieData);
-      console.log('Updated localStorage:', updated);
-      
-      // Show success message
-      showSaveSuccess(`Movie saved successfully!`);
-      
-      return true;
+    if (isLoggedIn) {
+      // Save to database
+      try {
+        const result = await saveMovieToDatabase(movieData);
+        if (result.success) {
+          showSaveSuccess(result.message);
+          return true;
+        } else {
+          showError(result.error || 'Failed to save movie');
+          return false;
+        }
+      } catch (error) {
+        console.error('Database save failed:', error);
+        showError('Failed to save movie to database');
+        return false;
+      }
     } else {
-      // Movie already saved
-      showSaveSuccess('Movie already saved!');
+      // Save to localStorage for anonymous users
+      const key = 'saved_movies';
+      const current = JSON.parse(localStorage.getItem(key) || '[]');
+      
+      // Check if movie already exists
+      if (!current.some(item => item.tmdb_id === parseInt(id))) {
+        const updated = [...current, movieData];
+        localStorage.setItem(key, JSON.stringify(updated));
+        console.log(`Saved ${type} to localStorage:`, movieData);
+        
+        showSaveSuccess('Movie saved successfully!');
+        return true;
+      } else {
+        showSaveSuccess('Movie already saved!');
+        return true;
+      }
     }
   } catch (e) {
     console.error("Save failed:", e);
     showError('Failed to save movie. Please try again.');
+    return false;
   }
-  return false;
 }
 
 async function saveMovieToDatabase(movieData) {
@@ -1298,5 +1325,24 @@ function showError(message) {
 function checkIfLoggedIn() {
   // Check for user authentication indicator
   const userIndicator = document.querySelector('[data-user-id]');
-  return userIndicator && userIndicator.getAttribute('data-user-id') !== '';
+  const authLinks = document.querySelectorAll('a[href*="/accounts/login/"]');
+  const logoutLinks = document.querySelectorAll('a[href*="/accounts/logout/"]');
+  
+  // If we see logout links, user is logged in
+  if (logoutLinks.length > 0) {
+    return true;
+  }
+  
+  // If we see login links and no logout links, user is not logged in
+  if (authLinks.length > 0 && logoutLinks.length === 0) {
+    return false;
+  }
+  
+  // Check for user indicator as fallback
+  if (userIndicator && userIndicator.getAttribute('data-user-id') !== '') {
+    return true;
+  }
+  
+  // Default to false if we can't determine
+  return false;
 }

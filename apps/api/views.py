@@ -485,3 +485,205 @@ def provide_feedback(request):
             'success': False,
             'message': str(e)
         }, status=500) 
+
+
+@login_required
+@require_http_methods(["GET"])
+def get_user_movie_counts(request):
+    """
+    Get movie counts for user (for profile page display).
+    Returns only counts, not full movie data.
+    """
+    try:
+        from apps.core.models import SavedMovie, AnonymousSavedMovie
+        from django.utils import timezone
+        
+        user = request.user
+        
+        # Get saved movies count
+        saved_count = SavedMovie.objects.filter(user=user).count()
+        
+        # Get watch later count (movies marked as watch later)
+        watch_later_count = SavedMovie.objects.filter(
+            user=user, 
+            is_watch_later=True
+        ).count()
+        
+        return JsonResponse({
+            'success': True,
+            'counts': {
+                'saved_count': saved_count,
+                'watch_later_count': watch_later_count,
+                'total_count': saved_count + watch_later_count
+            }
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'Server error: {str(e)}'
+        }, status=500)
+
+
+@login_required
+@require_http_methods(["GET"])
+def get_user_movies(request):
+    """
+    Get full movie data for user (for movies page display).
+    Returns complete movie objects with all details.
+    """
+    try:
+        from apps.core.models import SavedMovie
+        from django.db.models import Q
+        import logging
+        
+        logger = logging.getLogger(__name__)
+        
+        user = request.user
+        filter_type = request.GET.get('type', 'all')  # 'saved', 'watch_later', 'all'
+        
+        logger.info(f"🔍 Getting movies for user {user.username} with filter: {filter_type}")
+        
+        # Build query based on filter type
+        if filter_type == 'saved':
+            movies = SavedMovie.objects.filter(user=user, is_liked=True)
+        elif filter_type == 'watch_later':
+            movies = SavedMovie.objects.filter(user=user, is_watch_later=True)
+        else:  # 'all'
+            movies = SavedMovie.objects.filter(
+                user=user
+            ).filter(Q(is_liked=True) | Q(is_watch_later=True))
+        
+        # Order by most recently saved
+        movies = movies.order_by('-saved_at')
+        
+        logger.info(f"📊 Found {movies.count()} movies for user {user.username}")
+        
+        movies_data = []
+        for saved_movie in movies:
+            movies_data.append({
+                'id': saved_movie.id,
+                'tmdb_id': saved_movie.tmdb_id,
+                'title': saved_movie.title,
+                'overview': saved_movie.overview,
+                'poster_path': saved_movie.poster_path,
+                'backdrop_path': saved_movie.backdrop_path,
+                'release_date': saved_movie.release_date,
+                'vote_average': saved_movie.vote_average,
+                'vote_count': saved_movie.vote_count,
+                'genre_ids': saved_movie.genre_ids,
+                'media_type': saved_movie.media_type,
+                'saved_at': saved_movie.saved_at.isoformat(),
+                'is_liked': saved_movie.is_liked,
+                'is_watch_later': saved_movie.is_watch_later,
+                'poster_url': f"https://image.tmdb.org/t/p/w500{saved_movie.poster_path}" if saved_movie.poster_path else None,
+                'backdrop_url': f"https://image.tmdb.org/t/p/original{saved_movie.backdrop_path}" if saved_movie.backdrop_path else None,
+                'year': (saved_movie.release_date or '').split('-')[0] if saved_movie.release_date else 'N/A',
+                'rating': f"{saved_movie.vote_average:.1f}" if saved_movie.vote_average else 'N/A'
+            })
+        
+        logger.info(f"✅ Returning {len(movies_data)} movies for user {user.username}")
+        
+        return JsonResponse({
+            'success': True,
+            'movies': movies_data,
+            'count': len(movies_data),
+            'filter_type': filter_type
+        })
+        
+    except Exception as e:
+        logger.error(f"❌ Error getting movies for user {user.username}: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': f'Server error: {str(e)}'
+        }, status=500) 
+
+
+@login_required
+@require_http_methods(["POST"])
+def save_movie_api(request):
+    """
+    API endpoint to save a movie for authenticated users.
+    """
+    try:
+        import logging
+        logger = logging.getLogger(__name__)
+        
+        data = json.loads(request.body)
+        tmdb_id = data.get('tmdb_id')
+        title = data.get('title')
+        overview = data.get('overview', '')
+        poster_path = data.get('poster_path', '')
+        backdrop_path = data.get('backdrop_path', '')
+        release_date = data.get('release_date', '')
+        vote_average = data.get('vote_average')
+        vote_count = data.get('vote_count')
+        genre_ids = data.get('genre_ids', [])
+        media_type = data.get('media_type', 'movie')
+        
+        logger.info(f"🎬 Saving movie: {title} (TMDB ID: {tmdb_id}) for user {request.user.username}")
+        logger.info(f"📊 Movie data: {data}")
+        
+        if not tmdb_id or not title:
+            logger.error(f"❌ Missing required fields: tmdb_id={tmdb_id}, title={title}")
+            return JsonResponse({
+                'success': False,
+                'error': 'TMDB ID and title are required'
+            }, status=400)
+        
+        from apps.core.models import SavedMovie
+        
+        # Check if movie already exists for this user
+        existing_movie = SavedMovie.objects.filter(
+            user=request.user,
+            tmdb_id=tmdb_id,
+            media_type=media_type
+        ).first()
+        
+        if existing_movie:
+            logger.info(f"✅ Movie already exists: {title} (ID: {existing_movie.id})")
+            return JsonResponse({
+                'success': True,
+                'message': f'Movie "{title}" is already saved',
+                'created': False,
+                'movie_id': existing_movie.id
+            })
+        
+        # Create new saved movie
+        saved_movie = SavedMovie.objects.create(
+            user=request.user,
+            tmdb_id=tmdb_id,
+            title=title,
+            overview=overview,
+            poster_path=poster_path,
+            backdrop_path=backdrop_path,
+            release_date=release_date,
+            vote_average=vote_average,
+            vote_count=vote_count,
+            genre_ids=genre_ids,
+            media_type=media_type,
+            is_liked=True,  # Default to liked when saved
+            is_watch_later=False
+        )
+        
+        logger.info(f"✅ Successfully saved movie: {title} (ID: {saved_movie.id})")
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Movie "{title}" saved successfully',
+            'created': True,
+            'movie_id': saved_movie.id
+        })
+        
+    except json.JSONDecodeError as e:
+        logger.error(f"❌ JSON decode error: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid JSON payload'
+        }, status=400)
+    except Exception as e:
+        logger.error(f"❌ Server error saving movie: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': f'Server error: {str(e)}'
+        }, status=500) 
