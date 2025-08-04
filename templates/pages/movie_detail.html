@@ -4,6 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>KakaFlix</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@800&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/home.css">
+
     <title>My Movies - Stori za Kaka</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/discover.css' %}">
@@ -454,6 +461,7 @@
             background: var(--glass-bg);
             border-bottom: 1px solid var(--glass-border);
             backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -555,6 +563,7 @@
             height: 100vh;
             background: var(--glass-bg);
             backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
             border-left: 1px solid var(--glass-border);
             transition: right 0.3s ease;
             z-index: 1000;

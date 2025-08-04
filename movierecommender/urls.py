@@ -11,7 +11,6 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/home/', permanent=True)),
-    path('home/', include('core.urls')),
     path('admin/', admin.site.urls),
     path('i18n/', include('django.conf.urls.i18n')),
     path('accounts/', include('allauth.urls')),
@@ -19,7 +18,7 @@ urlpatterns = [
 
 # Internationalized URL patterns
 urlpatterns += i18n_patterns(
-    path('', include('apps.core.urls', namespace='core')),
+    path('home/', include('core.urls', namespace='core')),
     path('auth/', include(('apps.authentication.urls', 'authentication'), namespace='authentication')),
     path('api/', include('apps.api.urls')),
     prefix_default_language=False,

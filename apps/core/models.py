@@ -89,3 +89,107 @@ class RecommendationResult(models.Model):
 
     def __str__(self):
         return f"{self.movie.title} (score: {self.score}) for session {self.session.id}"
+
+class UserMoodPreference(models.Model):
+    """
+    Stores mood preferences for logged-in users.
+    """
+    user = models.OneToOneField('User', on_delete=models.CASCADE, related_name='mood_preferences')
+    mood_preferences = models.JSONField(default=list, help_text="List of selected mood types")
+    last_updated = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "User Mood Preference"
+        verbose_name_plural = "User Mood Preferences"
+
+    def __str__(self):
+        return f"Mood preferences for {self.user.username}"
+
+class AnonymousMoodSession(models.Model):
+    """
+    Stores mood preferences for anonymous users using session IDs.
+    """
+    session_id = models.CharField(max_length=100, unique=True, help_text="Unique session identifier for anonymous users")
+    mood_preferences = models.JSONField(default=list, help_text="List of selected mood types")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Anonymous Mood Session"
+        verbose_name_plural = "Anonymous Mood Sessions"
+        indexes = [
+            models.Index(fields=['session_id']),
+            models.Index(fields=['created_at']),
+        ]
+
+    def __str__(self):
+        return f"Anonymous session {self.session_id}"
+
+class SavedMovie(models.Model):
+    """
+    Stores movies saved by logged-in users.
+    """
+    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='saved_movies')
+    tmdb_id = models.IntegerField()
+    title = models.CharField(max_length=255)
+    overview = models.TextField(blank=True, null=True)
+    poster_path = models.CharField(max_length=255, blank=True, null=True)
+    backdrop_path = models.CharField(max_length=255, blank=True, null=True)
+    release_date = models.CharField(max_length=32, blank=True, null=True)
+    vote_average = models.FloatField(null=True, blank=True)
+    vote_count = models.IntegerField(null=True, blank=True)
+    genre_ids = models.JSONField(default=list, blank=True)
+    media_type = models.CharField(max_length=20, default='movie')
+    saved_at = models.DateTimeField(auto_now_add=True)
+    is_liked = models.BooleanField(default=False)
+    is_watch_later = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Saved Movie"
+        verbose_name_plural = "Saved Movies"
+        unique_together = ['user', 'tmdb_id', 'media_type']
+        indexes = [
+            models.Index(fields=['user', 'saved_at']),
+            models.Index(fields=['tmdb_id']),
+        ]
+
+    def __str__(self):
+        return f"{self.title} saved by {self.user.username}"
+
+class AnonymousSavedMovie(models.Model):
+    """
+    Stores movies saved by anonymous users (expires after 1 day).
+    """
+    session_id = models.CharField(max_length=100)
+    tmdb_id = models.IntegerField()
+    title = models.CharField(max_length=255)
+    overview = models.TextField(blank=True, null=True)
+    poster_path = models.CharField(max_length=255, blank=True, null=True)
+    backdrop_path = models.CharField(max_length=255, blank=True, null=True)
+    release_date = models.CharField(max_length=32, blank=True, null=True)
+    vote_average = models.FloatField(null=True, blank=True)
+    vote_count = models.IntegerField(null=True, blank=True)
+    genre_ids = models.JSONField(default=list, blank=True)
+    media_type = models.CharField(max_length=20, default='movie')
+    saved_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    is_liked = models.BooleanField(default=False)
+    is_watch_later = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Anonymous Saved Movie"
+        verbose_name_plural = "Anonymous Saved Movies"
+        unique_together = ['session_id', 'tmdb_id', 'media_type']
+        indexes = [
+            models.Index(fields=['session_id', 'saved_at']),
+            models.Index(fields=['expires_at']),
+            models.Index(fields=['tmdb_id']),
+        ]
+
+    def __str__(self):
+        return f"{self.title} saved in session {self.session_id}"
+
+    def is_expired(self):
+        from django.utils import timezone
+        return timezone.now() > self.expires_at

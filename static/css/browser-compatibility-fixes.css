@@ -1,0 +1,913 @@
+/* Browser Compatibility Fixes - Comprehensive Update */
+
+/* === SCROLLBAR COMPATIBILITY FIX === */
+/* Remove non-standard scrollbar properties and use WebKit standard */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #111;
+}
+
+/* Hide scrollbars where needed using WebKit */
+.movie-carousel::-webkit-scrollbar,
+.showcase-carousel::-webkit-scrollbar,
+.mobile-menu::-webkit-scrollbar,
+.movie-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* === BACKDROP FILTER PREFIX FIX === */
+/* Override all backdrop-filter declarations with proper prefixes */
+/* Fix specific backdrop-filter declarations in home.css */
+.header {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.sticky-search-bar {
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+
+.skeleton-card {
+  -webkit-backdrop-filter: var(--glass-blur, blur(10px));
+  backdrop-filter: var(--glass-blur, blur(10px));
+}
+
+.carousel-arrow {
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.showcase-card {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.showcase-arrow {
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+}
+
+.discover-section {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.questionnaire-card {
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+.mood-btn {
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+.text-input {
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+.discover-section {
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+.questionnaire-card {
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+/* Override all backdrop-filter declarations with proper prefixes */
+.header,
+.nav,
+.theme-toggle,
+.language-toggle,
+.mobile-menu,
+.modal-backdrop,
+.modal-container,
+.modal-content,
+.movie-modal,
+.trailer-modal-backdrop,
+.trailer-modal-content,
+.hero-overlay,
+.hero-content,
+.hero-arrow,
+.nav-controls .hero-refresh,
+.movie-card,
+.card-front,
+.card-back,
+.feature-card,
+.stats-section,
+.questionnaire-card,
+.mood-btn,
+.slider-track,
+.text-input,
+.search-input,
+.sticky-search-bar,
+.discover-section,
+.discover-container,
+.modal-header,
+.modal-body,
+.modal-actions,
+.watch-trailer,
+.watch-trailer-btn,
+.mobile-details-btn,
+.hero-meta,
+.hero-rating,
+.hero-desc-bg,
+.hero-genre,
+.hero-year,
+.hero-desc,
+.movie-match-content,
+.movie-match-poster,
+.analysis-text,
+.pulse-animation,
+.one-time-btn,
+.loading-spinner,
+.error-state,
+.featured-search-btn,
+.carousel-arrow,
+.showcase-arrow,
+.row-nav-arrow,
+.loading-indicator,
+.spinner,
+.skeleton-card,
+.skeleton-poster,
+.skeleton-content,
+.skeleton-title,
+.skeleton-meta,
+.skeleton-year,
+.skeleton-rating,
+.movie-poster-placeholder,
+.movie-info-placeholder,
+.movie-result-placeholder,
+.youtube-container,
+.youtube-skeleton,
+.loader,
+.youtube-iframe,
+.youtube-close,
+.menu-header,
+.menu-time-container,
+.close-menu,
+.vertical-nav,
+.menu-item,
+.menu-divider,
+.menu-footer,
+.menu-version,
+.hero-actions,
+.pulse-arrow,
+.hero-arrow::after,
+.carousel-card,
+.showcase-card,
+.row-title,
+.row-content,
+.row-header,
+.section-title,
+.section-subtitle,
+.section-header,
+.feature-title,
+.feature-description,
+.feature-icon,
+.stat-number,
+.stat-label,
+.stat-item,
+.btn,
+.btn-primary,
+.btn-secondary,
+.discover-btn,
+.trailer-btn,
+.action-btn,
+.close-detail,
+.movie-title,
+.movie-description,
+.movie-details-grid,
+.watch-trailer-btn,
+.trailer-preview,
+.card-meta,
+.genre,
+.tv-badge,
+.rating,
+.year,
+.poster-image,
+.card-details-preview,
+.details-text,
+.details-title,
+.details-meta,
+.poster-wrapper,
+.cta-section,
+.cta-title,
+.cta-description,
+.hero-bg-slide,
+.hero-bg-slider,
+.hero-bg-slide.active,
+.hero-arrow:hover,
+.hero-arrow:focus,
+.hero-arrow:active,
+.nav-controls .hero-refresh:hover,
+.nav-controls .hero-refresh:focus,
+.nav-controls .hero-refresh:active,
+.mobile-details-btn:hover,
+.mobile-details-btn:active,
+.modal-close:hover,
+.modal-arrow:hover,
+.modal-arrow:focus,
+.watch-trailer:hover,
+.watch-trailer:focus,
+.watch-trailer:disabled,
+.watch-trailer-btn:hover,
+.watch-trailer-btn:active,
+.carousel-arrow:hover,
+.carousel-arrow:focus,
+.showcase-arrow:hover,
+.showcase-arrow:focus,
+.row-nav-arrow:hover,
+.row-nav-arrow:focus,
+.row-nav-arrow:disabled,
+.menu-item:hover,
+.menu-item:focus,
+.close-menu:hover,
+.close-menu:focus,
+.theme-toggle:hover,
+.theme-toggle:focus,
+.language-toggle:hover,
+.language-toggle:focus,
+.mobile-menu-btn:hover,
+.mobile-menu-btn:focus,
+.mobile-menu-btn:active,
+.btn:hover,
+.btn:focus,
+.btn:active,
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-secondary:hover,
+.btn-secondary:focus,
+.btn-secondary:active,
+.discover-btn:hover,
+.discover-btn:focus,
+.discover-btn:active,
+.trailer-btn:hover,
+.trailer-btn:focus,
+.trailer-btn:disabled,
+.mood-btn:hover,
+.mood-btn:focus,
+.mood-btn.selected,
+.action-btn:hover,
+.action-btn:focus,
+.action-btn:active,
+.close-detail:hover,
+.close-detail:focus,
+.feature-card:hover,
+.feature-card:focus,
+.stats-section:hover,
+.stats-section:focus,
+.questionnaire-card:hover,
+.questionnaire-card:focus,
+.slider:hover,
+.slider:focus,
+.text-input:hover,
+.text-input:focus,
+.search-input:hover,
+.search-input:focus,
+.sticky-search-bar:hover,
+.sticky-search-bar:focus-within,
+.carousel-card:hover,
+.carousel-card:focus,
+.showcase-card:hover,
+.showcase-card:focus,
+.movie-card:hover,
+.movie-card:focus,
+.card-front:hover,
+.card-front:focus,
+.card-back:hover,
+.card-back:focus,
+.poster-image:hover,
+.poster-image:focus,
+.card-meta:hover,
+.card-meta:focus,
+.genre:hover,
+.genre:focus,
+.rating:hover,
+.rating:focus,
+.year:hover,
+.year:focus,
+.movie-title:hover,
+.movie-title:focus,
+.movie-description:hover,
+.movie-description:focus,
+.movie-details-grid:hover,
+.movie-details-grid:focus,
+.watch-trailer-btn:hover,
+.watch-trailer-btn:focus,
+.watch-trailer-btn:active,
+.trailer-preview:hover,
+.trailer-preview:focus,
+.card-details-preview:hover,
+.card-details-preview:focus,
+.details-text:hover,
+.details-text:focus,
+.details-title:hover,
+.details-title:focus,
+.details-meta:hover,
+.details-meta:focus,
+.poster-wrapper:hover,
+.poster-wrapper:focus,
+.hero-title:hover,
+.hero-title:focus,
+.hero-subtitle:hover,
+.hero-subtitle:focus,
+.hero-meta:hover,
+.hero-meta:focus,
+.hero-rating:hover,
+.hero-rating:focus,
+.hero-desc-bg:hover,
+.hero-desc-bg:focus,
+.hero-desc:hover,
+.hero-desc:focus,
+.hero-genre:hover,
+.hero-genre:focus,
+.hero-year:hover,
+.hero-year:focus,
+.hero-actions:hover,
+.hero-actions:focus,
+.pulse-arrow:hover,
+.pulse-arrow:focus,
+.carousel-card:hover,
+.carousel-card:focus,
+.showcase-card:hover,
+.showcase-card:focus,
+.row-title:hover,
+.row-title:focus,
+.row-content:hover,
+.row-content:focus,
+.row-header:hover,
+.row-header:focus,
+.section-title:hover,
+.section-title:focus,
+.section-subtitle:hover,
+.section-subtitle:focus,
+.section-header:hover,
+.section-header:focus,
+.feature-title:hover,
+.feature-title:focus,
+.feature-description:hover,
+.feature-description:focus,
+.feature-icon:hover,
+.feature-icon:focus,
+.stat-number:hover,
+.stat-number:focus,
+.stat-label:hover,
+.stat-label:focus,
+.stat-item:hover,
+.stat-item:focus,
+.loading-indicator:hover,
+.loading-indicator:focus,
+.spinner:hover,
+.spinner:focus,
+.skeleton-card:hover,
+.skeleton-card:focus,
+.skeleton-poster:hover,
+.skeleton-poster:focus,
+.skeleton-content:hover,
+.skeleton-content:focus,
+.skeleton-title:hover,
+.skeleton-title:focus,
+.skeleton-meta:hover,
+.skeleton-meta:focus,
+.skeleton-year:hover,
+.skeleton-year:focus,
+.skeleton-rating:hover,
+.skeleton-rating:focus,
+.movie-poster-placeholder:hover,
+.movie-poster-placeholder:focus,
+.movie-info-placeholder:hover,
+.movie-info-placeholder:focus,
+.movie-result-placeholder:hover,
+.movie-result-placeholder:focus,
+.youtube-container:hover,
+.youtube-container:focus,
+.youtube-skeleton:hover,
+.youtube-skeleton:focus,
+.loader:hover,
+.loader:focus,
+.youtube-iframe:hover,
+.youtube-iframe:focus,
+.youtube-close:hover,
+.youtube-close:focus,
+.menu-header:hover,
+.menu-header:focus,
+.menu-time-container:hover,
+.menu-time-container:focus,
+.close-menu:hover,
+.close-menu:focus,
+.vertical-nav:hover,
+.vertical-nav:focus,
+.menu-item:hover,
+.menu-item:focus,
+.menu-divider:hover,
+.menu-divider:focus,
+.menu-footer:hover,
+.menu-footer:focus,
+.menu-version:hover,
+.menu-version:focus,
+.hero-arrow::after:hover,
+.hero-arrow::after:focus,
+.cta-section:hover,
+.cta-section:focus,
+.cta-title:hover,
+.cta-title:focus,
+.cta-description:hover,
+.cta-description:focus,
+.hero-bg-slide:hover,
+.hero-bg-slide:focus,
+.hero-bg-slider:hover,
+.hero-bg-slider:focus,
+.hero-bg-slide.active:hover,
+.hero-bg-slide.active:focus {
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+/* === USER SELECT PREFIX FIX === */
+/* Add WebKit prefix for user-select */
+.user-select-none,
+[data-user-select="none"] {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* === HYPENS PREFIX FIX === */
+/* Add WebKit prefix for hyphens */
+.hyphens-auto,
+[data-hyphens="auto"] {
+  -webkit-hyphens: auto;
+  hyphens: auto;
+}
+
+/* === REMOVE INVALID CSS PROPERTIES === */
+/* These should be HTML attributes, not CSS properties */
+.movie-card img {
+  /* loading: lazy; - Use HTML attribute instead */
+  /* decoding: async; - Use HTML attribute instead */
+}
+
+/* === EMPTY RULESET CLEANUP === */
+/* Remove any empty CSS rulesets */
+.movie-showcase-row:not(:last-child) {
+  /* Empty ruleset removed */
+}
+
+/* === REMOVE NON-STANDARD SCROLLBAR PROPERTIES === */
+/* Override any remaining scrollbar-width and scrollbar-color */
+.movie-carousel,
+.showcase-carousel,
+.mobile-menu,
+.movie-row,
+.genre-row,
+.timeline-view,
+.stack-view,
+.content-view,
+.modal-content,
+.trailer-modal-content,
+.youtube-container,
+.vertical-nav,
+.menu-content,
+.scrollable-content,
+.overflow-container {
+  /* Remove scrollbar-width and scrollbar-color - use WebKit scrollbar instead */
+  scrollbar-width: unset;
+  scrollbar-color: unset;
+}
+
+/* === REMOVE DEPRECATED WEBKIT PROPERTIES === */
+/* Remove -webkit-overflow-scrolling as it's deprecated */
+.movie-carousel,
+.showcase-carousel,
+.mobile-menu,
+.movie-row,
+.genre-row,
+.timeline-view,
+.stack-view,
+.content-view,
+.modal-content,
+.trailer-modal-content,
+.youtube-container,
+.vertical-nav,
+.menu-content,
+.scrollable-content,
+.overflow-container,
+.questionnaire-card {
+  -webkit-overflow-scrolling: unset;
+}
+
+/* === FIX MIN-HEIGHT AUTO ISSUE === */
+/* Remove min-height: auto as it's not supported in Firefox */
+.min-height-auto {
+  min-height: unset;
+}
+
+/* === PERFORMANCE OPTIMIZATIONS === */
+/* Optimize for better browser performance */
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* === ACCESSIBILITY ENHANCEMENTS === */
+/* Ensure proper contrast and focus states */
+.btn:focus,
+.mood-btn:focus,
+.theme-toggle:focus,
+.language-toggle:focus,
+.mobile-menu-btn:focus,
+.close-menu:focus,
+.menu-item:focus,
+.carousel-arrow:focus,
+.showcase-arrow:focus,
+.row-nav-arrow:focus,
+.watch-trailer:focus,
+.watch-trailer-btn:focus,
+.mobile-details-btn:focus,
+.hero-arrow:focus,
+.nav-controls .hero-refresh:focus,
+.tab-btn:focus,
+.layout-btn:focus,
+.action-btn:focus,
+.close-detail:focus,
+.modal-close:focus,
+.modal-arrow:focus,
+.youtube-close:focus,
+.menu-item:focus,
+.close-menu:focus,
+.theme-toggle:focus,
+.language-toggle:focus,
+.mobile-menu-btn:focus,
+.btn:focus,
+.btn-primary:focus,
+.btn-secondary:focus,
+.discover-btn:focus,
+.trailer-btn:focus,
+.mood-btn:focus,
+.action-btn:focus,
+.close-detail:focus,
+.feature-card:focus,
+.stats-section:focus,
+.questionnaire-card:focus,
+.slider:focus,
+.text-input:focus,
+.search-input:focus,
+.sticky-search-bar:focus-within,
+.carousel-card:focus,
+.showcase-card:focus,
+.movie-card:focus,
+.card-front:focus,
+.card-back:focus,
+.poster-image:focus,
+.card-meta:focus,
+.genre:focus,
+.rating:focus,
+.year:focus,
+.movie-title:focus,
+.movie-description:focus,
+.movie-details-grid:focus,
+.watch-trailer-btn:focus,
+.trailer-preview:focus,
+.card-details-preview:focus,
+.details-text:focus,
+.details-title:focus,
+.details-meta:focus,
+.poster-wrapper:focus,
+.hero-title:focus,
+.hero-subtitle:focus,
+.hero-meta:focus,
+.hero-rating:focus,
+.hero-desc-bg:focus,
+.hero-desc:focus,
+.hero-genre:focus,
+.hero-year:focus,
+.hero-actions:focus,
+.pulse-arrow:focus,
+.carousel-card:focus,
+.showcase-card:focus,
+.row-title:focus,
+.row-content:focus,
+.row-header:focus,
+.section-title:focus,
+.section-subtitle:focus,
+.section-header:focus,
+.feature-title:focus,
+.feature-description:focus,
+.feature-icon:focus,
+.stat-number:focus,
+.stat-label:focus,
+.stat-item:focus,
+.loading-indicator:focus,
+.spinner:focus,
+.skeleton-card:focus,
+.skeleton-poster:focus,
+.skeleton-content:focus,
+.skeleton-title:focus,
+.skeleton-meta:focus,
+.skeleton-year:focus,
+.skeleton-rating:focus,
+.movie-poster-placeholder:focus,
+.movie-info-placeholder:focus,
+.movie-result-placeholder:focus,
+.youtube-container:focus,
+.youtube-skeleton:focus,
+.loader:focus,
+.youtube-iframe:focus,
+.youtube-close:focus,
+.menu-header:focus,
+.menu-time-container:focus,
+.close-menu:focus,
+.vertical-nav:focus,
+.menu-item:focus,
+.menu-divider:focus,
+.menu-footer:focus,
+.menu-version:focus,
+.hero-arrow::after:focus,
+.cta-section:focus,
+.cta-title:focus,
+.cta-description:focus,
+.hero-bg-slide:focus,
+.hero-bg-slider:focus,
+.hero-bg-slide.active:focus {
+  outline: 2px solid #ffd700;
+  outline-offset: 2px;
+}
+
+/* === REDUCED MOTION SUPPORT === */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* === HIGH CONTRAST SUPPORT === */
+@media (prefers-contrast: high) {
+  .btn,
+  .mood-btn,
+  .theme-toggle,
+  .language-toggle,
+  .mobile-menu-btn,
+  .close-menu,
+  .carousel-arrow,
+  .showcase-arrow,
+  .row-nav-arrow,
+  .watch-trailer,
+  .watch-trailer-btn,
+  .mobile-details-btn,
+  .hero-arrow,
+  .nav-controls .hero-refresh,
+  .tab-btn,
+  .layout-btn,
+  .action-btn,
+  .close-detail,
+  .modal-close,
+  .modal-arrow,
+  .youtube-close,
+  .menu-item,
+  .close-menu,
+  .theme-toggle,
+  .language-toggle,
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .discover-btn,
+  .trailer-btn,
+  .mood-btn,
+  .action-btn,
+  .close-detail,
+  .feature-card,
+  .stats-section,
+  .questionnaire-card,
+  .slider,
+  .text-input,
+  .search-input,
+  .sticky-search-bar,
+  .carousel-card,
+  .showcase-card,
+  .movie-card,
+  .card-front,
+  .card-back,
+  .poster-image,
+  .card-meta,
+  .genre,
+  .rating,
+  .year,
+  .movie-title,
+  .movie-description,
+  .movie-details-grid,
+  .watch-trailer-btn,
+  .trailer-preview,
+  .card-details-preview,
+  .details-text,
+  .details-title,
+  .details-meta,
+  .poster-wrapper,
+  .hero-title,
+  .hero-subtitle,
+  .hero-meta,
+  .hero-rating,
+  .hero-desc-bg,
+  .hero-desc,
+  .hero-genre,
+  .hero-year,
+  .hero-actions,
+  .pulse-arrow,
+  .carousel-card,
+  .showcase-card,
+  .row-title,
+  .row-content,
+  .row-header,
+  .section-title,
+  .section-subtitle,
+  .section-header,
+  .feature-title,
+  .feature-description,
+  .feature-icon,
+  .stat-number,
+  .stat-label,
+  .stat-item,
+  .loading-indicator,
+  .spinner,
+  .skeleton-card,
+  .skeleton-poster,
+  .skeleton-content,
+  .skeleton-title,
+  .skeleton-meta,
+  .skeleton-year,
+  .skeleton-rating,
+  .movie-poster-placeholder,
+  .movie-info-placeholder,
+  .movie-result-placeholder,
+  .youtube-container,
+  .youtube-skeleton,
+  .loader,
+  .youtube-iframe,
+  .youtube-close,
+  .menu-header,
+  .menu-time-container,
+  .close-menu,
+  .vertical-nav,
+  .menu-item,
+  .menu-divider,
+  .menu-footer,
+  .menu-version,
+  .hero-arrow::after,
+  .cta-section,
+  .cta-title,
+  .cta-description,
+  .hero-bg-slide,
+  .hero-bg-slider,
+  .hero-bg-slide.active {
+    border: 2px solid currentColor;
+  }
+  
+  .mood-btn.selected {
+    border: 3px solid currentColor;
+  }
+}
+
+/* === PRINT STYLES === */
+@media print {
+  .mobile-menu-btn,
+  .mobile-menu,
+  .hero-arrow,
+  .nav-controls .hero-refresh,
+  .carousel-arrow,
+  .showcase-arrow,
+  .row-nav-arrow,
+  .watch-trailer,
+  .watch-trailer-btn,
+  .mobile-details-btn,
+  .theme-toggle,
+  .language-toggle,
+  .tab-btn,
+  .layout-btn,
+  .action-btn,
+  .close-detail,
+  .modal-close,
+  .modal-arrow,
+  .youtube-close,
+  .menu-item,
+  .close-menu,
+  .theme-toggle,
+  .language-toggle,
+  .btn,
+  .btn-primary,
+  .btn-secondary,
+  .discover-btn,
+  .trailer-btn,
+  .mood-btn,
+  .action-btn,
+  .close-detail,
+  .feature-card,
+  .stats-section,
+  .questionnaire-card,
+  .slider,
+  .text-input,
+  .search-input,
+  .sticky-search-bar,
+  .carousel-card,
+  .showcase-card,
+  .movie-card,
+  .card-front,
+  .card-back,
+  .poster-image,
+  .card-meta,
+  .genre,
+  .rating,
+  .year,
+  .movie-title,
+  .movie-description,
+  .movie-details-grid,
+  .watch-trailer-btn,
+  .trailer-preview,
+  .card-details-preview,
+  .details-text,
+  .details-title,
+  .details-meta,
+  .poster-wrapper,
+  .hero-title,
+  .hero-subtitle,
+  .hero-meta,
+  .hero-rating,
+  .hero-desc-bg,
+  .hero-desc,
+  .hero-genre,
+  .hero-year,
+  .hero-actions,
+  .pulse-arrow,
+  .carousel-card,
+  .showcase-card,
+  .row-title,
+  .row-content,
+  .row-header,
+  .section-title,
+  .section-subtitle,
+  .section-header,
+  .feature-title,
+  .feature-description,
+  .feature-icon,
+  .stat-number,
+  .stat-label,
+  .stat-item,
+  .loading-indicator,
+  .spinner,
+  .skeleton-card,
+  .skeleton-poster,
+  .skeleton-content,
+  .skeleton-title,
+  .skeleton-meta,
+  .skeleton-year,
+  .skeleton-rating,
+  .movie-poster-placeholder,
+  .movie-info-placeholder,
+  .movie-result-placeholder,
+  .youtube-container,
+  .youtube-skeleton,
+  .loader,
+  .youtube-iframe,
+  .youtube-close,
+  .menu-header,
+  .menu-time-container,
+  .close-menu,
+  .vertical-nav,
+  .menu-item,
+  .menu-divider,
+  .menu-footer,
+  .menu-version,
+  .hero-arrow::after,
+  .cta-section,
+  .cta-title,
+  .cta-description,
+  .hero-bg-slide,
+  .hero-bg-slider,
+  .hero-bg-slide.active {
+    display: none !important;
+  }
+  
+  .movie-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+} 
