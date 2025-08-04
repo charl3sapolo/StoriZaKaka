@@ -10,21 +10,72 @@
     <form method="post" action="">
         {% csrf_token %}
         {{ form.non_field_errors }}
+        {% for field in form.visible_fields %}
         <div class="form-group">
-            <label for="id_username">{% trans "Username or Email" %}</label>
-            {{ form.username }}
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.errors }}
         </div>
-        <div class="form-group">
-            <label for="id_password">{% trans "Password" %}</label>
-            {{ form.password }}
-        </div>
+        {% endfor %}
         <button type="submit" class="btn btn-primary">{% trans "Login" %}</button>
     </form>
+    <div class="social-login-separator"><span>{% trans "or" %}</span></div>
+    <a href="{% provider_login_url 'google' %}" class="btn btn-google">
+        <img src="{% static 'img/google-logo.svg' %}" alt="Google" class="google-logo" />
+        {% trans "Continue with Google" %}
+    </a>
     <p>
-        <a href="{% url 'password_reset' %}">{% trans "Forgot your password?" %}</a>
+        <a href="{% url 'account_reset_password' %}">{% trans "Forgot your password?" %}</a>
     </p>
     <p>
-        {% trans "Don't have an account?" %} <a href="{% url 'register' %}">{% trans "Register" %}</a>
+        {% trans "Don't have an account?" %} <a href="{% url 'account_signup' %}">{% trans "Register" %}</a>
     </p>
 </div>
+<style>
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: #444;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.2s;
+}
+.btn-google:hover {
+    box-shadow: 0 4px 16px rgba(66,133,244,0.15);
+    border-color: #4285f4;
+}
+.google-logo {
+    width: 22px;
+    height: 22px;
+    margin-right: 0.7em;
+}
+.social-login-separator {
+    text-align: center;
+    margin: 1.2em 0 0.5em 0;
+    color: #888;
+    font-size: 0.95em;
+    position: relative;
+}
+.social-login-separator span {
+    background: #fff;
+    padding: 0 1em;
+    position: relative;
+    z-index: 1;
+}
+.social-login-separator:before {
+    content: '';
+    display: block;
+    position: absolute;
+    left: 0; right: 0; top: 50%;
+    border-top: 1px solid #eee;
+    z-index: 0;
+}
+</style>
 {% endblock %} 

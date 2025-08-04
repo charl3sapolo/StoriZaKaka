@@ -3,11 +3,251 @@
 {% block title %}Coming Soon - Movie Recommender{% endblock %}
 
 {% block content %}
-<div class="container" style="text-align: center; margin-top: 80px;">
-  <h1 style="font-size: 2.5rem; color: #555;">🚧 Page Under Construction</h1>
-  <p style="font-size: 1.2rem; color: #777; margin-top: 10px;">
-    The developer is still working on this page. Updates will be available soon.
-  </p>
-  <p style="font-style: italic; color: #999;">Please stay tuned...</p>
+<div class="page-container">
+  <div class="content-wrapper">
+    <!-- Header -->
+    <div class="header">
+      <div class="logo">
+        <span class="logo-icon">🎬</span>
+        <span class="logo-text">Movie Recommender</span>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+      <div class="status-badge pulse">Coming Soon</div>
+      
+      <h1 class="title">We're Building Something Great</h1>
+      
+      <p class="subtitle">
+        Our movie recommendation feature is currently in development. 
+        We're working hard to bring you personalized movie suggestions soon!
+      </p>
+
+      <!-- Simple Feature List -->
+      <div class="features">
+        <div class="feature">
+          <span class="feature-icon">🎯</span>
+          <span>Smart Recommendations</span>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">⭐</span>
+          <span>Personal Watchlists</span>
+        </div>
+        <div class="feature">
+          <span class="feature-icon">🔍</span>
+          <span>Advanced Search</span>
+        </div>
+      </div>
+
+      <!-- Simple Progress -->
+      <div class="progress-section">
+        <div class="progress-label">Development Progress</div>
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+        <div class="progress-text">65% Complete</div>
+      </div>
+
+      <!-- Actions -->
+      <div class="actions">
+        <a href="{% url 'core:home' %}" class="btn-primary">
+          <i class="fas fa-home"></i>
+          Back to Home
+        </a>
+        
+        <div class="release-info">
+          <strong>Expected Launch:</strong> Soon
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
+
+<style>
+.page-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #ecf0f3 0%, #e2e8f0 100%);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content-wrapper {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  max-width: 620px;
+  width: 100%;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+.header {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 1.5rem 2rem;
+  text-align: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.logo-icon {
+  font-size: 1.5rem;
+}
+
+.logo-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.main-content {
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.status-badge {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 0.6rem 1.4rem;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 500;
+  display: inline-block;
+  margin-bottom: 1.5rem;
+}
+
+.status-badge.pulse {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(252, 211, 77, 0.6); }
+  70% { box-shadow: 0 0 0 10px rgba(252, 211, 77, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(252, 211, 77, 0); }
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  color: #4a5568;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.features {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #f7fafc;
+  border-radius: 8px;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.feature-icon {
+  font-size: 1.2rem;
+}
+
+.progress-section {
+  margin-bottom: 2rem;
+}
+
+.progress-label {
+  color: #4a5568;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+  background: #e2e8f0;
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  height: 100%;
+  width: 75%;
+  border-radius: 4px;
+}
+
+.progress-text {
+  color: #5a67d8;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+}
+
+.release-info {
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.release-info strong {
+  color: #4a5568;
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1rem;
+  }
+  .main-content {
+    padding: 2rem 1.5rem;
+  }
+  .title {
+    font-size: 1.5rem;
+  }
+  .features {
+    flex-direction: column;
+    text-align: left;
+  }
+}
+</style>
 {% endblock %}
