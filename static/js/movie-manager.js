@@ -417,7 +417,7 @@ class UltimateMovieGallery {
             if (posterUrl && !posterUrl.startsWith('http')) {
                 if (posterUrl.startsWith('/')) {
                     posterUrl = `${TMDB_IMAGE_BASE}${posterUrl}`;
-                } else {
+            } else {
                     posterUrl = `${TMDB_IMAGE_BASE}/${posterUrl}`;
                 }
             }
@@ -427,6 +427,7 @@ class UltimateMovieGallery {
                      alt="${title}" 
                      class="movie-poster" 
                      loading="lazy" 
+                     decoding="async"
                      onerror="this.onerror=null; this.src='https://via.placeholder.com/150x200/333/666?text=No+Image'; this.classList.add('skeleton-poster');"
                      onload="this.classList.remove('skeleton-poster');">
             `;
