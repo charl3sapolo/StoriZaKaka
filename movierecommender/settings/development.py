@@ -42,7 +42,14 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
+LOGIN_URL = '/accounts/login/'
 LOGIN_REDIRECT_URL = '/discover/'
 ACCOUNT_SIGNUP_REDIRECT_URL = '/discover/'
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Additional allauth settings for proper redirects
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'http'
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+SOCIALACCOUNT_AUTO_SIGNUP = True

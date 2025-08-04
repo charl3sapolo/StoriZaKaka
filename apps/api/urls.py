@@ -21,6 +21,9 @@ urlpatterns = [
     
     # User data
     path('watchlist/', views.get_user_watchlist, name='watchlist'),
+    path('user/movie-counts/', views.get_user_movie_counts, name='user_movie_counts'),
+    path('user/movies/', views.get_user_movies, name='user_movies'),
+    path('save-movie/', views.save_movie_api, name='save_movie'),
     
     # Content
     path('genres/', views.get_genres, name='genres'),

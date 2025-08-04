@@ -24,14 +24,22 @@ def home(request):
     }
     return render(request, "pages/home.html", context)
 
+@login_required
 def discover(request):
-    return render(request, "pages/discover.html", {"TMDB_API_KEY": settings.TMDB_API_KEY})
+    """Protected discover view - requires authentication."""
+    context = {
+        "TMDB_API_KEY": settings.TMDB_API_KEY,
+        "user": request.user,
+    }
+    return render(request, "pages/discover.html", context)
 
+@login_required
 def movie_details(request):
-    """Render the My Movies page"""
+    """Render the My Movies page - requires authentication."""
     return render(request, "pages/movie_detail.html", {
         'page_title': 'My Movies',
-        'is_movie_details': True
+        'is_movie_details': True,
+        'user': request.user,
     })
 
 @csrf_exempt

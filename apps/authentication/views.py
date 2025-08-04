@@ -30,7 +30,14 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
     
     def get_success_url(self):
-        return reverse_lazy('core:discover')
+        """Redirect to discover page after successful login."""
+        return reverse_lazy('discover')
+    
+    def dispatch(self, request, *args, **kwargs):
+        """Redirect authenticated users to discover page."""
+        if request.user.is_authenticated:
+            return redirect('discover')
+        return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
         """Handle successful login."""
@@ -47,12 +54,12 @@ class CustomRegisterView(CreateView):
     
     form_class = CustomUserCreationForm
     template_name = 'auth/register.html'
-    success_url = reverse_lazy('core:discover')
+    success_url = reverse_lazy('discover')
     
     def dispatch(self, request, *args, **kwargs):
         """Redirect authenticated users."""
         if request.user.is_authenticated:
-            return redirect('core:discover')
+            return redirect('discover')
         return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
@@ -80,10 +87,11 @@ def logout_view(request):
 class ProfileView(LoginRequiredMixin, TemplateView):
     """User profile view."""
     
-    template_name = 'auth/profile.html'
+    template_name = 'pages/profile.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user
         context['profile_form'] = UserProfileForm(instance=self.request.user)
         context['preferences_form'] = UserPreferencesForm(instance=self.request.user)
         context['password_form'] = PasswordChangeForm(user=self.request.user)
@@ -202,7 +210,7 @@ def guest_mode(request):
     request.session['guest_session_token'] = session_token
     
     messages.info(request, _('You are now in guest mode. Some features may be limited.'))
-    return redirect('core:discover')
+    return redirect('discover')
 
 
 @login_required
