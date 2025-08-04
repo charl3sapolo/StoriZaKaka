@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -170,10 +170,10 @@
         <button class="modal-close" id="modalClose">✕</button>
         
         <!-- Modal Navigation Arrows -->
-        <button class="modal-arrow modal-arrow-left" id="modalArrowLeft">
+        <button class="modal-arrow modal-arrow-left" id="modalArrowLeft" aria-label="Previous movie">
             <i class="fas fa-chevron-left"></i>
         </button>
-        <button class="modal-arrow modal-arrow-right" id="modalArrowRight">
+        <button class="modal-arrow modal-arrow-right" id="modalArrowRight" aria-label="Next movie">
             <i class="fas fa-chevron-right"></i>
         </button>
         
@@ -300,38 +300,42 @@
                     </button>
                 </form>
                 
-                <!-- Showcase Section with 2 Independent Rows -->
-                <section class="movie-section" id="showcase-movies">
-                    <h2 class="section-title">Popular Movies</h2>
-                    <div class="movie-row-container">
-                        <button class="row-nav-arrow left" id="popularMoviesLeftArrow" aria-label="Previous popular movies">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <div class="movie-row" id="popularMoviesRow">
-                            <div class="loading-indicator hidden" id="popularMoviesLoading">
-                                <div class="spinner"></div>
-                            </div>
+                <!-- Redesigned Showcase Section -->
+                <section class="showcase">
+                    <!-- Movies Row -->
+                    <div class="showcase-header">
+                        <h2 class="section-title" data-en="Trending Movies" data-sw="Filamu Maarufu">Trending Movies</h2>
+                        <div class="carousel-controls">
+                            <button class="nav-arrow prev" id="moviesPrevArrow" aria-label="Previous movies">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="nav-arrow next" id="moviesNextArrow" aria-label="Next movies">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
                         </div>
-                        <button class="row-nav-arrow right" id="popularMoviesRightArrow" aria-label="Next popular movies">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
                     </div>
-                </section>
-
-                <section class="movie-section" id="showcase-trending">
-                    <h2 class="section-title">Trending Tvshows</h2>
-                    <div class="movie-row-container">
-                        <button class="row-nav-arrow left" id="trendingMoviesLeftArrow" aria-label="Previous trending movies">
-                            <i class="fas fa-chevron-left"></i>
-                        </button>
-                        <div class="movie-row" id="trendingMoviesRow">
-                            <div class="loading-indicator hidden" id="trendingMoviesLoading">
-                                <div class="spinner"></div>
-                            </div>
+                    <div class="carousel-container" id="movies-carousel">
+                        <div class="loading-indicator hidden" id="moviesLoading">
+                            <div class="spinner"></div>
                         </div>
-                        <button class="row-nav-arrow right" id="trendingMoviesRightArrow" aria-label="Next trending movies">
-                            <i class="fas fa-chevron-right"></i>
-                        </button>
+                    </div>
+
+                    <!-- TV Shows Row -->
+                    <div class="showcase-header">
+                        <h2 class="section-title" data-en="Trending TV Shows" data-sw="Vipindi Maarufu">Trending TV Shows</h2>
+                        <div class="carousel-controls">
+                            <button class="nav-arrow prev" id="tvPrevArrow" aria-label="Previous shows">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="nav-arrow next" id="tvNextArrow" aria-label="Next shows">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="carousel-container" id="tv-carousel">
+                        <div class="loading-indicator hidden" id="tvLoading">
+                            <div class="spinner"></div>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -421,7 +425,7 @@
             <div class="slider-label low-label" data-en="Low Energy" data-sw="Nishati Ndogo">Low Energy</div>
             <div class="slider-track-wrapper">
                 <div class="slider-track"></div>
-                <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" />
+                <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" aria-label="Energy level slider" title="Adjust energy level" />
             </div>
             <div class="slider-label high-label" data-en="High Energy" data-sw="Nishati Nyingi">High Energy</div>
         </div>
@@ -1422,6 +1426,7 @@ updateProgress();
         const TMDB_API_KEY = 'b6e814a0b9ff291122e8a05a0f206cd8';
         const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
         const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/original';
+        window.TMDB_API_KEY = TMDB_API_KEY;
 
         let heroSlides = [];
         let heroSlideIndex = 0;

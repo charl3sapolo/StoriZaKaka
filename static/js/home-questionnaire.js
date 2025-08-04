@@ -479,3 +479,321 @@ function updateLanguage(lang) {
 
 window.resetQuestionnaire = resetQuestionnaire;
 window.updateLanguage = updateLanguage; 
+
+// ShowcaseManager for redesigned showcase section
+class ShowcaseManager {
+    constructor() {
+        console.log('🎬 Initializing ShowcaseManager...');
+        
+        this.moviesCarousel = new InfiniteCarousel(
+            '#movies-carousel', 
+            'movie',
+            this.createCard.bind(this)
+        );
+        
+        this.tvCarousel = new InfiniteCarousel(
+            '#tv-carousel',
+            'tv',
+            this.createCard.bind(this)
+        );
+        
+        this.init();
+    }
+
+    init() {
+        this.setupNavigationControls();
+        this.setupMobileCardInteractions();
+    }
+
+    setupNavigationControls() {
+        // Movies navigation
+        document.getElementById('moviesPrevArrow')?.addEventListener('click', () => {
+            this.moviesCarousel.scrollLeft();
+        });
+        
+        document.getElementById('moviesNextArrow')?.addEventListener('click', () => {
+            this.moviesCarousel.scrollRight();
+        });
+
+        // TV Shows navigation
+        document.getElementById('tvPrevArrow')?.addEventListener('click', () => {
+            this.tvCarousel.scrollLeft();
+        });
+        
+        document.getElementById('tvNextArrow')?.addEventListener('click', () => {
+            this.tvCarousel.scrollRight();
+        });
+    }
+
+    setupMobileCardInteractions() {
+        // Handle mobile card interactions
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.movie-card')) {
+                const card = e.target.closest('.movie-card');
+                if (window.innerWidth <= 768) {
+                    this.handleMobileCardClick(card);
+                }
+            }
+        });
+    }
+
+    handleMobileCardClick(card) {
+        card.classList.add('flipped');
+        
+        // Add close button if not exists
+        if (!card.querySelector('.close-btn')) {
+            const closeBtn = document.createElement('button');
+            closeBtn.className = 'close-btn mobile-only';
+            closeBtn.innerHTML = '&times;';
+            closeBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                card.classList.remove('flipped');
+            });
+            card.querySelector('.card-back').appendChild(closeBtn);
+        }
+    }
+
+    createCard(item, mediaType) {
+        const card = document.createElement('div');
+        card.className = 'movie-card';
+        card.dataset.id = item.id;
+        card.dataset.type = mediaType;
+        
+        const title = item.title || item.name;
+        const posterPath = item.poster_path ? 
+            `https://image.tmdb.org/t/p/w500${item.poster_path}` : 
+            'https://via.placeholder.com/200x300/333/666?text=No+Image';
+        
+        card.innerHTML = `
+            <div class="card-inner">
+                <div class="card-front">
+                    <img src="${posterPath}" 
+                         alt="${title}" 
+                         class="poster-image"
+                         loading="lazy"
+                         onerror="this.src='https://via.placeholder.com/200x300/333/666?text=No+Image'">
+                    <div class="card-meta">
+                        <span class="genre">${this.getGenreName(item.genre_ids?.[0])}</span>
+                        ${mediaType === 'tv' ? '<span class="tv-badge">TV</span>' : ''}
+                        <span class="rating">⭐ ${item.vote_average?.toFixed(1) || 'N/A'}</span>
+                        <span class="year">${this.getYear(item.release_date || item.first_air_date)}</span>
+                    </div>
+                </div>
+                <div class="card-back">
+                    <button class="close-btn mobile-only" style="display: none;">&times;</button>
+                    <h3 class="movie-title">${title}</h3>
+                    <p class="movie-description">${item.overview || 'No description available.'}</p>
+                    <div class="movie-details-grid">
+                        <div><strong>Rating:</strong> ${item.vote_average?.toFixed(1) || 'N/A'}</div>
+                        <div><strong>Year:</strong> ${this.getYear(item.release_date || item.first_air_date)}</div>
+                        <div><strong>Genre:</strong> ${this.getGenreName(item.genre_ids?.[0])}</div>
+                    </div>
+                    <button class="watch-trailer-btn" onclick="showTrailerModal(${item.id}, '${mediaType}')">
+                        <i class="fas fa-play"></i> Watch Trailer
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        return card;
+    }
+
+    getGenreName(genreId) {
+        const genres = {
+            28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy',
+            80: 'Crime', 99: 'Documentary', 18: 'Drama', 10751: 'Family',
+            14: 'Fantasy', 36: 'History', 27: 'Horror', 10402: 'Music',
+            9648: 'Mystery', 10749: 'Romance', 878: 'Science Fiction',
+            10770: 'TV Movie', 53: 'Thriller', 10752: 'War', 37: 'Western'
+        };
+        return genres[genreId] || 'Other';
+    }
+
+    getYear(dateString) {
+        if (!dateString) return 'N/A';
+        return dateString.split('-')[0];
+    }
+}
+
+// InfiniteCarousel class for handling infinite scroll
+class InfiniteCarousel {
+    constructor(containerId, mediaType, createCardCallback) {
+        console.log(`🎠 Creating InfiniteCarousel for ${mediaType} at ${containerId}`);
+        
+        this.container = document.querySelector(containerId);
+        this.mediaType = mediaType;
+        this.createCard = createCardCallback;
+        this.currentPage = 1;
+        this.isLoading = false;
+        this.hasMore = true;
+        
+        if (!this.container) {
+            console.error(`❌ Container not found: ${containerId}`);
+            return;
+        }
+        
+        console.log(`✅ Container found for ${mediaType}:`, this.container);
+        this.init();
+    }
+
+    async init() {
+        this.showSkeletonLoading();
+        await this.loadInitialContent();
+        this.setupIntersectionObserver();
+    }
+
+    showSkeletonLoading() {
+        // Clear container and add skeleton cards
+        this.container.innerHTML = '';
+        for (let i = 0; i < 6; i++) {
+            const skeletonCard = document.createElement('div');
+            skeletonCard.className = 'movie-card skeleton-card';
+            skeletonCard.innerHTML = `
+                <div class="skeleton-poster"></div>
+                <div class="skeleton-content">
+                    <div class="skeleton-title"></div>
+                    <div class="skeleton-meta">
+                        <div class="skeleton-year"></div>
+                        <div class="skeleton-rating"></div>
+                    </div>
+                </div>
+            `;
+            this.container.appendChild(skeletonCard);
+        }
+    }
+
+    async loadInitialContent() {
+        await this.loadMore();
+    }
+
+    async loadMore() {
+        if (this.isLoading || !this.hasMore) return;
+        
+        this.isLoading = true;
+        this.showLoading();
+        
+        try {
+            const items = await this.fetchPage(this.currentPage);
+            if (items.length === 0) {
+                this.hasMore = false;
+            } else {
+                // Remove skeleton cards on first load
+                if (this.currentPage === 1) {
+                    this.container.innerHTML = '';
+                }
+                this.appendItems(items);
+                this.currentPage++;
+            }
+        } catch (error) {
+            console.error('Error loading content:', error);
+            // Show error state
+            this.showError();
+        } finally {
+            this.hideLoading();
+            this.isLoading = false;
+        }
+    }
+
+    async fetchPage(page) {
+        const TMDB_API_KEY = window.TMDB_API_KEY || 'b6e814a0b9ff291122e8a05a0f206cd8';
+        const url = `https://api.themoviedb.org/3/trending/${this.mediaType}/week?api_key=${TMDB_API_KEY}&page=${page}`;
+        
+        console.log(`🌐 Fetching ${this.mediaType} page ${page}:`, url);
+        console.log(`🔑 Using API key:`, TMDB_API_KEY ? 'Available' : 'Missing');
+        
+        try {
+            const response = await fetch(url);
+            console.log(`📡 Response status:`, response.status);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log(`📊 Loaded ${data.results?.length || 0} ${this.mediaType} items`);
+            return data.results || [];
+        } catch (error) {
+            console.error(`❌ Error fetching ${this.mediaType} page ${page}:`, error);
+            throw error;
+        }
+    }
+
+    showError() {
+        this.container.innerHTML = `
+            <div class="error-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Failed to load content. Please try again later.</p>
+            </div>
+        `;
+    }
+
+    appendItems(items) {
+        items.forEach(item => {
+            const card = this.createCard(item, this.mediaType);
+            this.container.appendChild(card);
+        });
+    }
+
+    showLoading() {
+        const loading = this.container.querySelector('.loading-indicator');
+        if (loading) loading.classList.remove('hidden');
+    }
+
+    hideLoading() {
+        const loading = this.container.querySelector('.loading-indicator');
+        if (loading) loading.classList.add('hidden');
+    }
+
+    setupIntersectionObserver() {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !this.isLoading) {
+                    this.loadMore();
+                }
+            });
+        }, { threshold: 0.1 });
+
+        // Observe the last card for infinite scroll
+        const observeLastCard = () => {
+            const cards = this.container.querySelectorAll('.movie-card');
+            if (cards.length > 0) {
+                observer.observe(cards[cards.length - 1]);
+            }
+        };
+
+        // Initial observation
+        observeLastCard();
+
+        // Observe new cards as they're added
+        const mutationObserver = new MutationObserver(() => {
+            observeLastCard();
+        });
+
+        mutationObserver.observe(this.container, { childList: true });
+    }
+
+    scrollLeft() {
+        this.container.scrollBy({ left: -300, behavior: 'smooth' });
+    }
+
+    scrollRight() {
+        this.container.scrollBy({ left: 300, behavior: 'smooth' });
+    }
+}
+
+// Initialize ShowcaseManager when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('🔍 Checking for showcase section...');
+    const showcase = document.querySelector('.showcase');
+    if (showcase) {
+        console.log('✅ Found showcase section, initializing ShowcaseManager...');
+        try {
+            new ShowcaseManager();
+            console.log('✅ ShowcaseManager initialized successfully');
+        } catch (error) {
+            console.error('❌ Error initializing ShowcaseManager:', error);
+        }
+    } else {
+        console.log('❌ Showcase section not found');
+    }
+}); 
