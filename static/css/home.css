@@ -937,7 +937,12 @@
     animation: pulse 1.5s ease-in-out infinite;
 }
 
-.sticky-search-bar.loading .fa-search {
+.sticky-search-bar.loading .search-btn {
+    background: var(--primary);
+}
+
+.sticky-search-bar.loading .fa-search,
+.sticky-search-bar.loading .fa-spinner {
     animation: spin 1s linear infinite;
 }
 
