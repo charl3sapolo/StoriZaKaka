@@ -5903,9 +5903,44 @@ section {
 /* Enhanced mood options */
 .mood-options {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
     gap: 1rem;
     margin-bottom: 2rem;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Dynamic grid layouts based on number of options */
+.mood-options[data-options="8"] {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
+
+.mood-options[data-options="5"] {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+.mood-options[data-options="5"] .mood-btn:nth-child(5) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    max-width: 200px;
+}
+
+.mood-options[data-options="4"] {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
+
+.mood-options[data-options="3"] {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+}
+
+.mood-options[data-options="3"] .mood-btn:nth-child(3) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    max-width: 200px;
 }
 
 .mood-btn {
@@ -6042,6 +6077,115 @@ section {
     color: var(--text-primary);
     font-weight: 500;
     animation: fadeInText 0.5s ease-in;
+    text-align: center;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.analysis-text h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.analysis-text p {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Discover Button Styles */
+.discover-btn {
+    background: var(--gradient-primary);
+    border: 2px solid var(--primary);
+    border-radius: var(--radius-lg);
+    padding: 1rem 2rem;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: white;
+    font-size: 1.1rem;
+    margin: 2rem auto;
+    min-height: 56px;
+    min-width: 280px;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.discover-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s;
+}
+
+.discover-btn:hover::before {
+    left: 100%;
+}
+
+.discover-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-xl);
+}
+
+.discover-btn:active {
+    transform: translateY(-1px);
+}
+
+.discover-btn .emoji {
+    font-size: 1.3rem;
+}
+
+/* Analysis Text Container */
+.analysis-text {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--glass-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--shadow-md);
+}
+
+.analysis-text.hidden {
+    display: none;
+}
+
+.analysis-text.show {
+    display: block;
+    animation: fadeInText 0.5s ease-in;
+}
+
+/* Recommendation Preview */
+.recommendation-preview {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: var(--glass-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: var(--shadow-md);
+    animation: fadeInText 0.5s ease-in;
 }
 
 @keyframes fadeInText {
@@ -6077,6 +6221,73 @@ section {
     flex: 0 0 280px;
     height: 420px;
     margin: 0;
+}
+
+/* Skeleton Loading for Movie Recommendations */
+.movie-skeleton {
+    flex: 0 0 280px;
+    height: 420px;
+    background: var(--glass-bg);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    overflow: hidden;
+    position: relative;
+    animation: skeletonPulse 1.5s ease-in-out infinite;
+}
+
+.movie-skeleton::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: skeletonShimmer 2s infinite;
+}
+
+.skeleton-poster {
+    width: 100%;
+    height: 280px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.skeleton-content {
+    padding: 1rem;
+}
+
+.skeleton-title {
+    height: 20px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    width: 80%;
+}
+
+.skeleton-meta {
+    height: 16px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    width: 60%;
+}
+
+.skeleton-rating {
+    height: 16px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    width: 40%;
+}
+
+@keyframes skeletonPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+@keyframes skeletonShimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
 }
 
 /* Action Buttons */
@@ -6155,8 +6366,41 @@ section {
     }
     
     .mood-options {
-        grid-template-columns: repeat(2, 1fr);
         gap: 0.75rem;
+        max-width: 100%;
+    }
+    
+    /* Mobile responsive grid layouts */
+    .mood-options[data-options="8"] {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+    }
+    
+    .mood-options[data-options="5"] {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
+    
+    .mood-options[data-options="5"] .mood-btn:nth-child(5) {
+        grid-column: 1 / -1;
+        justify-self: center;
+        max-width: 150px;
+    }
+    
+    .mood-options[data-options="4"] {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+    }
+    
+    .mood-options[data-options="3"] {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(2, 1fr);
+    }
+    
+    .mood-options[data-options="3"] .mood-btn:nth-child(3) {
+        grid-column: 1 / -1;
+        justify-self: center;
+        max-width: 150px;
     }
     
     .mood-btn {
@@ -6173,6 +6417,11 @@ section {
         height: 360px;
     }
     
+    .movie-skeleton {
+        flex: 0 0 240px;
+        height: 360px;
+    }
+    
     .questionnaire-actions {
         flex-direction: column;
         gap: 0.75rem;
@@ -6181,6 +6430,26 @@ section {
     .one-time-btn {
         min-width: 100%;
         justify-content: center;
+    }
+    
+    .analysis-text h3 {
+        font-size: 1.3rem;
+    }
+    
+    .analysis-text p {
+        font-size: 0.9rem;
+    }
+    
+    .discover-btn {
+        min-width: 240px;
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .analysis-text,
+    .recommendation-preview {
+        padding: 1.5rem;
+        margin: 1rem;
     }
 }
 
@@ -6191,19 +6460,32 @@ section {
     }
     
     .mood-options {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.5rem;
+        max-width: 100%;
     }
     
     .mood-btn {
         min-height: 70px;
-        flex-direction: row;
-        justify-content: center;
-        padding: 1rem;
+        padding: 0.75rem 0.5rem;
     }
     
     .movie-match-content .movie-card {
         flex: 0 0 200px;
         height: 300px;
+    }
+    
+    .movie-skeleton {
+        flex: 0 0 200px;
+        height: 300px;
+    }
+    
+    .analysis-text h3 {
+        font-size: 1.1rem;
+    }
+    
+    .analysis-text p {
+        font-size: 0.85rem;
     }
 }
 

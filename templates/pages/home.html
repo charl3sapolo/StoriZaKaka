@@ -364,6 +364,29 @@
                         <div class="progress-fill"></div>
                     </div>
                     
+                    <!-- Discover Button (hidden by default, shows after all questions) -->
+                    <button class="discover-btn" id="discoverBtn" style="display: none;">
+                        <span class="emoji">🎯</span> <span data-en="Discover My Perfect Movie" data-sw="Gundua Filamu Yangu Kamili">Discover My Perfect Movie</span>
+                    </button>
+                    
+                    <!-- Analysis Text (hidden by default, shown while fetching) -->
+                    <div class="analysis-text hidden" id="analysis-text">
+                        <h3><span class="emoji">🎉</span> <span data-en="Great! We're analyzing your mood..." data-sw="Vizuri! Tunachambua hali yako...">Great! We're analyzing your mood...</span></h3>
+                        <p data-en="Based on your feelings, we'll find movies that perfectly match your current vibe!"
+                           data-sw="Kulingana na hisia zako, tutapata filamu zinazolingana kabisa na hali yako ya sasa!">
+                           Based on your feelings, we'll find movies that perfectly match your current vibe!
+                        </p>
+                    </div>
+                    
+                    <!-- Recommendation Preview (modal-style, after loading) -->
+                    <div class="recommendation-preview" id="recommendationPreview" style="display: none;">
+                        <h3><span class="emoji">🎯</span> <span data-en="Finding your perfect match..." data-sw="Kutafuta mechi yako kamili...">Finding your perfect match...</span></h3>
+                        <p data-en="We're searching through thousands of movies to find the perfect one for you!"
+                           data-sw="Tunatafuta kati ya maelfu ya filamu kupata ile kamili kwako!">
+                           We're searching through thousands of movies to find the perfect one for you!
+                        </p>
+                    </div>
+                    
                     <!-- Analysis Loading Container -->
                     <div class="analysis-loading" style="display: none;">
                         <div class="film-reel-icon">
