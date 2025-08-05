@@ -5,90 +5,138 @@
 {% block title %}{% trans "Register" %}{% endblock %}
 
 {% block content %}
-<div class="auth-container">
-    <h1>{% trans "Create Account" %}</h1>
+<div class="auth-container glass-card">
+    <div class="auth-header">
+        <h1 class="gradient-text">{% trans "Create Account" %}</h1>
+        <p class="auth-subtitle">{% trans "Join our community to discover amazing content" %}</p>
+    </div>
     
     {% if form.errors %}
-        <div class="alert alert-danger">
-            {% for field in form %}
-                {% for error in field.errors %}
+        <div class="alert alert-glass">
+            <div class="alert-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="alert-content">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
                     <p>{{ error }}</p>
                 {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-                <p>{{ error }}</p>
-            {% endfor %}
+            </div>
         </div>
     {% endif %}
     
     <form method="post" action="" class="auth-form">
         {% csrf_token %}
         
-        <div class="form-group">
-            <label for="{{ form.username.id_for_label }}">{% trans "Username" %}</label>
+        <div class="form-group floating-input">
             {{ form.username }}
+            <label for="{{ form.username.id_for_label }}">{% trans "Username" %}</label>
             {% if form.username.errors %}
-                <span class="error">{{ form.username.errors.0 }}</span>
+                <span class="error-message">{{ form.username.errors.0 }}</span>
             {% endif %}
         </div>
         
-        <div class="form-group">
-            <label for="{{ form.email.id_for_label }}">{% trans "Email" %}</label>
+        <div class="form-group floating-input">
             {{ form.email }}
+            <label for="{{ form.email.id_for_label }}">{% trans "Email" %}</label>
             {% if form.email.errors %}
-                <span class="error">{{ form.email.errors.0 }}</span>
+                <span class="error-message">{{ form.email.errors.0 }}</span>
             {% endif %}
         </div>
         
-        <div class="form-group">
-            <label for="{{ form.password1.id_for_label }}">{% trans "Password" %}</label>
+        <div class="form-group floating-input">
             {{ form.password1 }}
+            <label for="{{ form.password1.id_for_label }}">{% trans "Password" %}</label>
             {% if form.password1.errors %}
-                <span class="error">{{ form.password1.errors.0 }}</span>
+                <span class="error-message">{{ form.password1.errors.0 }}</span>
             {% endif %}
         </div>
         
-        <div class="form-group">
-            <label for="{{ form.password2.id_for_label }}">{% trans "Confirm Password" %}</label>
+        <div class="form-group floating-input">
             {{ form.password2 }}
+            <label for="{{ form.password2.id_for_label }}">{% trans "Confirm Password" %}</label>
             {% if form.password2.errors %}
-                <span class="error">{{ form.password2.errors.0 }}</span>
+                <span class="error-message">{{ form.password2.errors.0 }}</span>
             {% endif %}
         </div>
         
-        <button type="submit" class="btn btn-primary">{% trans "Create Account" %}</button>
+        <button type="submit" class="btn btn-primary pulse-on-hover">
+            <span class="btn-content">{% trans "Create Account" %}</span>
+            <span class="btn-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+            </span>
+        </button>
     </form>
     
-    <div class="social-login-separator"><span>{% trans "or" %}</span></div>
+    <div class="social-divider">
+        <span>{% trans "or continue with" %}</span>
+    </div>
     
-    <a href="/accounts/google/login/" class="btn btn-google">
-        <img src="{% static 'img/google-logo.svg' %}" alt="Google" class="google-logo" />
-        {% trans "Continue with Google" %}
-    </a>
+    <div class="social-buttons">
+        <a href="/accounts/google/login/" class="social-btn google-btn">
+            <img src="{% static 'img/google-logo.svg' %}" alt="Google" class="social-icon" />
+            <span>Google</span>
+        </a>
+    </div>
     
-    <p class="auth-footer">
-        {% trans "Already have an account?" %} <a href="/accounts/login/">{% trans "Sign In" %}</a>
-    </p>
+    <div class="auth-footer">
+        <p>{% trans "Already have an account?" %}</p>
+        <a href="/accounts/login/" class="text-link">{% trans "Sign In" %}</a>
+    </div>
 </div>
 
 <style>
-.auth-container {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background: var(--glass-bg, rgba(255, 255, 255, 0.1));
-    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
-    border-radius: 16px;
-    backdrop-filter: var(--glass-blur, blur(10px));
-    -webkit-backdrop-filter: var(--glass-blur, blur(10px));
+:root {
+    --primary: #6366f1;
+    --primary-hover: #4f46e5;
+    --text-primary: #f3f4f6;
+    --text-secondary: #d1d5db;
+    --bg-dark: #111827;
+    --bg-darker: #0f172a;
+    --glass-bg: rgba(17, 24, 39, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-blur: blur(16px);
+    --error: #ef4444;
 }
 
-.auth-container h1 {
+.auth-container {
+    max-width: 440px;
+    margin: 2rem auto;
+    padding: 2.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.auth-header {
     text-align: center;
-    color: var(--text-primary, #333);
     margin-bottom: 2rem;
+}
+
+.auth-header h1 {
     font-size: 2rem;
     font-weight: 700;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.auth-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
 }
 
 .auth-form {
@@ -98,151 +146,224 @@
 }
 
 .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    position: relative;
 }
 
-.form-group label {
-    font-weight: 600;
-    color: var(--text-primary, #333);
-    font-size: 0.9rem;
-}
-
-.form-group input {
-    padding: 0.75rem 1rem;
-    border: 1px solid var(--border-color, #ddd);
-    border-radius: 8px;
+.floating-input input {
+    width: 100%;
+    padding: 1rem 1.25rem;
     font-size: 1rem;
-    background: var(--input-bg, #fff);
-    color: var(--text-primary, #333);
-    transition: border-color 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: var(--text-primary);
+    transition: all 0.3s ease;
 }
 
-.form-group input:focus {
+.floating-input input:focus {
     outline: none;
-    border-color: var(--primary, #007bff);
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
 
-.error {
-    color: var(--error, #dc3545);
+.floating-input label {
+    position: absolute;
+    top: 1rem;
+    left: 1.25rem;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.floating-input input:focus + label,
+.floating-input input:not(:placeholder-shown) + label {
+    top: -0.6rem;
+    left: 0.8rem;
     font-size: 0.8rem;
-    margin-top: 0.25rem;
+    background: var(--bg-darker);
+    padding: 0 0.5rem;
+    color: var(--primary);
+}
+
+.error-message {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--error);
 }
 
 .btn {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-decoration: none;
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
 .btn-primary {
-    background: var(--gradient-primary, linear-gradient(135deg, #667eea 0%, #764ba2 100%));
-    color: var(--dark, #fff);
+    background: linear-gradient(135deg, var(--primary) 0%, #a855f7 100%);
+    color: white;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: var(--shadow-lg, 0 10px 25px rgba(0, 0, 0, 0.2));
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
 }
 
-.btn-google {
+.btn-content {
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
+}
+
+.btn-icon {
+    margin-left: 0.5rem;
+    transform: translateX(-5px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover .btn-icon {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.pulse-on-hover:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--primary-hover) 0%, #9333ea 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.pulse-on-hover:hover:after {
+    opacity: 1;
+}
+
+.social-divider {
+    display: flex;
+    align-items: center;
+    margin: 2rem 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.social-divider:before,
+.social-divider:after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.social-divider span {
+    padding: 0 1rem;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.social-btn {
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #fff;
-    color: #444;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 0.75rem 1.5rem;
-    font-weight: 600;
-    font-size: 1rem;
-    margin: 1rem 0;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    transition: box-shadow 0.2s;
+    padding: 0.8rem;
+    border-radius: 12px;
+    font-weight: 500;
+    transition: all 0.3s ease;
 }
 
-.btn-google:hover {
-    box-shadow: 0 4px 16px rgba(66,133,244,0.15);
-    border-color: #4285f4;
+.google-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
 }
 
-.google-logo {
-    width: 22px;
-    height: 22px;
-    margin-right: 0.7em;
+.google-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
 }
 
-.social-login-separator {
-    text-align: center;
-    margin: 1.2em 0 0.5em 0;
-    color: var(--text-secondary, #888);
-    font-size: 0.95em;
-    position: relative;
-}
-
-.social-login-separator span {
-    background: var(--bg, #fff);
-    padding: 0 1em;
-    position: relative;
-    z-index: 1;
-}
-
-.social-login-separator:before {
-    content: '';
-    display: block;
-    position: absolute;
-    left: 0; right: 0; top: 50%;
-    border-top: 1px solid var(--border-color, #eee);
-    z-index: 0;
+.social-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.75rem;
 }
 
 .auth-footer {
     text-align: center;
-    margin-top: 1.5rem;
-    color: var(--text-secondary, #666);
+    color: var(--text-secondary);
 }
 
-.auth-footer a {
-    color: var(--primary, #007bff);
-    text-decoration: none;
+.auth-footer p {
+    margin-bottom: 0.5rem;
+}
+
+.text-link {
+    color: var(--primary);
     font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
 }
 
-.auth-footer a:hover {
+.text-link:hover {
+    color: var(--text-primary);
     text-decoration: underline;
 }
 
-.alert {
+.alert-glass {
+    display: flex;
     padding: 1rem;
-    border-radius: 8px;
-    margin-bottom: 1rem;
+    border-radius: 12px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    margin-bottom: 1.5rem;
 }
 
-.alert-danger {
-    background: rgba(220, 53, 69, 0.1);
-    border: 1px solid rgba(220, 53, 69, 0.2);
-    color: var(--error, #dc3545);
+.alert-icon {
+    margin-right: 1rem;
+    color: var(--error);
+}
+
+.alert-content {
+    color: var(--error);
+    font-size: 0.9rem;
+}
+
+.alert-content p {
+    margin: 0.25rem 0;
 }
 
 @media (max-width: 480px) {
     .auth-container {
         margin: 1rem;
         padding: 1.5rem;
+        border-radius: 16px;
     }
     
-    .auth-container h1 {
-        font-size: 1.5rem;
+    .auth-header h1 {
+        font-size: 1.75rem;
+    }
+    
+    .social-buttons {
+        flex-direction: column;
     }
 }
 </style>

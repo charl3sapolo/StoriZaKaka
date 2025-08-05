@@ -591,25 +591,33 @@
                 this.loadMovieCounts();
             }
 
-            async loadMovieCounts() {
+            loadMovieCounts() {
                 try {
-                    const response = await fetch('/api/user/movie-counts/');
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                    // Load from localStorage
+                    const savedMovies = JSON.parse(localStorage.getItem('saved_movies') || '[]');
                     
-                    const data = await response.json();
-                    if (data.success) {
-                        this.updateCounts(data.counts);
-                    } else {
-                        console.error('Failed to load movie counts:', data.error);
-                    }
+                    // Calculate counts
+                    const totalCount = savedMovies.length;
+                    const watchLaterCount = savedMovies.filter(movie => movie.is_watch_later === true).length;
+                    const likedCount = savedMovies.filter(movie => movie.is_liked === true).length;
+                    
+                    const counts = {
+                        saved_count: totalCount,
+                        watch_later_count: watchLaterCount,
+                        liked_count: likedCount,
+                        total_count: totalCount
+                    };
+                    
+                    console.log('📊 Profile counts loaded:', counts);
+                    this.updateCounts(counts);
+                    
                 } catch (error) {
                     console.error('Error loading movie counts:', error);
                     // Fallback to showing 0 counts
                     this.updateCounts({
                         saved_count: 0,
                         watch_later_count: 0,
+                        liked_count: 0,
                         total_count: 0
                     });
                 }
@@ -633,11 +641,15 @@
                 if (savedCountStat) savedCountStat.textContent = counts.saved_count;
                 if (watchLaterCountStat) watchLaterCountStat.textContent = counts.watch_later_count;
                 if (mobileSavedCount) mobileSavedCount.textContent = counts.saved_count;
+                
+                // Update navigation badges
+                const navSavedCount = document.getElementById('savedCount');
+                if (navSavedCount) navSavedCount.textContent = counts.saved_count;
             }
         }
 
         // Initialize profile manager
-        const profileManager = new ProfileManager();
+        window.profileManager = new ProfileManager();
 
         // Load saved theme and language
         const savedTheme = localStorage.getItem('theme');
