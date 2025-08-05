@@ -5161,9 +5161,13 @@ section {
 .card-back {
     transform: rotateY(180deg);
     padding: 1rem;
+    padding-bottom: 7rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    min-height: 100%;
 }
 
 .poster-image {
@@ -5250,12 +5254,26 @@ section {
     line-height: 1.3;
 }
 
-.movie-description {
+.movie-overview {
     font-size: 0.85rem;
     color: var(--text-secondary);
     line-height: 1.4;
     margin-bottom: 1rem;
     flex: 1;
+    max-height: 140px;
+    overflow: hidden;
+    position: relative;
+}
+
+.movie-overview::after {
+    content: '...';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: linear-gradient(90deg, transparent, var(--glass-bg) 30%);
+    padding-left: 20px;
+    color: var(--text-secondary);
+    font-weight: bold;
 }
 
 .movie-details-grid {
@@ -5277,7 +5295,7 @@ section {
 }
 
 /* Watch Trailer Button */
-.watch-trailer-btn {
+.action-btn {
     background: linear-gradient(135deg, var(--color-red), #cc0000);
     color: white;
     border: none;
@@ -5292,7 +5310,21 @@ section {
     justify-content: center;
     gap: 0.5rem;
     box-shadow: 0 2px 12px rgba(255, 0, 0, 0.3);
-    margin-top: auto;
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    min-height: 48px;
+}
+
+.action-btn.secondary {
+    background: linear-gradient(135deg, var(--primary), var(--gradient-primary));
+    box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3);
+    bottom: 4.5rem;
+    top: auto;
 }
 
 .watch-trailer-btn:hover {
@@ -6104,22 +6136,24 @@ section {
     background: var(--gradient-primary);
     border: 2px solid var(--primary);
     border-radius: var(--radius-lg);
-    padding: 1rem 2rem;
+    padding: 1.2rem 2.5rem;
     cursor: pointer;
-    transition: all 0.3s var(--transition-smooth);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
-    font-weight: 600;
+    gap: 1rem;
+    font-weight: 700;
     color: white;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin: 2rem auto;
-    min-height: 56px;
-    min-width: 280px;
+    min-height: 60px;
+    min-width: 300px;
     box-shadow: var(--shadow-lg);
     position: relative;
     overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .discover-btn::before {
@@ -6129,8 +6163,8 @@ section {
     left: -100%;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s ease;
 }
 
 .discover-btn:hover::before {
@@ -6138,16 +6172,41 @@ section {
 }
 
 .discover-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-xl);
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
 }
 
 .discover-btn:active {
-    transform: translateY(-1px);
+    transform: translateY(-2px) scale(1.02);
+}
+
+.discover-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.discover-btn:hover::after {
+    width: 300px;
+    height: 300px;
 }
 
 .discover-btn .emoji {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
+    animation: pulse 2s infinite;
+}
+
+@keyframes discoverPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
 }
 
 /* Analysis Text Container */
@@ -6200,9 +6259,28 @@ section {
     overflow-x: auto;
     padding: 1rem 0;
     scrollbar-width: thin;
-    scrollbar-color: var(--glass-border) transparent;
+    scrollbar-color: var(--primary) var(--glass-border);
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
+}
+
+.movie-match-content::-webkit-scrollbar {
+    height: 8px;
+}
+
+.movie-match-content::-webkit-scrollbar-track {
+    background: var(--glass-border);
+    border-radius: 4px;
+}
+
+.movie-match-content::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+.movie-match-content::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-primary);
 }
 
 .movie-match-content::-webkit-scrollbar {
@@ -6443,9 +6521,10 @@ section {
     }
     
     .discover-btn {
-        min-width: 240px;
-        padding: 0.875rem 1.5rem;
-        font-size: 1rem;
+        min-width: 260px;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 40px;
     }
     
     .analysis-text,
@@ -6521,6 +6600,47 @@ section {
     
     .progress-bar {
         height: 8px;
+    }
+}
+
+/* Mobile responsive movie description truncation */
+@media (max-width: 768px) {
+    .movie-overview {
+        max-height: 100px;
+    }
+    
+    .action-btn {
+        min-height: 44px;
+        padding: 0.625rem 1.25rem;
+        font-size: 0.875rem;
+    }
+    
+    .action-btn.secondary {
+        bottom: 4rem;
+    }
+    
+    .card-back {
+        padding-bottom: 6rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .movie-overview {
+        max-height: 80px;
+    }
+    
+    .action-btn {
+        min-height: 40px;
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .action-btn.secondary {
+        bottom: 3.5rem;
+    }
+    
+    .card-back {
+        padding-bottom: 5rem;
     }
 }
 
