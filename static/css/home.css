@@ -2768,6 +2768,132 @@
                      0 0 16px rgba(237, 166, 34, 0.2);
     }
 }
+/* Mood Recommendation Card Flip & Scrollable Back */
+.movie-card {
+    perspective: 1200px;
+    min-width: 260px;
+    min-height: 400px;
+    max-width: 320px;
+    margin: 0 1rem;
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(.4,2,.3,1), box-shadow 0.3s;
+    cursor: pointer;
+}
+.movie-card .card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s cubic-bezier(.4,2,.3,1);
+    transform-style: preserve-3d;
+}
+.movie-card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+}
+.card-back {
+    background: var(--glass-bg, #222c);
+    color: var(--text-primary);
+    transform: rotateY(180deg);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    padding: 1.2rem;
+}
+.card-back::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+}
+.card-back::-webkit-scrollbar-thumb {
+    background: var(--primary, #d4991a);
+    border-radius: 6px;
+}
+.card-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+}
+.action-btn {
+    min-width: 48px;
+    min-height: 48px;
+    font-size: 1rem;
+    border-radius: 12px;
+    border: none;
+    background: var(--gradient-primary, #d4991a);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.7rem 1.2rem;
+}
+.action-btn.secondary {
+    background: var(--glass-bg, #222c);
+    color: var(--primary, #d4991a);
+    border: 1px solid var(--primary, #d4991a);
+}
+.action-btn:active {
+    transform: scale(0.97);
+}
+@media (max-width: 768px) {
+    .movie-card.flipped {
+        position: fixed;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%) scale(1.05);
+        width: 90vw;
+        height: 70vh;
+        z-index: 100;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
+    .movie-card {
+        min-width: 80vw;
+        max-width: 95vw;
+        min-height: 320px;
+    }
+}
+
+/* Analysis Loading Animation */
+.analysis-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    min-height: 320px;
+    animation: fadeIn 0.7s;
+}
+.film-reel-icon {
+    font-size: 3.5rem;
+    color: var(--primary, #d4991a);
+    animation: reelPulse 1.2s infinite alternate;
+    margin-bottom: 1.2rem;
+}
+@keyframes reelPulse {
+    0% { filter: drop-shadow(0 0 0 #d4991a); opacity: 0.7; }
+    100% { filter: drop-shadow(0 0 16px #d4991a88); opacity: 1; }
+}
+.analysis-text {
+    font-size: 1.3rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    animation: fadeInText 1.2s;
+}
+@keyframes fadeInText {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
 /* Underline Animation */
 @keyframes underlinePulse {
@@ -5723,6 +5849,395 @@ section {
 .carousel-container .error-state p {
     margin: 0;
     font-size: 0.9rem;
+}
+
+/* ============================================================================
+   MOOD-BASED QUESTIONNAIRE STYLES - ENHANCED
+   ============================================================================ */
+
+/* Use existing questionnaire card styles but enhance them */
+.questionnaire-card {
+    position: relative;
+    min-height: 500px;
+    background: var(--glass-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    border: 1px solid var(--glass-border);
+    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: var(--glass-blur);
+    box-shadow: var(--shadow-lg);
+    margin: 2rem auto;
+    max-width: 600px;
+}
+
+.questionnaire-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary), transparent);
+    opacity: 0.8;
+    animation: shimmerLine 3s ease-in-out infinite;
+}
+
+/* Enhanced question styling */
+.question h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.question .emoji {
+    font-size: 1.8rem;
+    margin-right: 0.5rem;
+}
+
+/* Enhanced mood options */
+.mood-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.mood-btn {
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    min-height: 100px;
+    position: relative;
+    overflow: hidden;
+    color: var(--text-primary);
+}
+
+.mood-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.mood-btn:hover::before {
+    left: 100%;
+}
+
+.mood-btn:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary);
+    box-shadow: var(--shadow-lg);
+}
+
+.mood-btn.selected {
+    background: var(--gradient-primary);
+    border-color: var(--primary);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: var(--shadow-xl);
+}
+
+.mood-btn.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    color: var(--primary);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.mood-btn .emoji {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.mood-btn .mood-name {
+    font-weight: 500;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Enhanced progress bar */
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--bg-secondary);
+    border-radius: 4px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--glass-border);
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--gradient-primary);
+    border-radius: 4px;
+    transition: width 0.3s var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+/* Analysis Loading Styles */
+.analysis-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+    text-align: center;
+}
+
+.film-reel-icon {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 1rem;
+    animation: reelPulse 2s ease-in-out infinite;
+}
+
+@keyframes reelPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.1); opacity: 1; }
+}
+
+.analysis-text {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+    font-weight: 500;
+    animation: fadeInText 0.5s ease-in;
+}
+
+@keyframes fadeInText {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Movie Recommendations Styles */
+.movie-match-content {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--glass-border) transparent;
+}
+
+.movie-match-content::-webkit-scrollbar {
+    height: 6px;
+}
+
+.movie-match-content::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 3px;
+}
+
+.movie-match-content::-webkit-scrollbar-thumb {
+    background: var(--glass-border);
+    border-radius: 3px;
+}
+
+.movie-match-content .movie-card {
+    flex: 0 0 280px;
+    height: 420px;
+    margin: 0;
+}
+
+/* Action Buttons */
+.questionnaire-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.one-time-btn {
+    background: var(--glass-bg);
+    border: 2px solid var(--glass-border);
+    border-radius: var(--radius-md);
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    min-height: 48px;
+    min-width: 120px;
+}
+
+.one-time-btn:hover {
+    background: var(--glass-bg);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.one-time-btn.try-again {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    border-color: #ff6b6b;
+    color: white;
+}
+
+.one-time-btn.more-like-this {
+    background: var(--gradient-primary);
+    border-color: var(--primary);
+    color: white;
+}
+
+/* Navigation Buttons */
+.question-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 2rem;
+}
+
+.question-navigation .one-time-btn {
+    min-width: 100px;
+}
+
+/* Pulse Animation for Refresh */
+.pulse-animation {
+    animation: pulse 0.6s ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .questionnaire-card {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .question h3 {
+        font-size: 1.2rem;
+    }
+    
+    .mood-options {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .mood-btn {
+        min-height: 80px;
+        padding: 1rem 0.75rem;
+    }
+    
+    .movie-match-content {
+        gap: 0.75rem;
+    }
+    
+    .movie-match-content .movie-card {
+        flex: 0 0 240px;
+        height: 360px;
+    }
+    
+    .questionnaire-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    .one-time-btn {
+        min-width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .questionnaire-card {
+        margin: 0.5rem;
+        padding: 1rem;
+    }
+    
+    .mood-options {
+        grid-template-columns: 1fr;
+    }
+    
+    .mood-btn {
+        min-height: 70px;
+        flex-direction: row;
+        justify-content: center;
+        padding: 1rem;
+    }
+    
+    .movie-match-content .movie-card {
+        flex: 0 0 200px;
+        height: 300px;
+    }
+}
+
+/* Accessibility */
+.mood-btn:focus,
+.one-time-btn:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .mood-btn,
+    .one-time-btn,
+    .progress-fill,
+    .film-reel-icon {
+        animation: none;
+        transition: none;
+    }
+}
+
+/* High Contrast Support */
+@media (prefers-contrast: high) {
+    .mood-btn {
+        border-width: 3px;
+    }
+    
+    .mood-btn.selected {
+        border-width: 4px;
+    }
+    
+    .progress-bar {
+        height: 8px;
+    }
 }
 
 
