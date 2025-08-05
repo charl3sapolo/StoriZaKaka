@@ -2802,7 +2802,7 @@
     transition: opacity 1.5s ease;
     z-index: 0;
     pointer-events: none;
-   /* for cinematic effect */
+    filter: brightness(0.6) blur(1px); /* for cinematic effect */
 }
 
 .hero-bg-slide.active {
@@ -2818,8 +2818,7 @@
 .hero .container,
 .hero-content {
     position: relative;
-    top: 40%;
-    z-index: 1; /* content above background */
+    z-index: 2; /* content above background */
 }
 
 /* Hero Navigation Arrows - Improved Glass Effect */
@@ -3043,7 +3042,7 @@
     color: lavenderblush;
     text-shadow: 0 2px 12px rgba(98, 59, 97, 0.18);
     font-size: 1.15rem;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 1.5;
     text-align: right;
 }
