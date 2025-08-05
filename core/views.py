@@ -43,3 +43,9 @@ def fetch_trending(request, media_type):
         return JsonResponse(response.json())
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+def test_questionnaire(request):
+    return render(request, 'pages/test_questionnaire.html', {
+        'page_title': 'Questionnaire Test',
+        'is_test': True
+    })

@@ -9,4 +9,5 @@ urlpatterns = [
     path('movie-details/', views.movie_details, name='movie_details'),
     path('profile/', views.profile, name='profile'),
     path('api/trending/<str:media_type>/', views.fetch_trending, name='fetch_trending'),
+    path('test-questionnaire/', views.test_questionnaire, name='test_questionnaire'),
 ]
