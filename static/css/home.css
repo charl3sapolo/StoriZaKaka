@@ -135,9 +135,8 @@
             --color-red: #F5B823;
             --color-purple: #F5B823;
             --color-orange: #F5B823;
-            --color-green: #10B981;
-            --color-blue: #3B82F6;
-            
+            --color-green: #44c0af;
+                       
             /* Gradients */
             --gradient-primary: linear-gradient(135deg, #F5B823, #F5B823);
             --gradient-secondary: linear-gradient(135deg, #F5B823, #F5B823);
@@ -152,13 +151,14 @@
             --mobile-font-scale: 0.82;
             --base-size: clamp(14px, 4vw, 16px);
             
-            /* Type Scale */
-            --h1: calc(var(--base-size) * var(--mobile-font-scale) * 2);
-            --h2: calc(var(--base-size) * var(--mobile-font-scale) * 1.5);
-            --h3: calc(var(--base-size) * var(--mobile-font-scale) * 1.25);
-            --body: calc(var(--base-size) * var(--mobile-font-scale));
-            --btn-text: calc(var(--base-size) * var(--mobile-font-scale) * 0.9);
-            --caption: calc(var(--base-size) * var(--mobile-font-scale) * 0.8);
+          
+    /* Adjusted type scale */
+    --h1: calc(var(--base-size) * var(--mobile-font-scale) * 3);
+    --h2: calc(var(--base-size) * var(--mobile-font-scale) * 2);
+    --h3: calc(var(--base-size) * var(--mobile-font-scale) * 1.5);
+    --body: calc(var(--base-size) * var(--mobile-font-scale));
+    --btn-text: calc(var(--base-size) * var(--mobile-font-scale) * 1);
+    --caption: calc(var(--base-size) * var(--mobile-font-scale) * 0.9);
             
             /* Button Hierarchy */
             --btn-primary-height: 44px;
@@ -2711,19 +2711,19 @@
 }
 
 .hero-title {
-    font-size: var(--h1);
-    font-weight: 700;
+    font-size: clamp(4.2rem, 8vw, var(--h1)); /* Adds responsive scaling */
+    line-height: 1.1;
+    margin-bottom: 1.8rem;
+    font-weight: 720;
     margin-left: -5vw;
-    margin-bottom: 1.5rem;
     position: relative;
     display: inline-block;
-    background: linear-gradient(135deg, var(--light) 0%, var(--primary) 100%);
+    background: linear-gradient(135deg, var(--light) 80%, var(--primary) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-shadow: var(--hero-text-shadow);
     animation: textGlow 2s ease-in-out infinite alternate;
-    line-height: 1.1;
     text-align: left;
     
     @media (max-width: 600px) {
@@ -2750,7 +2750,7 @@
 
 .hero-subtitle {
     color: var(--text-secondary);
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     max-width: 600px;
     margin: 0 auto;
     line-height: 1.7;
@@ -2759,12 +2759,12 @@
 
 /* Glow Animation */
 @keyframes textGlow {
-    0% {
+    20% {
         text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
     }
     100% {
         text-shadow: 0 0 12px rgba(255, 215, 0, 0.5), 
-                     0 0 16px rgba(255, 165, 0, 0.2);
+                     0 0 16px rgba(237, 166, 34, 0.2);
     }
 }
 
