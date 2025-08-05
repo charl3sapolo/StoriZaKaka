@@ -6201,6 +6201,8 @@ section {
     padding: 1rem 0;
     scrollbar-width: thin;
     scrollbar-color: var(--glass-border) transparent;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
 }
 
 .movie-match-content::-webkit-scrollbar {
