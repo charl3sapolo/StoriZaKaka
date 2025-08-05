@@ -358,218 +358,45 @@
                 </div>
 
                 <div class="questionnaire-card">
-                    <div class="question-container">
-                        <!-- Question 1: Mood -->
-                        <div class="question active" id="question1">
-                            <h3><span class="emoji">😊</span> <span data-en="How are you feeling right now?" data-sw="Unajisikiaje sasa hivi?">How are you feeling right now?</span></h3>
-                            <div class="mood-options" data-question="currentMood">
-                                <div class="mood-btn" data-value="happy">
-                                    <span class="emoji">😄</span>
-                                    <span data-en="Happy" data-sw="Furaha">Happy</span>
-                                </div>
-                                <div class="mood-btn" data-value="sad">
-                                    <span class="emoji">😢</span>
-                                    <span data-en="Sad" data-sw="Huzuni">Sad</span>
-                                </div>
-                                <div class="mood-btn" data-value="excited">
-                                    <span class="emoji">🤩</span>
-                                    <span data-en="Excited" data-sw="Msisimko">Excited</span>
-                                </div>
-                                <div class="mood-btn" data-value="calm">
-                                    <span class="emoji">😌</span>
-                                    <span data-en="Calm" data-sw="Tulivu">Calm</span>
-                                </div>
-                                <div class="mood-btn" data-value="stressed">
-                                    <span class="emoji">😰</span>
-                                    <span data-en="Stressed" data-sw="Mkazo">Stressed</span>
-                                </div>
-                                <div class="mood-btn" data-value="romantic">
-                                    <span class="emoji">💕</span>
-                                    <span data-en="Romantic" data-sw="Kimapenzi">Romantic</span>
-                                </div>
-                                <div class="mood-btn" data-value="adventurous">
-                                    <span class="emoji">🚀</span>
-                                    <span data-en="Adventurous" data-sw="Mkikamili">Adventurous</span>
-                                </div>
-                                <div class="mood-btn" data-value="nostalgic">
-                                    <span class="emoji">🌅</span>
-                                    <span data-en="Nostalgic" data-sw="Kumbukumbu">Nostalgic</span>
-                                </div>
-                            </div>
-                        </div>
-<!-- Question 2: Energy/Intensity -->
-<div class="question" id="question2">
-    <h3><span class="emoji">⚡</span> <span data-en="How intense? (Pacing/energy)" data-sw="Kiwango cha ukali? (Nguvu/Mwendo)">How intense? (Pacing/energy)</span></h3>
-    
-    <!-- Emoji Intensity Options -->
-    <div class="mood-options" data-question="intensity">
-        <div class="mood-btn" data-value="light">
-            <span class="emoji">🍃</span>
-            <span data-en="Light & Easy" data-sw="Mwepesi na Rahisi">Light & Easy</span>
-        </div>
-        <div class="mood-btn" data-value="medium">
-            <span class="emoji">⚖️</span>
-            <span data-en="Medium" data-sw="Kati">Medium</span>
-        </div>
-        <div class="mood-btn" data-value="dark">
-            <span class="emoji">🌑</span>
-            <span data-en="Dark/Heavy" data-sw="Giza/Mzito">Dark/Heavy</span>
-        </div>
-        <div class="mood-btn" data-value="epic">
-            <span class="emoji">🏔️</span>
-            <span data-en="Epic Journey" data-sw="Safari Kubwa">Epic Journey</span>
-        </div>
-    </div>
-    
-    <!-- Energy Level Slider -->
-    <div class="slider-container" style="margin-top: 1.5rem;">
-        <div class="slider-layout">
-            <div class="slider-label low-label" data-en="Low Energy" data-sw="Nishati Ndogo">Low Energy</div>
-            <div class="slider-track-wrapper">
-                <div class="slider-track"></div>
-                <input type="range" min="1" max="10" value="5" class="slider" id="energyLevel" aria-label="Energy level slider" title="Adjust energy level" />
-            </div>
-            <div class="slider-label high-label" data-en="High Energy" data-sw="Nishati Nyingi">High Energy</div>
-        </div>
-    </div>
-</div>
-
-<!-- Question 3: Preferred Era -->
-<div class="question" id="question3">
-    <h3><span class="emoji">📅</span> <span data-en="Preferred era?" data-sw="Era unayopenda?">Preferred era?</span></h3>
-    <div class="mood-options" data-question="era">
-        <div class="mood-btn" data-value="classic">
-            <span class="emoji">🎭</span>
-            <span data-en="Classic (pre-1980)" data-sw="Klasiki (kabla ya 1980)">Classic (pre-1980)</span>
-        </div>
-        <div class="mood-btn" data-value="90s">
-            <span class="emoji">📼</span>
-            <span data-en="90s" data-sw="Miaka 90">90s</span>
-        </div>
-        <div class="mood-btn" data-value="2000s">
-            <span class="emoji">📱</span>
-            <span data-en="2000s" data-sw="Miaka 2000">2000s</span>
-        </div>
-        <div class="mood-btn" data-value="recent">
-            <span class="emoji">🎬</span>
-            <span data-en="Recent (2020s)" data-sw="Hivi karibuni (2020s)">Recent (2020s)</span>
-        </div>
-    </div>
-</div>
-
-
-                        <!-- Question 4: Watching With -->
-                        <div class="question" id="question4">
-                            <h3><span class="emoji">👥</span> <span data-en="Are you watching alone or with others?" data-sw="Unaangalia peke yako au na wengine?">Are you watching alone or with others?</span></h3>
-                            <div class="mood-options" data-question="watchingWith">
-                                <div class="mood-btn" data-value="alone">
-                                    <span class="emoji">🙋‍♀️</span>
-                                    <span data-en="Solo" data-sw="Peke Yako">Solo</span>
-                                </div>
-                                <div class="mood-btn" data-value="partner">
-                                    <span class="emoji">💑</span>
-                                    <span data-en="Partner" data-sw="Mwenzi">Partner</span>
-                                </div>
-                                <div class="mood-btn" data-value="friends">
-                                    <span class="emoji">👫</span>
-                                    <span data-en="Friends" data-sw="Marafiki">Friends</span>
-                                </div>
-                                <div class="mood-btn" data-value="family">
-                                    <span class="emoji">👨‍👩‍👧‍👦</span>
-                                    <span data-en="Family" data-sw="Familia">Family</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Question 5: Watch duration? -->
-                        <div class="question" id="question5">
-                            <h3><span class="emoji">⏰</span> <span data-en="Watch duration?" data-sw="Muda wa kuangalia?">Watch duration?</span></h3>
-                            <div class="mood-options" data-question="duration">
-                                <div class="mood-btn" data-value="short">
-                                    <span class="emoji">⚡</span>
-                                    <span data-en="&lt; 90min" data-sw="&lt; 90 dakika">&lt; 90min</span>
-                                </div>
-                                <div class="mood-btn" data-value="standard">
-                                    <span class="emoji">🎬</span>
-                                    <span data-en="90-120min" data-sw="90-120 dakika">90-120min</span>
-                                </div>
-                                <div class="mood-btn" data-value="long">
-                                    <span class="emoji">📽️</span>
-                                    <span data-en="&gt; 2hrs" data-sw="&gt; 2 saa">&gt; 2hrs</span>
-                                </div>
-                                <div class="mood-btn" data-value="series">
-                                    <span class="emoji">📺</span>
-                                    <span data-en="Binge Series" data-sw="Mfululizo">Binge Series</span>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="question"></div>
+                    <div class="mood-options"></div>
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
                     </div>
-
-                        <!-- Question 6: Current Thoughts 
-                          <div class="question" id="question6">
-                            <h3><span class="emoji">💭</span> <span data-en="What's on your mind lately?" data-sw="Ni nini kilicho kwenye akili yako hivi karibuni?">What's on your mind lately?</span></h3>
-                            <input type="text" class="text-input" id="currentThoughts" 
-                                   data-en-placeholder="e.g., work stress, wanting to laugh, missing old friends..." 
-                                   data-sw-placeholder="mfano, msongo kazini, kutaka kucheka, kukumbuka rafiki wa zamani..." />
+                    
+                    <!-- Analysis Loading Container -->
+                    <div class="analysis-loading" style="display: none;">
+                        <div class="film-reel-icon">
+                            <i class="fas fa-film"></i>
                         </div>
+                        <div class="analysis-text">Analyzing your mood...</div>
                     </div>
--->
-                       
-                    <!-- Progress Bar at Bottom -->
-                    <div class="progress-container">
-                        <div class="progress-text">
-                            <span id="progressText" data-en="Question 1 of 5" data-sw="Swali 1 la 6">Question 1 of 5</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progressFill"></div>
-                        </div>
+                    
+                    <!-- Movie Recommendations Container -->
+                    <div class="movie-match-content" style="display: none;">
+                        <!-- Movie cards will be inserted here -->
                     </div>
-
+                    
+                    <!-- Action Buttons -->
+                    <div class="questionnaire-actions" style="display: none;">
+                        <button class="one-time-btn try-again">
+                            <i class="fas fa-redo"></i> Try Again
+                        </button>
+                        <button class="one-time-btn more-like-this">
+                            <i class="fas fa-sync"></i> More Like This
+                        </button>
+                    </div>
+                    
                     <!-- Navigation Buttons -->
                     <div class="question-navigation">
-                        <button class="btn btn-secondary" id="prevBtn" style="display: none;">
-                            <i class="fas fa-arrow-left"></i> <span data-en="Previous" data-sw="Iliyopita">Previous</span>
+                        <button class="one-time-btn prev" style="display: none;">
+                            <i class="fas fa-arrow-left"></i> Previous
                         </button>
-                        <button class="btn btn-primary" id="nextBtn">
-                            <span data-en="Next" data-sw="Inayofuata">Next</span> <i class="fas fa-arrow-right"></i>
+                        <button class="one-time-btn next">
+                            Next <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
-
-                    <!-- Discover Button (shown on last question) -->
-                    <button class="discover-btn" id="discoverBtn" style="display: none;">
-                        <span class="emoji">🎯</span> <span data-en="Discover My Perfect Movie" data-sw="Gundua Filamu Yangu Kamili">Discover My Perfect Movie</span>
-                    </button>
-
-                   <!-- Analysis Text (Hidden by default) -->
-                   <div class="analysis-text hidden" id="analysis-text">
-                       <h3><span class="emoji">🎉</span> <span data-en="Great! We're analyzing your mood..." data-sw="Vizuri! Tunachambua hali yako...">Great! We're analyzing your mood...</span></h3>
-                       <p data-en="Based on your feelings, we'll find movies that perfectly match your current vibe!"
-                          data-sw="Kulingana na hisia zako, tutapata filamu zinazolingana kabisa na hali yako ya sasa!">
-                           Based on your feelings, we'll find movies that perfectly match your current vibe!
-                       </p>
-                   </div>
-
-                   <!-- Recommendation Preview -->
-<div class="recommendation-preview" id="recommendationPreview" style="display: none;">
-    <h3><span class="emoji">🎯</span> <span data-en="Finding your perfect match..." data-sw="Kutafuta mechi yako kamili...">Finding your perfect match...</span></h3>
-    <p data-en="We're searching through thousands of movies to find the perfect one for you!"
-       data-sw="Tunatafuta kati ya maelfu ya filamu kupata ile kamili kwako!">
-        We're searching through thousands of movies to find the perfect one for you!
-    </p>
-</div>
-
-                    <!-- Movie Match Result 
-                     <div class="movie-match-actions">
-                                    <a href="#" class="watch-now-btn">
-                                        <i class="fas fa-play"></i> <span data-en="Watch Now" data-sw="Angalia Sasa">Trailer</span>
-                                    </a>
-                                    <a href="#" class="try-again-btn" id="tryAgainBtn">
-                                        <i class="fas fa-redo"></i> <span data-en="Try Again" data-sw="Jaribu Tena">Try Again</span>
-                                    </a>
-                                </div>
-                          </div> -->
-                   
-                                
+                </div>
 
     </section>
 
