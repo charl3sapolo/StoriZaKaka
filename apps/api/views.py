@@ -14,77 +14,19 @@ import json
 from django.utils import timezone
 
 from apps.core.models import Movie, Genre, UserWatchHistory, RecommendationSession
-from apps.recommendations.engine import RecommendationEngine
+# from apps.recommendations.engine import RecommendationEngine
 
 
 @require_http_methods(["GET"])
 def get_recommendations(request):
     """Get movie recommendations via AJAX."""
     
-    # Get parameters
-    genres = request.GET.getlist('genres')
-    mood_text = request.GET.get('mood', '')
-    year_start = request.GET.get('year_start')
-    year_end = request.GET.get('year_end')
-    runtime_preference = request.GET.get('runtime_preference', '')
-    include_local = request.GET.get('include_local', 'true').lower() == 'true'
-    limit = int(request.GET.get('limit', 20))
-    
-    # Convert year parameters to integers
-    if year_start:
-        year_start = int(year_start)
-    if year_end:
-        year_end = int(year_end)
-    
-    # Get user and session token
-    user = request.user if request.user.is_authenticated else None
-    session_token = request.session.get('guest_session_token')
-    
-    # Get recommendations
-    engine = RecommendationEngine()
-    recommendations = engine.get_recommendations(
-        user=user,
-        session_token=session_token,
-        genres=genres,
-        mood_text=mood_text,
-        year_start=year_start,
-        year_end=year_end,
-        runtime_preference=runtime_preference,
-        include_local=include_local,
-        limit=limit
-    )
-    
-    # Format response
-    movies_data = []
-    for rec in recommendations:
-        movie = rec['movie']
-        movies_data.append({
-            'id': movie.id,
-            'title': movie.title,
-            'title_sw': movie.title_sw,
-            'year': movie.year,
-            'overview': movie.overview,
-            'overview_sw': movie.overview_sw,
-            'poster_path': movie.poster_path,
-            'backdrop_path': movie.backdrop_path,
-            'runtime': movie.runtime,
-            'genres': [{'id': g.id, 'name': g.name, 'name_sw': g.name_sw} for g in movie.genres.all()],
-            'tmdb_rating': movie.tmdb_rating,
-            'imdb_rating': movie.imdb_rating,
-            'local_rating': movie.local_rating,
-            'average_rating': movie.average_rating,
-            'is_local': movie.is_local,
-            'is_featured': movie.is_featured,
-            'content_rating': movie.content_rating,
-            'score': rec['score'],
-            'reasons': rec['reasons'],
-            'detail_url': f'/movie/{movie.id}/'
-        })
-    
+    # Temporary placeholder - will be implemented later
     return JsonResponse({
         'success': True,
-        'movies': movies_data,
-        'total': len(movies_data)
+        'movies': [],
+        'total': 0,
+        'message': 'Recommendations temporarily disabled'
     })
 
 
