@@ -118,26 +118,101 @@
         /* Genre Infinity Scroll Layout */
         .genre-row {
             display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
+            align-items: center;
             gap: 20px;
             padding: 15px 0;
             margin-bottom: 30px;
             position: relative;
         }
 
-        .genre-row::after {
-            content: attr(data-genre);
-            position: sticky;
+        .movie-cards-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 20px;
+            padding: 15px 0;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary) var(--soft-gray);
+        }
+
+        .movie-cards-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .movie-cards-container::-webkit-scrollbar-track {
+            background: var(--soft-gray);
+            border-radius: 4px;
+        }
+
+        .movie-cards-container::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 4px;
+        }
+
+        .movie-cards-container::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary);
+        }
+
+        .genre-label-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 20px;
+            min-width: 150px;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .genre-label-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             right: 0;
-            background: linear-gradient(90deg, transparent 15%, var(--dark) 85%);
-            padding: 10px 20px 10px 30px;
-            font-weight: bold;
+            bottom: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            opacity: 0.1;
+            z-index: -1;
+        }
+
+        .genre-label-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .genre-label-content {
+            text-align: center;
+            z-index: 1;
+        }
+
+        .genre-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
             text-transform: uppercase;
-            color: var(--primary);
-            font-size: 1.1rem;
-            z-index: 10;
-            border-radius: 8px 0 0 8px;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .genre-count {
+            background: var(--gradient-primary);
+            color: var(--dark);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            box-shadow: var(--shadow-sm);
         }
 
         .genre-row::-webkit-scrollbar {
@@ -670,6 +745,31 @@
 
             .genre-row {
                 gap: 15px;
+            }
+
+            .movie-cards-container {
+                gap: 15px;
+                padding: 10px 0;
+            }
+
+            .genre-label-card {
+                min-width: 100px;
+                height: 160px;
+                padding: 12px;
+            }
+
+            .genre-name {
+                font-size: 0.9rem;
+                margin-bottom: 6px;
+            }
+
+            .genre-count {
+                font-size: 0.6rem;
+                padding: 3px 6px;
+            }
+
+            .movie-card {
+                min-width: 120px;
             }
 
             .movie-card {

@@ -83,12 +83,22 @@ class UltimateMovieGallery {
         const savedMovies = JSON.parse(localStorage.getItem('saved_movies') || '[]');
         console.log('📊 Found movies in localStorage:', savedMovies.length);
         
-        if (savedMovies.length === 0) {
+        // Remove duplicates and ensure data integrity
+        const uniqueMovies = this.removeDuplicates(savedMovies);
+        console.log('🔍 Unique movies after deduplication:', uniqueMovies.length);
+        
+        if (uniqueMovies.length === 0) {
             console.log('➕ No movies found, adding test movie...');
             this.addTestMovie();
         } else {
-            // Process existing movies
-            this.savedMovies = savedMovies.map(movie => this.processMovie(movie));
+            // Process existing movies with performance monitoring
+            console.log('🔄 Processing movies...');
+            const startTime = performance.now();
+            
+            this.savedMovies = uniqueMovies.map(movie => this.processMovie(movie));
+            
+            const endTime = performance.now();
+            console.log(`⏱️ Movie processing took ${(endTime - startTime).toFixed(2)}ms`);
         }
         
         console.log('🎬 Processed movies:', this.savedMovies.length);
@@ -98,6 +108,25 @@ class UltimateMovieGallery {
         
         // Display movies
         this.displayMovies();
+    }
+
+    removeDuplicates(movies) {
+        const seen = new Set();
+        const uniqueMovies = [];
+        
+        movies.forEach(movie => {
+            const movieId = movie.id || movie.tmdb_id;
+            const key = `${movieId}-${movie.title}`;
+            
+            if (!seen.has(key)) {
+                seen.add(key);
+                uniqueMovies.push(movie);
+            } else {
+                console.log('🔄 Removing duplicate:', movie.title);
+            }
+        });
+        
+        return uniqueMovies;
     }
 
     showSkeletonLoading() {
@@ -246,6 +275,8 @@ class UltimateMovieGallery {
     displayMovies() {
         console.log(`🎬 Displaying movies for ${this.currentTab} tab in ${this.currentLayout} layout`);
         
+        const startTime = performance.now();
+        
         const filteredMovies = this.getFilteredMovies();
         console.log(`📊 Filtered movies: ${filteredMovies.length}`);
         
@@ -274,6 +305,9 @@ class UltimateMovieGallery {
             default:
                 this.displayGenreLayout(filteredMovies);
         }
+        
+        const endTime = performance.now();
+        console.log(`⏱️ Display took ${(endTime - startTime).toFixed(2)}ms`);
     }
 
     getFilteredMovies() {
@@ -292,23 +326,58 @@ class UltimateMovieGallery {
     displayGenreLayout(movies) {
         console.log('🎭 Displaying genre layout with', movies.length, 'movies');
         
+        const startTime = performance.now();
+        
         const container = document.getElementById('genreContainer');
         if (!container) {
             console.error('❌ Genre container not found!');
             return;
         }
         
-        // Group movies by genre
+        // Group movies by genre with proper categorization
         const genreGroups = {};
         movies.forEach(movie => {
-            const primaryGenre = movie.genre_ids && movie.genre_ids.length > 0 ? 
-                movie.genre_ids[0] : null;
-            const genreName = primaryGenre ? GENRE_MAP[primaryGenre] || 'Other' : 'Other';
-            
-            if (!genreGroups[genreName]) {
-                genreGroups[genreName] = [];
+            // Get genres from the movie data
+            let genres = [];
+            if (movie.genre_ids && movie.genre_ids.length > 0) {
+                genres = movie.genre_ids.map(id => GENRE_MAP[id]).filter(genre => genre);
             }
-            genreGroups[genreName].push(movie);
+            
+            // If no valid genres found, try to infer from movie data
+            if (genres.length === 0) {
+                // Try to get genre from movie title or other properties
+                const title = movie.title?.toLowerCase() || '';
+                if (title.includes('action') || title.includes('fight') || title.includes('war')) {
+                    genres = ['Action'];
+                } else if (title.includes('comedy') || title.includes('funny') || title.includes('humor')) {
+                    genres = ['Comedy'];
+                } else if (title.includes('drama') || title.includes('emotional')) {
+                    genres = ['Drama'];
+                } else if (title.includes('horror') || title.includes('scary') || title.includes('fear')) {
+                    genres = ['Horror'];
+                } else if (title.includes('romance') || title.includes('love') || title.includes('romantic')) {
+                    genres = ['Romance'];
+                } else if (title.includes('sci-fi') || title.includes('science') || title.includes('space')) {
+                    genres = ['Science Fiction'];
+                } else if (title.includes('thriller') || title.includes('suspense')) {
+                    genres = ['Thriller'];
+                } else if (title.includes('adventure') || title.includes('journey')) {
+                    genres = ['Adventure'];
+                } else if (title.includes('fantasy') || title.includes('magic')) {
+                    genres = ['Fantasy'];
+                } else {
+                    // Default to Drama for unknown genres
+                    genres = ['Drama'];
+                }
+            }
+            
+            // Use the first valid genre
+            const primaryGenre = genres[0];
+            
+            if (!genreGroups[primaryGenre]) {
+                genreGroups[primaryGenre] = [];
+            }
+            genreGroups[primaryGenre].push(movie);
         });
         
         console.log('📂 Genre groups:', Object.keys(genreGroups));
@@ -316,21 +385,44 @@ class UltimateMovieGallery {
         // Clear container
         container.innerHTML = '';
         
-        // Create genre rows
-        Object.entries(genreGroups).forEach(([genreName, genreMovies]) => {
+        // Sort genres by popularity (number of movies)
+        const sortedGenres = Object.entries(genreGroups)
+            .sort(([,a], [,b]) => b.length - a.length);
+        
+        // Create genre rows with proper scrolling
+        sortedGenres.forEach(([genreName, genreMovies]) => {
             console.log(`🎬 Creating ${genreName} row with ${genreMovies.length} movies`);
             
             const genreRow = document.createElement('div');
             genreRow.className = 'genre-row';
             genreRow.setAttribute('data-genre', genreName);
             
+            // Create movie cards
             const movieCards = genreMovies.map(movie => this.createMovieCard(movie)).join('');
             
-            genreRow.innerHTML = movieCards;
+            // Create the genre label as a card-like element
+            const genreLabelCard = `
+                <div class="genre-label-card">
+                    <div class="genre-label-content">
+                        <h3 class="genre-name">${genreName}</h3>
+                        <span class="genre-count">${genreMovies.length} movie${genreMovies.length !== 1 ? 's' : ''}</span>
+                    </div>
+                </div>
+            `;
+            
+            // Create the row with proper scrolling container
+            genreRow.innerHTML = `
+                <div class="movie-cards-container">
+                    ${movieCards}
+                    ${genreLabelCard}
+                </div>
+            `;
+            
             container.appendChild(genreRow);
         });
         
-        console.log('✅ Genre layout displayed successfully');
+        const endTime = performance.now();
+        console.log(`✅ Genre layout displayed successfully in ${(endTime - startTime).toFixed(2)}ms`);
     }
 
     displayStackLayout(movies) {
@@ -519,13 +611,26 @@ class UltimateMovieGallery {
 
     updateCounts() {
         const totalCount = this.savedMovies.length;
-        console.log(`📊 Updating counts: ${totalCount} movies`);
+        const watchLaterCount = this.savedMovies.filter(movie => movie.is_watch_later === true).length;
+        const likedCount = this.savedMovies.filter(movie => movie.is_liked === true).length;
         
-        const savedCountElement = document.getElementById('savedCount');
-        const mobileSavedCountElement = document.getElementById('mobileSavedCount');
+        console.log(`📊 Updating counts: ${totalCount} total, ${watchLaterCount} watch later, ${likedCount} liked`);
         
-        if (savedCountElement) savedCountElement.textContent = totalCount;
-        if (mobileSavedCountElement) mobileSavedCountElement.textContent = totalCount;
+        // Update specific count elements only (more efficient)
+        const elementsToUpdate = [
+            { id: 'savedCount', value: totalCount },
+            { id: 'mobileSavedCount', value: totalCount },
+            { id: 'watchLaterCount', value: watchLaterCount },
+            { id: 'savedCountStat', value: totalCount },
+            { id: 'watchLaterCountStat', value: watchLaterCount }
+        ];
+        
+        elementsToUpdate.forEach(({ id, value }) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = value;
+            }
+        });
     }
 
     async toggleWatchLater(movieId) {
@@ -589,7 +694,20 @@ class UltimateMovieGallery {
         this.updateCounts();
         this.displayMovies();
         
+        // Refresh profile page if we're on it
+        this.refreshProfilePage();
+        
         console.log(`🗑️ Removed movie ${movieId}`);
+    }
+
+    refreshProfilePage() {
+        // If we're on the profile page, refresh the counts
+        if (window.location.pathname.includes('/profile/')) {
+            const profileManager = window.profileManager;
+            if (profileManager) {
+                profileManager.loadMovieCounts();
+            }
+        }
     }
 
     setupEventListeners() {

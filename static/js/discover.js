@@ -1170,18 +1170,21 @@ async function saveToWatchlist(id, type) {
       }
     }
     
-    const movieData = {
-      tmdb_id: parseInt(id),
-      title: titleElement?.textContent?.trim() || 'Unknown Title',
-      overview: '', // Will be populated from TMDB API if needed
-      poster_path: poster_path,
-      backdrop_path: '',
-      release_date: yearElement?.textContent?.trim() || null,
-      vote_average: parseFloat(ratingElement?.textContent?.replace(/[^\d.]/g, '')) || 0,
-      vote_count: 0,
-      genre_ids: [], // Will be populated from TMDB API
-      media_type: type,
-      is_logged_in: true
+        const movieData = {
+        tmdb_id: parseInt(id),
+        title: titleElement?.textContent?.trim() || 'Unknown Title',
+        overview: '', // Will be populated from TMDB API if needed
+        poster_path: poster_path,
+        backdrop_path: '',
+        release_date: yearElement?.textContent?.trim() || null,
+        vote_average: parseFloat(ratingElement?.textContent?.replace(/[^\d.]/g, '')) || 0,
+        vote_count: 0,
+        genre_ids: [], // Will be populated from TMDB API
+        media_type: type,
+        is_logged_in: true,
+        user_saved_date: new Date().toISOString(),
+        is_watch_later: false,
+        is_liked: false
     };
     
     console.log('Created movie data:', movieData);
