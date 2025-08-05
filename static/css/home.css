@@ -2714,6 +2714,7 @@
     font-size: clamp(4.2rem, 8vw, var(--h1)); /* Adds responsive scaling */
     line-height: 1.1;
     margin-bottom: 1.8rem;
+    padding-top: 40px;
     font-weight: 720;
     margin-left: -5vw;
     position: relative;
@@ -2801,7 +2802,7 @@
     transition: opacity 1.5s ease;
     z-index: 0;
     pointer-events: none;
-    filter: brightness(0.6) blur(1px); /* for cinematic effect */
+   /* for cinematic effect */
 }
 
 .hero-bg-slide.active {
@@ -2817,7 +2818,8 @@
 .hero .container,
 .hero-content {
     position: relative;
-    z-index: 2; /* content above background */
+    top: 40%;
+    z-index: 1; /* content above background */
 }
 
 /* Hero Navigation Arrows - Improved Glass Effect */
