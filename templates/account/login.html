@@ -33,12 +33,12 @@
                 </div>
             {% endif %}
 
-            <form method="post" action="{% url 'account_login' %}" class="login-form" id="loginForm">
+            <form method="post" action="{% url 'authentication:login' %}" class="login-form" id="loginForm">
                 {% csrf_token %}
                 
                 <div class="input-group">
-                    <label for="{{ form.login.id_for_label }}">{% trans "Email Address" %}</label>
-                    {{ form.login }}
+                    <label for="{{ form.username.id_for_label }}">{% trans "Username or Email" %}</label>
+                    {{ form.username }}
                 </div>
                 
                 <div class="input-group">
@@ -48,10 +48,10 @@
                 
                 <div class="form-extras">
                     <label class="remember-me">
-                        {{ form.remember }}
+                        {{ form.remember_me }}
                         <span>{% trans "Remember me" %}</span>
                     </label>
-                    <a href="{% url 'account_reset_password' %}" class="forgot-password">
+                    <a href="{% url 'authentication:password_reset' %}" class="forgot-password">
                         {% trans "Forgot password?" %}
                     </a>
                 </div>
@@ -64,7 +64,7 @@
             
             <div class="card-footer">
                 <p>{% trans "New to our platform?" %} 
-                   <a href="{% url 'account_signup' %}">{% trans "Create an account" %}</a>
+                   <a href="{% url 'authentication:register' %}">{% trans "Create an account" %}</a>
                 </p>
             </div>
         </div>

@@ -33,7 +33,7 @@
                 </div>
             {% endif %}
 
-            <form method="post" action="{% url 'account_signup' %}" class="login-form" id="registerForm">
+            <form method="post" action="{% url 'authentication:register' %}" class="login-form" id="registerForm">
                 {% csrf_token %}
                 
                 <div class="input-group">
@@ -71,7 +71,7 @@
             
             <div class="card-footer">
                 <p>{% trans "Already have an account?" %} 
-                   <a href="{% url 'account_login' %}">{% trans "Sign In" %}</a>
+                   <a href="{% url 'authentication:login' %}">{% trans "Sign In" %}</a>
                 </p>
             </div>
         </div>
