@@ -6455,7 +6455,7 @@ section {
 .one-time-btn {
     background: var(--glass-bg);
     border: 2px solid var(--glass-border);
-    border-radius: var(--radius-md);
+    border-radius: 16px;
     padding: 0.75rem 1.5rem;
     cursor: pointer;
     transition: all 0.3s var(--transition-smooth);
@@ -6466,13 +6466,14 @@ section {
     color: var(--text-primary);
     min-height: 48px;
     min-width: 120px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .one-time-btn:hover {
     background: var(--glass-bg);
     border-color: var(--primary);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
 }
 
 .one-time-btn.try-again {
