@@ -26,7 +26,7 @@ class CustomLoginView(LoginView):
     """Custom login view."""
     
     form_class = CustomAuthenticationForm
-    template_name = 'auth/login.html'
+    template_name = 'account/login.html'
     redirect_authenticated_user = True
     
     def get_success_url(self):
@@ -53,7 +53,7 @@ class CustomRegisterView(CreateView):
     """Custom registration view."""
     
     form_class = CustomUserCreationForm
-    template_name = 'auth/register.html'
+    template_name = 'account/signup.html'
     success_url = reverse_lazy('discover')
     
     def dispatch(self, request, *args, **kwargs):
@@ -164,29 +164,29 @@ def change_password(request):
 class CustomPasswordResetView(PasswordResetView):
     """Custom password reset view."""
     
-    template_name = 'auth/password_reset.html'
-    email_template_name = 'auth/password_reset_email.html'
-    subject_template_name = 'auth/password_reset_subject.txt'
-    success_url = reverse_lazy('auth:password_reset_done')
+    template_name = 'account/password_reset.html'
+    email_template_name = 'account/password_reset_email.html'
+    subject_template_name = 'account/password_reset_subject.txt'
+    success_url = reverse_lazy('authentication:password_reset_done')
 
 
 class CustomPasswordResetDoneView(PasswordResetDoneView):
     """Custom password reset done view."""
     
-    template_name = 'auth/password_reset_done.html'
+    template_name = 'account/password_reset_done.html'
 
 
 class CustomPasswordResetConfirmView(PasswordResetConfirmView):
     """Custom password reset confirm view."""
     
-    template_name = 'auth/password_reset_confirm.html'
-    success_url = reverse_lazy('auth:password_reset_complete')
+    template_name = 'account/password_reset_confirm.html'
+    success_url = reverse_lazy('authentication:password_reset_complete')
 
 
 class CustomPasswordResetCompleteView(PasswordResetCompleteView):
     """Custom password reset complete view."""
     
-    template_name = 'auth/password_reset_complete.html'
+    template_name = 'account/password_reset_complete.html'
 
 
 @login_required
