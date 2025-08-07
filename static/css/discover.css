@@ -89,6 +89,7 @@ body {
 /* Header Section */
 .header {
   background: transparent;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   position: fixed;
   top: 0;
@@ -389,6 +390,7 @@ body {
   padding: var(--space-xl);
   margin-bottom: var(--space-xl);
   box-shadow: var(--shadow-lg);
+  -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   position: relative;
   overflow: hidden;
@@ -444,6 +446,7 @@ body {
   position: relative;
   text-align: center;
   overflow: hidden;
+  -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-sm);
 }
@@ -773,6 +776,7 @@ body {
   margin-bottom: var(--space-xl);
   box-shadow: var(--shadow-lg);
   backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   position: relative;
   overflow: hidden;
 }
@@ -920,6 +924,7 @@ body {
   margin-bottom: var(--space-xl);
   position: relative;
   overflow: hidden;
+  -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   box-shadow: var(--shadow-lg);
 }
@@ -1018,6 +1023,7 @@ body {
   cursor: pointer;
   transition: all var(--transition-smooth);
   position: relative;
+  -webkit-backdrop-filter: var(--glass-blur);
   backdrop-filter: var(--glass-blur);
   flex: 1;
   min-width: 200px;
@@ -1162,6 +1168,7 @@ body {
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
 }
 
 .skeleton-poster {
@@ -1402,6 +1409,7 @@ body {
   padding: var(--space-xl);
   margin-bottom: var(--space-xl);
   box-shadow: var(--shadow-lg);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
@@ -1437,6 +1445,7 @@ body {
   margin-bottom: 1.5rem;
   position: relative;
   overflow: hidden;
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   box-shadow: 
     0 8px 32px rgba(0, 0, 0, 0.4),
@@ -1539,6 +1548,7 @@ body {
   cursor: pointer;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   flex: 1;
   min-width: 200px;
@@ -2309,6 +2319,7 @@ body {
   padding: var(--space-xl);
   margin-bottom: var(--space-xl);
   box-shadow: var(--shadow-lg);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
@@ -2384,6 +2395,7 @@ body {
   cursor: pointer;
   transition: all var(--transition-normal);
   position: relative;
+  -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
 }
 
@@ -2597,7 +2609,7 @@ body {
 body {
   background-attachment: fixed;
   background-size: cover;
-  font-smooth: antialiased;
+  -webkit-font-smoothing: antialiased;
   -webkit-font-smoothing: antialiased;
 }
 
