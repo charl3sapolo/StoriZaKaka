@@ -7,7 +7,7 @@ from .base import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,91d0e59d3dce.ngrok-free.app').split(',')
 
 # Development-specific apps
 if DEBUG:
@@ -31,6 +31,15 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 SECURE_SSL_REDIRECT = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
+
+# CSRF settings for development (including ngrok)
+CSRF_TRUSTED_ORIGINS = [
+    'https://91d0e59d3dce.ngrok-free.app',
+    'https://*.ngrok-free.app',
+    'https://*.ngrok.io',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
 
 # Logging for development
 LOGGING['root']['level'] = 'DEBUG'

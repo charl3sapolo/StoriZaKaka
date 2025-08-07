@@ -1,5 +1,6 @@
 -r base.txt
-
+Django
+vercel-python-wsgi
 # Production optimizations
 django-storages==1.14.2
 boto3==1.34.34
