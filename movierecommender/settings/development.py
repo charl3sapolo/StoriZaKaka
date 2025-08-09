@@ -1,4 +1,4 @@
-AUTH_USER_MODEL = 'core.User'"""
+"""
 Development settings for Movie Recommender project.
 """
 
@@ -11,13 +11,13 @@ ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,91d0e59d3dc
 
 # Development-specific apps
 if DEBUG:
-    INSTALLED_APPS += [
-        'debug_toolbar',
-    ]
+    # INSTALLED_APPS += [
+    #     'debug_toolbar',
+    # ]
     
-    MIDDLEWARE += [
-        'debug_toolbar.middleware.DebugToolbarMiddleware',
-    ]
+    # MIDDLEWARE += [
+    #     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # ]
     
     INTERNAL_IPS = [
         '127.0.0.1',
@@ -26,6 +26,14 @@ if DEBUG:
 
 # Email backend for development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Use SQLite for development
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Disable HTTPS redirects in development
 SECURE_SSL_REDIRECT = False

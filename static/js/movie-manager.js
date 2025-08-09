@@ -87,19 +87,14 @@ class UltimateMovieGallery {
         const uniqueMovies = this.removeDuplicates(savedMovies);
         console.log('🔍 Unique movies after deduplication:', uniqueMovies.length);
         
-        if (uniqueMovies.length === 0) {
-            console.log('➕ No movies found, adding test movie...');
-            this.addTestMovie();
-        } else {
-            // Process existing movies with performance monitoring
-            console.log('🔄 Processing movies...');
-            const startTime = performance.now();
-            
-            this.savedMovies = uniqueMovies.map(movie => this.processMovie(movie));
-            
-            const endTime = performance.now();
-            console.log(`⏱️ Movie processing took ${(endTime - startTime).toFixed(2)}ms`);
-        }
+        // Process existing movies with performance monitoring
+        console.log('🔄 Processing movies...');
+        const startTime = performance.now();
+        
+        this.savedMovies = uniqueMovies.map(movie => this.processMovie(movie));
+        
+        const endTime = performance.now();
+        console.log(`⏱️ Movie processing took ${(endTime - startTime).toFixed(2)}ms`);
         
         console.log('🎬 Processed movies:', this.savedMovies.length);
         
@@ -161,32 +156,7 @@ class UltimateMovieGallery {
         return skeletonCards.join('');
     }
 
-    addTestMovie() {
-        const testMovie = {
-            id: 550,
-            tmdb_id: 550,
-            title: "Fight Club",
-            poster_path: "https://image.tmdb.org/t/p/w500/pB8BM7pdSp6B6Ih7QZ4DrQ3PmJK.jpg",
-            release_date: "1999",
-            vote_average: 8.8,
-            genre_ids: [18],
-            user_saved_date: new Date().toISOString(),
-            is_watch_later: false,
-            is_liked: false,
-            mediaType: 'movie',
-            timestamp: Date.now()
-        };
-        
-        // Add to localStorage using the correct key
-        const current = JSON.parse(localStorage.getItem('saved_movies') || '[]');
-        current.push(testMovie);
-        localStorage.setItem('saved_movies', JSON.stringify(current));
-        
-        // Add to current array
-        this.savedMovies = [this.processMovie(testMovie)];
-        
-        console.log('✅ Test movie added:', testMovie.title);
-    }
+
 
     processMovie(movie) {
         // Handle poster path with better validation
@@ -308,6 +278,38 @@ class UltimateMovieGallery {
         
         const endTime = performance.now();
         console.log(`⏱️ Display took ${(endTime - startTime).toFixed(2)}ms`);
+        
+        // Add event listeners to cards after they're created
+        this.setupCardEventListeners();
+    }
+
+    setupCardEventListeners() {
+        const cards = document.querySelectorAll('.movie-card');
+        cards.forEach(card => {
+            // Add click event for card flip
+            card.addEventListener('click', (e) => {
+                // Don't flip if clicking on action buttons
+                if (!e.target.closest('.action-btn')) {
+                    card.classList.toggle('flipped');
+                }
+            });
+            
+            // Add keyboard support for accessibility
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    card.classList.toggle('flipped');
+                }
+            });
+            
+            // Make card focusable for accessibility
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('role', 'button');
+            
+            // Add aria-label
+            const title = card.querySelector('.movie-title')?.textContent || 'Movie';
+            card.setAttribute('aria-label', `Movie: ${title}`);
+        });
     }
 
     getFilteredMovies() {

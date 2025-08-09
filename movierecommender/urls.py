@@ -19,11 +19,18 @@ urlpatterns = [
     path('discover/', core_views.discover, name='discover'),
     path('movie-details/', core_views.movie_details, name='movie_details'),
     path('profile/', auth_views.ProfileView.as_view(), name='profile'),
+    # API endpoints for movie saving functionality
+    path('api/save-movie/', core_views.save_movie, name='save_movie'),
+    path('api/saved-movies/', core_views.get_saved_movies, name='get_saved_movies'),
+    path('api/update-movie-status/', core_views.update_movie_status, name='update_movie_status'),
+    path('api/remove-movie/', core_views.remove_movie, name='remove_movie'),
+    path('api/mood-preferences/', core_views.store_mood_preferences, name='store_mood_preferences'),
+    path('api/movie-recommendation/', core_views.get_movie_recommendation, name='movie_recommendation'),
 ]
 
 # Internationalized URL patterns
 urlpatterns += i18n_patterns(
-    path('home/', include('core.urls', namespace='core')),
+    path('home/', include('apps.core.urls', namespace='core')),
     path('auth/', include(('apps.authentication.urls', 'authentication'), namespace='authentication')),
     path('api/', include('apps.api.urls')),
     prefix_default_language=False,
@@ -31,9 +38,9 @@ urlpatterns += i18n_patterns(
 
 # Debug Toolbar
 if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls)),
-    ]
+    # import debug_toolbar
+    # urlpatterns += [
+    #     path('__debug__/', include(debug_toolbar.urls)),
+    # ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
