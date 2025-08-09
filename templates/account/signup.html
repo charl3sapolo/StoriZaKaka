@@ -2,116 +2,83 @@
 {% load static %}
 {% load i18n %}
 
-{% block title %}{% trans "Create Account" %}{% endblock %}
+{% block title %}{% trans "Register" %}{% endblock %}
 
 {% block content %}
-<div class="auth-page">
-    <div class="auth-card">
-        <div class="logo-center">
-            <img src="{% static 'images/logo.kakaflix.jpg' %}" alt="KakaFlix" class="auth-logo">
+<div class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="card-header">
+                <h1>{% trans "Create Account" %}</h1>
+                <p>{% trans "Join our community to get started" %}</p>
+            </div>
+
+            {% if form.errors %}
+                <div class="error-alert">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="15" y1="9" x2="9" y2="15"/>
+                        <line x1="9" y1="9" x2="15" y2="15"/>
+                    </svg>
+                    <div class="error-content">
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <p>{{ error }}</p>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <form method="post" action="{% url 'authentication:register' %}" class="login-form" id="registerForm">
+                {% csrf_token %}
+                
+                <div class="input-group">
+                    <label for="{{ form.username.id_for_label }}">{% trans "Username" %}</label>
+                    {{ form.username }}
+                </div>
+                
+                <div class="input-group">
+                    <label for="{{ form.email.id_for_label }}">{% trans "Email Address" %}</label>
+                    {{ form.email }}
+                </div>
+                
+                <div class="input-group">
+                    <label for="{{ form.password1.id_for_label }}">{% trans "Password" %}</label>
+                    {{ form.password1 }}
+                </div>
+                
+                <div class="input-group">
+                    <label for="{{ form.password2.id_for_label }}">{% trans "Confirm Password" %}</label>
+                    {{ form.password2 }}
+                </div>
+                
+                <div class="form-extras">
+                    <label class="remember-me">
+                        <input type="checkbox" name="terms" required>
+                        <span>{% trans "I agree to the terms and conditions" %}</span>
+                    </label>
+                </div>
+                
+                <button type="submit" class="login-btn">
+                    <span class="btn-text">{% trans "Create Account" %}</span>
+                    <div class="btn-loader"></div>
+                </button>
+            </form>
+            
+            <div class="card-footer">
+                <p>{% trans "Already have an account?" %} 
+                   <a href="{% url 'authentication:login' %}">{% trans "Sign In" %}</a>
+                </p>
+            </div>
         </div>
-        <h1 class="auth-title">{% trans "Create Account" %}</h1>
-        <p class="auth-subtitle">{% trans "Join our community to get started" %}</p>
-
-        {% if form.errors %}
-        <div class="error-alert">
-            {% for field in form %}
-                {% for error in field.errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
-            {% endfor %}
-            {% for error in form.non_field_errors %}
-                <p>{{ error }}</p>
-            {% endfor %}
-        </div>
-        {% endif %}
-
-        <form method="post" action="{% url 'authentication:register' %}" class="auth-form" id="registerForm">
-            {% csrf_token %}
-            
-            <div class="input-group">
-                <label for="{{ form.username.id_for_label }}">{% trans "Username" %}</label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    <div class="field-error">{{ form.username.errors.0 }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="input-group">
-                <label for="{{ form.email.id_for_label }}">{% trans "Email Address" %}</label>
-                {{ form.email }}
-                {% if form.email.errors %}
-                    <div class="field-error">{{ form.email.errors.0 }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="input-group">
-                <label for="{{ form.first_name.id_for_label }}">{% trans "First Name" %}</label>
-                {{ form.first_name }}
-                {% if form.first_name.errors %}
-                    <div class="field-error">{{ form.first_name.errors.0 }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="input-group">
-                <label for="{{ form.last_name.id_for_label }}">{% trans "Last Name" %}</label>
-                {{ form.last_name }}
-                {% if form.last_name.errors %}
-                    <div class="field-error">{{ form.last_name.errors.0 }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="input-group">
-                <label for="{{ form.password1.id_for_label }}">{% trans "Password" %}</label>
-                {{ form.password1 }}
-                {% if form.password1.errors %}
-                    <div class="field-error">{{ form.password1.errors.0 }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="input-group">
-                <label for="{{ form.password2.id_for_label }}">{% trans "Confirm Password" %}</label>
-                {{ form.password2 }}
-                {% if form.password2.errors %}
-                    <div class="field-error">{{ form.password2.errors.0 }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="input-group">
-                <label for="{{ form.language.id_for_label }}">{% trans "Language" %}</label>
-                {{ form.language }}
-                {% if form.language.errors %}
-                    <div class="field-error">{{ form.language.errors.0 }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="input-group">
-                <label for="{{ form.theme.id_for_label }}">{% trans "Theme" %}</label>
-                {{ form.theme }}
-                {% if form.theme.errors %}
-                    <div class="field-error">{{ form.theme.errors.0 }}</div>
-                {% endif %}
-            </div>
-
-            <label class="terms">
-                <input type="checkbox" name="terms" required>
-                {% trans "I agree to the terms and conditions" %}
-            </label>
-
-            <button type="submit" class="auth-btn">
-                {% trans "Create Account" %}
-            </button>
-        </form>
-
-        <p class="auth-footer">
-            {% trans "Already have an account?" %}
-            <a href="{% url 'authentication:login' %}">{% trans "Sign In" %}</a>
-        </p>
     </div>
 </div>
 
 <style>
-<<<<<<< HEAD
 :root {
     --bg-primary: #0f0f0f;
     --bg-secondary: rgba(20, 20, 20, 0.8);
@@ -147,20 +114,15 @@
 }
 
 .login-page {
-=======
-.auth-page {
->>>>>>> 53ce3566a6d35c2b6a8ec253b22aefb2e642c72c
     min-height: 100vh;
+    background: var(--bg-primary);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #f5b823, #44c0af, #ef4444);
-    background-size: 200% 200%;
-    animation: bgShift 12s ease infinite;
     padding: 1rem;
+    position: relative;
 }
 
-<<<<<<< HEAD
 .login-page::before {
     content: '';
     position: absolute;
@@ -172,184 +134,176 @@
         radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
         radial-gradient(circle at 75% 75%, rgba(184, 134, 11, 0.1) 0%, transparent 50%);
     pointer-events: none;
-=======
-@keyframes bgShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
->>>>>>> 53ce3566a6d35c2b6a8ec253b22aefb2e642c72c
 }
 
-.auth-card {
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(15px);
-    border-radius: 20px;
-    padding: 2.5rem;
-    max-width: 450px;
+.login-container {
     width: 100%;
+    max-width: 420px;
+    position: relative;
+    z-index: 1;
+}
+
+.login-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 2.5rem;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.2),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+    transition: var(--transition-normal);
+}
+
+.login-card:hover {
+    box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
+    transform: translateY(-2px);
+}
+
+.card-header {
     text-align: center;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    margin-bottom: 2rem;
 }
 
-.logo-center {
+.card-header h1 {
+    font-size: var(--h1);
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.card-header p {
+    font-size: var(--body);
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.error-alert {
     display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-}
-
-.auth-logo {
-    width: 90px;
-    height: 90px;
-    border-radius: 15px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
-}
-
-.auth-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: white;
-}
-
-.auth-subtitle {
-    color: rgba(255,255,255,0.85);
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 8px;
+    color: #ef4444;
     margin-bottom: 1.5rem;
+    font-size: var(--caption);
+}
+
+.error-alert svg {
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+.error-content p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .input-group {
-    text-align: left;
-    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .input-group label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: white;
-    display: block;
-    margin-bottom: 0.3rem;
+    font-size: var(--caption);
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.input-group input,
-.input-group select {
+.input-group input {
     width: 100%;
-    padding: 0.8rem;
+    padding: 0.875rem 1rem;
+    font-size: var(--body);
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border-color);
     border-radius: 8px;
-    border: none;
-    background: rgba(255,255,255,0.15);
-    color: white;
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s;
+    color: var(--text-primary);
+    transition: var(--transition-fast);
     box-sizing: border-box;
 }
 
-<<<<<<< HEAD
 .input-group input:focus {
     outline: none;
     border-color: var(--color-primary);
     background: rgba(255, 215, 0, 0.05);
     box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
-=======
-.input-group input:focus,
-.input-group select:focus {
-    background: rgba(255,255,255,0.25);
-    box-shadow: 0 0 8px rgba(245,184,35,0.5);
->>>>>>> 53ce3566a6d35c2b6a8ec253b22aefb2e642c72c
 }
 
-.input-group input::placeholder {
-    color: rgba(255,255,255,0.6);
+.input-group input:hover:not(:focus) {
+    border-color: var(--border-hover);
 }
 
-<<<<<<< HEAD
 .form-extras {
     display: flex;
     justify-content: flex-start;
     align-items: center;
     margin: 0.5rem 0;
-=======
-.input-group select {
-    cursor: pointer;
->>>>>>> 53ce3566a6d35c2b6a8ec253b22aefb2e642c72c
 }
 
-.input-group select option {
-    background: #2a2a2a;
-    color: white;
-}
-
-.field-error {
-    color: #ff6b6b;
-    font-size: 0.8rem;
-    margin-top: 0.3rem;
-    text-align: left;
-}
-
-.auth-btn {
-    width: 100%;
-    padding: 0.9rem;
-    background: linear-gradient(90deg, #f5b823, #44c0af);
-    border: none;
-    border-radius: 8px;
-    color: black;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin-top: 1rem;
-}
-
-.auth-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(245,184,35,0.4);
-}
-
-.terms {
+.remember-me {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-size: 0.85rem;
-    color: white;
-    margin: 1rem 0;
-    text-align: left;
+    font-size: var(--caption);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: var(--transition-fast);
 }
 
-.terms input[type="checkbox"] {
+.remember-me:hover {
+    color: var(--text-primary);
+}
+
+.remember-me input[type="checkbox"] {
     width: 16px;
     height: 16px;
-<<<<<<< HEAD
     accent-color: var(--color-primary);
     margin: 0;
-=======
-    accent-color: #f5b823;
->>>>>>> 53ce3566a6d35c2b6a8ec253b22aefb2e642c72c
 }
 
-.error-alert {
-    background: rgba(239,68,68,0.2);
-    padding: 0.8rem;
+.login-btn {
+    position: relative;
+    width: 100%;
+    height: var(--btn-primary-height);
+    background: var(--gradient-primary);
+    border: none;
     border-radius: 8px;
-    color: white;
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-    text-align: left;
+    color: var(--bg-primary);
+    font-size: var(--btn-text);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-normal);
+    overflow: hidden;
+    margin-top: 0.5rem;
 }
 
-<<<<<<< HEAD
 .login-btn:hover:not(:disabled) {
     transform: translateY(-1px);
     box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
-=======
-.error-alert p {
-    margin: 0.2rem 0;
->>>>>>> 53ce3566a6d35c2b6a8ec253b22aefb2e642c72c
 }
 
-.auth-footer {
-    color: white;
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
+.login-btn:active {
+    transform: translateY(0);
 }
 
-<<<<<<< HEAD
 .login-btn:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -402,35 +356,33 @@
 
 .card-footer a {
     color: var(--color-secondary);
-=======
-.auth-footer a {
-    color: #f5b823;
->>>>>>> 53ce3566a6d35c2b6a8ec253b22aefb2e642c72c
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 600;
+    transition: var(--transition-fast);
 }
 
-.auth-footer a:hover {
+.card-footer a:hover {
+    color: var(--text-primary);
     text-decoration: underline;
 }
 
 /* Mobile Responsive */
 @media (max-width: 480px) {
-    .auth-card {
-        padding: 2rem 1.5rem;
+    .login-card {
+        padding: 1.5rem;
         margin: 0.5rem;
     }
     
-    .auth-title {
-        font-size: 1.5rem;
+    .card-header h1 {
+        font-size: var(--h2);
     }
     
-    .auth-logo {
-        width: 70px;
-        height: 70px;
+    .form-extras {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
     }
 }
-<<<<<<< HEAD
 
 /* Theme-specific adjustments */
 [data-theme="light"] .login-page::before {
@@ -459,16 +411,14 @@
         0 20px 60px rgba(0, 0, 0, 0.12),
         0 0 0 1px rgba(0, 0, 0, 0.08);
 }
-=======
->>>>>>> 53ce3566a6d35c2b6a8ec253b22aefb2e642c72c
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registerForm');
-    const inputs = form.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], select');
+    const submitBtn = form.querySelector('.login-btn');
+    const btnText = submitBtn.querySelector('.btn-text');
     
-<<<<<<< HEAD
     form.addEventListener('submit', function(e) {
         submitBtn.disabled = true;
         submitBtn.classList.add('loading');
@@ -497,62 +447,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Clear errors on input
-=======
-    // Clear errors when user starts typing
->>>>>>> 53ce3566a6d35c2b6a8ec253b22aefb2e642c72c
     inputs.forEach(input => {
         input.addEventListener('input', function() {
             const errorAlert = document.querySelector('.error-alert');
-            const fieldError = this.parentElement.querySelector('.field-error');
-            
             if (errorAlert && this.value.trim()) {
                 errorAlert.style.opacity = '0.5';
-                setTimeout(() => {
-                    errorAlert.style.display = 'none';
-                }, 300);
-            }
-            
-            if (fieldError) {
-                fieldError.style.display = 'none';
             }
         });
-        
-        // Also handle select changes
-        if (input.tagName === 'SELECT') {
-            input.addEventListener('change', function() {
-                const fieldError = this.parentElement.querySelector('.field-error');
-                if (fieldError) {
-                    fieldError.style.display = 'none';
-                }
-            });
-        }
     });
-    
-    // Form validation
-    form.addEventListener('submit', function(e) {
-        let isValid = true;
-        const requiredInputs = form.querySelectorAll('input[required]');
-        
-        requiredInputs.forEach(input => {
-            if (!input.value.trim()) {
-                isValid = false;
-                input.style.border = '2px solid #ff6b6b';
-            } else {
-                input.style.border = 'none';
-            }
-        });
-        
-        if (!isValid) {
-            e.preventDefault();
-            alert('Please fill in all required fields.');
-        }
-    });
-    
-    // Auto-focus first input
-    const firstInput = form.querySelector('input');
-    if (firstInput) {
-        setTimeout(() => firstInput.focus(), 100);
-    }
 });
 </script>
 {% endblock %}
