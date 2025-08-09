@@ -1,4 +1,4 @@
-{% extends "base/auth_base.html" %}
+{% extends "base/base.html" %}
 {% load static %}
 {% load i18n %}
 
@@ -37,8 +37,8 @@
                 {% csrf_token %}
                 
                 <div class="input-group">
-                    <label for="{{ form.username.id_for_label }}">{% trans "Username or Email" %}</label>
-                    {{ form.username }}
+                        <label for="{{ form.email.id_for_label }}">{% trans "Email" %}</label>
+                        {{ form.email }}
                 </div>
                 
                 <div class="input-group">
@@ -51,9 +51,10 @@
                         {{ form.remember_me }}
                         <span>{% trans "Remember me" %}</span>
                     </label>
-                    <a href="{% url 'authentication:password_reset' %}" class="forgot-password">
+                   <!-- <a href="{% url 'authentication:password_reset' %}" class="forgot-password">
                         {% trans "Forgot password?" %}
-                    </a>
+                    </a>-->
+
                 </div>
                 
                 <button type="submit" class="login-btn">
