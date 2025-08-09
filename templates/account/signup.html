@@ -37,12 +37,12 @@
                 {% csrf_token %}
                 
                 <div class="input-group">
-                    <label for="{{ form.username.id_for_label }}">{% trans "Username" %}</label>
+                    <label for="{{ form.username.id_for_label }}">{% trans "Username or Email" %}</label>
                     {{ form.username }}
                 </div>
                 
                 <div class="input-group">
-                    <label for="{{ form.email.id_for_label }}">{% trans "Email Address" %}</label>
+                    <label for="{{ form.email.id_for_label }}">{% trans "Email" %}</label>
                     {{ form.email }}
                 </div>
                 

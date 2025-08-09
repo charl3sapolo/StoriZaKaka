@@ -86,10 +86,10 @@ class CustomUserCreationForm(UserCreationForm):
 class CustomAuthenticationForm(AuthenticationForm):
     """Custom login form."""
     
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={
+    email = forms.CharField(
+        widget=forms.EmailInput(attrs={
             'class': 'form-control',
-            'placeholder': _('Enter your username or email')
+            'placeholder': _('Enter your email')
         })
     )
     
