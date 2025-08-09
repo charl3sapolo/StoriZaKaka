@@ -19,39 +19,10 @@ class CustomUserCreationForm(UserCreationForm):
         })
     )
     
-    first_name = forms.CharField(
-        max_length=30,
-        required=True,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': _('Enter your first name')
-        })
-    )
-    
-    last_name = forms.CharField(
-        max_length=30,
-        required=True,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': _('Enter your last name')
-        })
-    )
-    
-    language = forms.ChoiceField(
-        choices=[('en', 'English'), ('sw', 'Swahili')],
-        initial='en',
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
-    
-    theme = forms.ChoiceField(
-        choices=[('light', 'Light'), ('dark', 'Dark'), ('auto', 'Auto')],
-        initial='auto',
-        widget=forms.Select(attrs={'class': 'form-control'})
-    )
-    
+       
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'password1', 'password2', 'language', 'theme')
+        fields = ('username', 'email', 'password1', 'password2')
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -92,19 +63,31 @@ class CustomAuthenticationForm(AuthenticationForm):
             'placeholder': _('Enter your email')
         })
     )
-    
+
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'class': 'form-control',
             'placeholder': _('Enter your password')
         })
     )
-    
+
     remember_me = forms.BooleanField(
         required=False,
         initial=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        email = cleaned_data.get('email')
+        password = cleaned_data.get('password')
+        if email and password:
+            from django.contrib.auth import authenticate
+            user = authenticate(username=email, password=password)
+            if user is None:
+                raise forms.ValidationError(_('Invalid email or password.'))
+            self.user_cache = user
+        return cleaned_data
 
 
 class UserProfileForm(forms.ModelForm):
@@ -112,10 +95,9 @@ class UserProfileForm(forms.ModelForm):
     
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'avatar', 'bio', 'location')
+        fields = ('username', 'email', 'avatar', 'bio', 'location')
         widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'bio': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
             'location': forms.TextInput(attrs={'class': 'form-control'}),
