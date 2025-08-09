@@ -1253,7 +1253,7 @@ async function saveMovieToDatabase(movieData) {
 }
 
 async function saveMovieToLocalStorage(movieData) {
-  const savedMovies = JSON.parse(localStorage.getItem('savedMovies') || '[]');
+  const savedMovies = JSON.parse(localStorage.getItem('saved_movies') || '[]');
   
   // Add expiration date (1 day from now)
   const expirationDate = new Date();
@@ -1278,7 +1278,7 @@ async function saveMovieToLocalStorage(movieData) {
     return new Date(movie.expires_at) > now;
   });
   
-  localStorage.setItem('savedMovies', JSON.stringify(validMovies));
+  localStorage.setItem('saved_movies', JSON.stringify(validMovies));
 }
 
 function showSaveSuccess(movieTitle) {

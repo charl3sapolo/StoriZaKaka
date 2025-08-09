@@ -372,23 +372,23 @@
         }
     </style>
 </head>
-<body>
+<body data-theme="dark" data-lang="en">
     <!-- Header -->
     <header class="header">
         <nav class="nav">
             <div class="logo">
                 <a href="/" class="logo-link">
-                    <span class="logo-icon">🎬</span>
+                    <img src="{% static 'logo.kakaflix.jpg' %}" alt="KakaFlix Logo" class="logo-icon">
                     <span>Stori za Kaka</span>
                 </a>
             </div>
             
             <!-- Desktop Navigation -->
             <ul class="nav-center">
-                <li><a href="/" class="nav-link">Home</a></li>
-                <li><a href="/movie-details/" class="nav-link">My Movies <span class="badge" id="savedCount">0</span></a></li>
-                <li><a href="/discover/" class="nav-link">Discover</a></li>
-                <li><a href="/profile/" class="nav-link">Profile</a></li>
+                <li><a href="/" class="nav-link" data-en="Home" data-sw="Nyumbani">Home</a></li>
+                <li><a href="/discover/" class="nav-link" data-en="Discover" data-sw="Gundua">Discover</a></li>
+                <li><a href="/movie-details/" class="nav-link" data-en="My Movies" data-sw="Filamu Zangu">My Movies <span class="badge" id="savedCount">0</span></a></li>
+                <li><a href="/profile/" class="nav-link active" data-en="Profile" data-sw="Wasifu">Profile</a></li>
             </ul>
             
             <div class="nav-controls">
@@ -422,25 +422,25 @@
         <nav class="vertical-nav">
             <a href="/" class="menu-item" aria-label="Go to Home">
                 <i class="fas fa-home"></i>
-                <span>Home</span>
-            </a>
-            <a href="/movie-details/" class="menu-item" aria-label="Go to My Movies">
-                <i class="fas fa-heart"></i>
-                <span>My Movies <span class="badge" id="mobileSavedCount">0</span></span>
-            </a>
-            <a href="/profile/" class="menu-item" aria-label="Go to Profile">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
+                <span data-en="Home" data-sw="Nyumbani">Home</span>
             </a>
             <a href="/discover/" class="menu-item" aria-label="Go to Discover">
                 <i class="fas fa-search"></i>
-                <span>Discover</span>
+                <span data-en="Discover" data-sw="Gundua">Discover</span>
+            </a>
+            <a href="/movie-details/" class="menu-item" aria-label="Go to My Movies">
+                <i class="fas fa-heart"></i>
+                <span data-en="My Movies" data-sw="Filamu Zangu">My Movies <span class="badge" id="mobileSavedCount">0</span></span>
+            </a>
+            <a href="/profile/" class="menu-item active" aria-label="Go to Profile">
+                <i class="fas fa-user"></i>
+                <span data-en="Profile" data-sw="Wasifu">Profile</span>
             </a>
         </nav>
         
         <div class="menu-footer">
             <div class="menu-version">
-                <span>Version</span>
+                <span data-en="Version" data-sw="Toleo">Version</span>
                 <span>1.0.0</span>
             </div>
         </div>
@@ -548,43 +548,10 @@
         </div>
     </div>
 
+    <script src="{% static 'js/navigation.js' %}"></script>
+    <script src="{% static 'js/movie-manager.js' %}"></script>
+    
     <script>
-        // Theme and Language Toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const languageToggle = document.getElementById('languageToggle');
-        const body = document.body;
-
-        // Theme toggle
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = body.getAttribute('data-theme') || 'dark';
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            body.setAttribute('data-theme', newTheme);
-            themeToggle.querySelector('.theme-icon').textContent = newTheme === 'dark' ? '🌙' : '☀️';
-            localStorage.setItem('theme', newTheme);
-        });
-
-        // Language toggle
-        languageToggle.addEventListener('click', () => {
-            const currentLang = body.getAttribute('data-lang') || 'en';
-            const newLang = currentLang === 'en' ? 'sw' : 'en';
-            body.setAttribute('data-lang', newLang);
-            languageToggle.querySelector('span').textContent = newLang === 'en' ? 'SW' : 'EN';
-            localStorage.setItem('language', newLang);
-        });
-
-        // Mobile menu
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const closeMenuBtn = document.getElementById('closeMenuBtn');
-
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.add('open');
-        });
-
-        closeMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.remove('open');
-        });
-
         // Profile functionality
         class ProfileManager {
             constructor() {
@@ -650,49 +617,6 @@
 
         // Initialize profile manager
         window.profileManager = new ProfileManager();
-
-        // Load saved theme and language
-        const savedTheme = localStorage.getItem('theme');
-        const savedLang = localStorage.getItem('language');
-
-        if (savedTheme) {
-            body.setAttribute('data-theme', savedTheme);
-            themeToggle.querySelector('.theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
-        }
-
-        if (savedLang) {
-            body.setAttribute('data-lang', savedLang);
-            languageToggle.querySelector('span').textContent = savedLang === 'en' ? 'SW' : 'EN';
-        }
-
-        // Update menu time
-        function updateMenuTime() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('en-US', { 
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: false 
-            });
-            document.getElementById('menu-time').textContent = timeString;
-        }
-
-        updateMenuTime();
-        setInterval(updateMenuTime, 1000);
-
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
-                mobileMenu.classList.remove('open');
-            }
-        });
-
-        // Close mobile menu on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                mobileMenu.classList.remove('open');
-            }
-        });
     </script>
-    <script src="{% static 'js/movie-manager.js' %}"></script>
 </body>
 </html>

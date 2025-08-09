@@ -31,15 +31,21 @@
     <header class="header">
         <nav class="nav">
             <div class="logo">
-                <img src="{% static 'logo.kakaflix.jpg' %}" alt="KakaFlix Logo" class="logo-icon">
+                <a href="/" class="logo-link">
+                    <img src="{% static 'logo.kakaflix.jpg' %}" alt="KakaFlix Logo" class="logo-icon">
+                    <span>KakaFlix</span>
+                </a>
             </div>
+            
+            <!-- Desktop Navigation -->
             <ul class="nav-center">
-                <li><a href="#home" data-en="Home" data-sw="Nyumbani">Home</a></li>
-                <li><a href="#features" data-en="Features" data-sw="Vipengele">Features</a></li>
-                <li><a href="#showcase" data-en="Showcase" data-sw="Maonesho">Showcase</a></li>
-                <li><a href="#discover" data-en="Discover" data-sw="Gundua">Discover</a></li>
-                <li><a href="#contact" data-en="Login" data-sw="Ingia">Login</a></li>
+                <li><a href="#home" class="nav-link active" data-en="Home" data-sw="Nyumbani">Home</a></li>
+                <li><a href="#features" class="nav-link" data-en="Features" data-sw="Vipengele">Features</a></li>
+                <li><a href="#showcase" class="nav-link" data-en="Showcase" data-sw="Maonesho">Showcase</a></li>
+                <li><a href="#discover" class="nav-link" data-en="Discover" data-sw="Gundua">Discover</a></li>
+                <li><a href="/accounts/login/" class="nav-link" data-en="Login" data-sw="Ingia">Login</a></li>
             </ul>
+            
             <div class="nav-controls">
                 <!-- Refresh Button in Nav -->
                 <button class="hero-refresh" id="heroRefreshBtn" aria-label="Refresh hero content" tabindex="0" data-tooltip="Refresh Movie content">
@@ -60,7 +66,7 @@
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Enhanced Mobile Menu Panel -->
+    <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
         <div class="menu-header">
             <div class="menu-time-container">
@@ -73,9 +79,13 @@
         </div>
         
         <nav class="vertical-nav">
-            <a href="#home" class="menu-item" aria-label="Go to Home section">
+            <a href="#home" class="menu-item active" aria-label="Go to Home section">
                 <i class="fas fa-home"></i>
                 <span data-en="Home" data-sw="Nyumbani">Home</span>
+            </a>
+            <a href="#features" class="menu-item" aria-label="Go to Features section">
+                <i class="fas fa-star"></i>
+                <span data-en="Features" data-sw="Vipengele">Features</span>
             </a>
             <a href="#showcase" class="menu-item" aria-label="Go to Showcase section">
                 <i class="fas fa-film"></i>
@@ -85,29 +95,21 @@
                 <i class="fas fa-search"></i>
                 <span data-en="Discover" data-sw="Gundua">Discover</span>
             </a>
-            <a href="#features" class="menu-item" aria-label="Go to Features section">
-                <i class="fas fa-star"></i>
-                <span data-en="Features" data-sw="Vipengele">Features</span>
-            </a>
-            <a href="#contact" class="menu-item" aria-label="Go to Contact section">
-                <i class="fas fa-envelope"></i>
-                <span data-en="Contact" data-sw="Mawasiliano">Contact</span>
+            <a href="/accounts/login/" class="menu-item" aria-label="Go to Login">
+                <i class="fas fa-sign-in-alt"></i>
+                <span data-en="Login" data-sw="Ingia">Login</span>
             </a>
             
             <!-- Additional menu items -->
             <div class="menu-divider"></div>
             
-            <a href="#about" class="menu-item" aria-label="Go to About section">
-                <i class="fas fa-info-circle"></i>
-                <span data-en="About" data-sw="Kuhusu">About</span>
+            <a href="/movie-details/" class="menu-item" aria-label="Go to My Movies">
+                <i class="fas fa-heart"></i>
+                <span data-en="My Movies" data-sw="Filamu Zangu">My Movies</span>
             </a>
-            <a href="#help" class="menu-item" aria-label="Go to Help section">
-                <i class="fas fa-question-circle"></i>
-                <span data-en="Help" data-sw="Msaada">Help</span>
-            </a>
-            <a href="#settings" class="menu-item" aria-label="Go to Settings">
-                <i class="fas fa-cog"></i>
-                <span data-en="Settings" data-sw="Mipangilio">Settings</span>
+            <a href="/profile/" class="menu-item" aria-label="Go to Profile">
+                <i class="fas fa-user"></i>
+                <span data-en="Profile" data-sw="Wasifu">Profile</span>
             </a>
         </nav>
         
@@ -466,9 +468,9 @@
         <div class="container">
             <h2 class="cta-title" data-en="Ready for Your Perfect Movie Match?" data-sw="Uko Tayari kwa Mechi Yako Kamili ya Filamu?">Ready for Your Perfect Movie Match?</h2>
             <p class="cta-description"
-               data-en="Join thousands of movie lovers who discover their next favorite film with CineMatch every day."
-               data-sw="Jiunge na maelfu ya wapenzi wa filamu wanaogundua filamu yao inayofuata kupenda na CineMatch kila siku.">
-                Join thousands of movie lovers who discover their next favorite film with CineMatch every day.
+               data-en="Join thousands of movie lovers who discover their next favorite film with KakaFlix every day."
+               data-sw="Jiunge na maelfu ya wapenzi wa filamu wanaogundua filamu yao inayofuata kupenda na KakaFlix kila siku.">
+                Join thousands of movie lovers who discover their next favorite film with kakaflix every day.
             </p>
             <a href="#discover" class="btn btn-primary" data-en="Get Started" data-sw="Anza Sasa">
                 <i class="fas fa-rocket"></i> Get Started

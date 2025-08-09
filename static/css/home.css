@@ -1,5 +1,29 @@
 /* ===== HOMEPAGE STYLES ===== */
 
+/* ============================================================================
+// UNIFIED SCROLLBAR HIDING - Mobile-First Priority
+// ============================================================================ */
+
+/* Hide scrollbars completely without disabling scrolling functionality */
+::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Ensure smooth scrolling behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ensure no horizontal overflow on body */
+body {
+  overflow-x: hidden;
+}
+
 .bubble-container {
     position: fixed;
     top: 0;
@@ -275,15 +299,56 @@
         }
 
         .container {
-            max-width: 1200px;
+    max-width: 1400px;
             margin: 0 auto;
-            padding: 0 20px;
+    padding: 0 clamp(1rem, 3vw, 2rem);
+    width: 100%;
+}
+
+/* Large Screen Optimizations (≥1200px) */
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1400px;
+        padding: 0 2rem;
+    }
+}
+
+/* Medium Screen Optimizations (768px - 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .container {
+        max-width: 1200px;
+        padding: 0 1.5rem;
+    }
+}
+
+/* Small Screen Optimizations (480px - 767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+    .container {
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+}
+
+/* Mobile Optimizations (≤479px) */
+@media (max-width: 479px) {
+    .container {
+        max-width: 100%;
+        padding: 0 0.75rem;
+    }
+}
+
+/* Extra Small Mobile Optimizations (≤375px) */
+@media (max-width: 375px) {
+    .container {
+        max-width: 100%;
+        padding: 0 0.5rem;
+    }
         }
         
         /* Mobile-first section layout */
         .section {
             flex-direction: column;
-            padding: 1.5rem 5vw;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1rem, 3vw, 2rem);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -291,12 +356,14 @@
             height: auto;
             margin: 0 auto;
             scroll-snap-align: start;
+    max-width: 1400px;
             
             /* Desktop (≥1024px) */
             @media (min-width: 1024px) {
                 & + section { 
                     margin-top: var(--section-spacing-desktop); 
                 }
+        padding: 4rem 2rem;
             }
             
             /* Tablet (601px - 1023px) */
@@ -304,14 +371,15 @@
                 & + section { 
                     margin-top: var(--section-spacing-tablet); 
                 }
+        padding: 3rem 1.5rem;
             }
             
             /* Mobile (<600px) */
             @media (max-width: 600px) {
-                height: var(--mobile-section-height);
-                width: 100vw;
+        height: auto;
+        width: 100%;
                 overflow: hidden;
-                padding: var(--mobile-padding);
+        padding: 2rem 1rem;
                 box-sizing: border-box;
                 
                 /* Prevent horizontal overflow */
@@ -320,6 +388,11 @@
                     overflow-x: hidden;
                 }
             }
+    
+    /* Extra Small Mobile */
+    @media (max-width: 375px) {
+        padding: 1.5rem 0.75rem;
+    }
         }
 
         /* Header Section */
@@ -359,6 +432,30 @@
             border-radius: 4px;
             animation: pulse 2s infinite;
         }
+
+        /* Logo display for mobile */
+@media (max-width: 768px) {
+    .logo-link span {
+        display: none;
+    }
+    
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        margin: 0;
+        border-radius: 8px;
+        position: relative;
+        z-index: 1004;
+    }
+
+    .logo {
+        margin-left: auto; /* Changed from margin-right to margin-left */
+        margin-right: 15px; /* Added right margin for spacing */
+        padding: 0;
+        position: relative;
+        z-index: 1004;
+    }
+}
 
         .nav-center {
             display: flex;
@@ -400,78 +497,108 @@
             gap: 1rem;
         }
 
-        /* Theme Toggle */
+        /* Enhanced Theme Toggle */
         .theme-toggle {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
             border-radius: 20px;
-            padding: 0.5rem;
+            padding: 0.75rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            min-width: 50px;
         }
 
         .theme-toggle:hover {
             background: var(--bg-tertiary);
             border-color: var(--border-hover);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px var(--shadow-color);
+        }
+
+        .theme-toggle:active {
+            transform: translateY(0) scale(0.95);
         }
 
         .theme-icon {
-            font-size: 1.2rem;
-            transition: transform 0.3s ease;
+            font-size: 1.3rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
         }
 
         .theme-toggle:hover .theme-icon {
-            transform: rotate(180deg);
+            transform: rotate(15deg) scale(1.1);
         }
 
-        /* Language Toggle */
+        /* Theme toggle animations */
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .theme-toggle:hover::before {
+            left: 100%;
+        }
+
+        /* Enhanced Language Toggle */
         .language-toggle {
             background: var(--bg-secondary);
             border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--text-primary);
-            font-weight: 500;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
         }
 
         .language-toggle:hover {
             background: var(--color-red);
-            color: white;
+            color: rgb(209, 209, 206);
             border-color: var(--color-red);
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .language-toggle:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        /* Language toggle shine effect */
+        .language-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .language-toggle:hover::before {
+            left: 100%;
         }
 
         /* Floating Animation */
-        .floating-elements {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-            z-index: -1;
-            overflow: hidden;
-        }
-
-        .floating-icon {
-            position: absolute;
-            font-size: 2rem;
-            animation: float 6s ease-in-out infinite;
-            opacity: 0.6;
-        }
-
-        .floating-icon:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
-        .floating-icon:nth-child(2) { top: 30%; right: 15%; animation-delay: 1s; }
-        .floating-icon:nth-child(3) { bottom: 30%; left: 20%; animation-delay: 2s; }
-        .floating-icon:nth-child(4) { bottom: 20%; right: 10%; animation-delay: 3s; }
-        .floating-icon:nth-child(5) { top: 10%; left: 50%; animation-delay: 0.5s; }
-        .floating-icon:nth-child(6) { bottom: 10%; left: 30%; animation-delay: 1.5s; }
-        .floating-icon:nth-child(7) { top: 40%; right: 5%; animation-delay: 2.5s; }
-
+        
         @keyframes float {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             50% { transform: translateY(-20px) rotate(5deg); }
@@ -486,16 +613,18 @@
 
         .section-header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: clamp(2rem, 5vw, 4rem);
         }
 
         .section-title {
-            font-size: 2.8rem;
+            font-size: clamp(2rem, 6vw, 3.5rem);
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: clamp(1rem, 3vw, 1.5rem);
             color: var(--text-primary);
             position: relative;
             display: inline-block;
+            line-height: 1.2;
+            letter-spacing: -0.02em;
         }
 
         .section-title::after {
@@ -504,18 +633,105 @@
             bottom: -10px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
-            height: 4px;
+            width: clamp(60px, 15vw, 80px);
+            height: clamp(3px, 1vw, 4px);
             background: var(--gradient-primary);
             border-radius: 2px;
         }
 
         .section-subtitle {
-            font-size: 1.2rem;
+    font-size: clamp(1rem, 3vw, 1.3rem);
             color: var(--text-secondary);
-            max-width: 700px;
+    max-width: clamp(500px, 80vw, 700px);
             margin: 0 auto;
-            line-height: 1.7;
+    line-height: 1.6;
+    font-weight: 400;
+}
+
+/* Large Screen Optimizations (≥1200px) */
+@media (min-width: 1200px) {
+    .section-header {
+        margin-bottom: 4rem;
+    }
+    
+    .section-title {
+        font-size: 3.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1.3rem;
+        max-width: 700px;
+    }
+}
+
+/* Medium Screen Optimizations (768px - 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .section-header {
+        margin-bottom: 3rem;
+    }
+    
+    .section-title {
+        font-size: 2.8rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1.2rem;
+        max-width: 600px;
+    }
+}
+
+/* Small Screen Optimizations (480px - 767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+    .section-header {
+        margin-bottom: 2.5rem;
+    }
+    
+    .section-title {
+        font-size: 2.2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1.1rem;
+        max-width: 500px;
+    }
+}
+
+/* Mobile Optimizations (≤479px) */
+@media (max-width: 479px) {
+    .section-header {
+        margin-bottom: 2rem;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1rem;
+        max-width: 100%;
+        padding: 0 1rem;
+    }
+}
+
+/* Extra Small Mobile Optimizations (≤375px) */
+@media (max-width: 375px) {
+    .section-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.6rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .section-subtitle {
+        font-size: 0.9rem;
+        padding: 0 0.5rem;
+    }
         }
 
  /* Enhanced Feature Cards with Improved Shimmer */
@@ -691,7 +907,7 @@
 }
 
 
-/* Enhanced Statistics Section */
+/* Enhanced Statistics Section - Improved Responsive Design */
 .stats-section {
     background: var(--stats-bg, rgba(40, 40, 50, 0.6));
     border: 1px solid var(--stats-border, rgba(255, 255, 255, 0.1));
@@ -704,6 +920,9 @@
     overflow: hidden;
     box-shadow: var(--stats-shadow, 0 8px 32px rgba(0, 0, 0, 0.2));
     transition: all 0.4s ease;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .stats-section:hover {
@@ -742,14 +961,21 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
-    gap: clamp(1rem, 3vw, 2rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: clamp(1.5rem, 4vw, 2.5rem);
     text-align: center;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
 .stat-item {
-    padding: clamp(0.75rem, 2vw, 1rem);
+    padding: clamp(1rem, 3vw, 1.5rem);
     position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
 }
 
 .stat-item::before {
@@ -771,9 +997,9 @@
 
 .stat-number {
     display: block;
-    font-size: clamp(2rem, 6vw, 3rem);
+    font-size: clamp(2.5rem, 8vw, 4rem);
     font-weight: 800;
-    margin-bottom: clamp(0.25rem, 1vw, 0.5rem);
+    margin-bottom: clamp(0.5rem, 2vw, 1rem);
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -781,31 +1007,165 @@
     line-height: 1;
     font-family: 'Barlow', sans-serif;
     text-shadow: 0 0 10px rgba(245, 184, 35, 0.2);
+    letter-spacing: -0.02em;
 }
 
 .stat-label {
     color: var(--text-secondary);
-    font-size: clamp(0.9rem, 3vw, 1.1rem);
+    font-size: clamp(1rem, 3.5vw, 1.3rem);
     font-weight: 500;
     letter-spacing: 0.5px;
+    line-height: 1.2;
+    text-align: center;
+    max-width: 200px;
+    margin: 0 auto;
 }
 
-/* Mobile Optimizations */
-@media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+/* Large Screen Optimizations (≥1200px) */
+@media (min-width: 1200px) {
+    .stats-section {
+        padding: 5rem 3rem;
+        margin: 5rem auto;
     }
     
-    .stats-section {
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3rem;
+        max-width: 1200px;
+    }
+    
+    .stat-item {
+        min-height: 150px;
         padding: 2rem 1rem;
+    }
+    
+    .stat-number {
+        font-size: 4.5rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .stat-label {
+        font-size: 1.4rem;
+        max-width: 250px;
+    }
+}
+
+/* Medium Screen Optimizations (768px - 1199px) */
+@media (min-width: 768px) and (max-width: 1199px) {
+    .stats-section {
+        padding: 4rem 2rem;
+        margin: 4rem auto;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2.5rem;
+        max-width: 800px;
+    }
+    
+    .stat-item {
+        min-height: 140px;
+        padding: 1.5rem 1rem;
+    }
+    
+    .stat-number {
+        font-size: 3.5rem;
+        margin-bottom: 1.2rem;
+    }
+    
+    .stat-label {
+        font-size: 1.2rem;
+        max-width: 200px;
+    }
+}
+
+/* Small Screen Optimizations (480px - 767px) */
+@media (min-width: 480px) and (max-width: 767px) {
+    .stats-section {
+        padding: 3rem 1.5rem;
+        margin: 3rem auto;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+    }
+    
+    .stat-item {
+        min-height: 120px;
+        padding: 1.25rem 0.75rem;
+    }
+    
+    .stat-number {
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+    }
+    
+    .stat-label {
+        font-size: 1.1rem;
+        max-width: 180px;
+    }
+}
+
+/* Mobile Optimizations (≤479px) */
+@media (max-width: 479px) {
+    .stats-section {
+        padding: 2.5rem 1rem;
+        margin: 2rem auto;
+        border-radius: 12px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+    
+    .stat-item {
+        min-height: 100px;
+        padding: 1rem 0.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2.2rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .stat-label {
+        font-size: 0.95rem;
+        max-width: 140px;
+        line-height: 1.3;
     }
     
     .stats-section:hover {
         transform: none;
     }
+}
+
+/* Extra Small Mobile Optimizations (≤375px) */
+@media (max-width: 375px) {
+    .stats-section {
+        padding: 2rem 0.75rem;
+        margin: 1.5rem auto;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.25rem;
+    }
+    
+    .stat-item {
+        min-height: 90px;
+        padding: 0.75rem 0.25rem;
+    }
     
     .stat-number {
-        font-size: 2.2rem;
+        font-size: 1.8rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-label {
+        font-size: 0.85rem;
+        max-width: 120px;
     }
 }
 
@@ -998,26 +1358,92 @@
         padding: 0 6px;
     }
     .hero {
-        padding: 80px 0 40px;
-        min-height: 80vh;
+        padding: 80px 0 60px; /* Reduced padding to move content up */
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
     .hero-content {
-        margin: 0;
-        max-width: 100vw;
-        padding: 0 4px;
+        max-width: 700px;
+        margin-left: -4vw;
+        margin-right: 24vw;
+        position: relative;
         text-align: left;
+        display: flex;
+        flex-direction: column;
         align-items: flex-start;
+        transform: translateY(-40px); /* Move content up more */
     }
     .hero-title {
-        font-size: 1.1rem;
-        margin-left: 0;
-        margin-bottom: 0.7rem;
+        font-size: clamp(3.4rem, 8vw, var(--h1));
+        line-height: 1.1;
+        margin-bottom: 1.8rem;
+        padding-top: 20px; /* Reduced padding */
+        font-weight: 720;
+        margin-left: -5vw;
+        position: relative;
+        display: inline-block;
+        /* Enhanced contrast and readability */
+        background: linear-gradient(135deg, 
+            #ffffff 0%, 
+            #f8f9fa 25%, 
+            #e9ecef 50%, 
+            #dee2e6 75%, 
+            #ced4da 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        /* Strong shadow for better contrast */
+        text-shadow: 0 4px 12px rgba(0,0,0,0.9), 0 8px 24px rgba(0,0,0,0.8);
+        /* Remove any animations that cause blurriness */
+        animation: none;
+        text-align: left;
+        /* Ensure crisp text rendering */
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+        letter-spacing: 0.02em;
+        /* Prevent any blurriness */
+        transform: translateZ(0);
+        backface-visibility: hidden;
+        /* Add a subtle background for better readability */
+        background-color: rgba(0, 0, 0, 0.3);
+        padding: 1rem 1.5rem;
+        border-radius: 1rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        
+        @media (max-width: 600px) {
+            font-size: var(--h1);
         line-height: 1.2;
+            word-wrap: break-word;
+            -webkit-hyphens: auto;
+            margin-left: 0;
+            padding: 0.75rem 1rem;
+        }
     }
     .hero-subtitle {
-        font-size: 0.95rem;
-        margin-bottom: 1.2rem;
-        max-width: 98vw;
+        color: #ffffff; /* Enhanced contrast */
+        font-size: 1.2rem;
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.7;
+        font-weight: 400;
+        /* Strong shadow for better readability */
+        text-shadow: 0 2px 8px rgba(0,0,0,0.9), 0 4px 16px rgba(0,0,0,0.8);
+        /* Add background for better contrast */
+        background-color: rgba(0, 0, 0, 0.4);
+        padding: 1rem 1.5rem;
+        border-radius: 0.75rem;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+        
+        @media (max-width: 600px) {
+            font-size: 1rem;
+            padding: 0.75rem 1rem;
+        }
     }
     .hero-overlay {
         max-width: 100vw;
@@ -1149,22 +1575,36 @@
     padding: var(--space-md, 1rem) 0;
 }
 
+/* ============================================================================
+// UNIFIED CARD FLIP SYSTEM - Single Implementation for All Breakpoints
+// ============================================================================ */
+
 .movie-card {
     perspective: 1200px;
-    width: 250px;
-    height: 375px;
+    cursor: pointer;
     border-radius: 10px;
     overflow: visible;
     background: none;
     position: relative;
+    /* Responsive card scaling with clamp for perfect consistency */
+    width: clamp(120px, 30vw, 300px);
+    height: auto;
+    aspect-ratio: 2/3; /* Ensures consistent aspect ratio across all devices */
+    margin: 0 auto 1.5rem;
+    transition: transform var(--transition-normal, 0.3s ease);
+}
+
+.movie-card:hover {
+    transform: translateY(-8px);
 }
 
 .card-inner {
     width: 100%;
     height: 100%;
     position: relative;
-    transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
     transform-style: preserve-3d;
+    /* Unified animation timing - exactly 0.8s as specified */
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
     will-change: transform;
 }
 
@@ -1201,6 +1641,17 @@
     align-items: stretch;
     padding: 24px 18px 18px 18px;
     background-image: linear-gradient(135deg, rgba(0,0,0,0.35) 0%, transparent 80%);
+}
+
+/* Hide action buttons initially - show only after flip completes */
+.card-back .card-actions {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.4s; /* Delay matches half of flip duration */
+}
+
+/* Show action buttons after flip animation completes */
+.movie-card.flipped .card-back .card-actions {
+    opacity: 1;
 }
 
 [data-theme="light"] .card-back {
@@ -1792,8 +2243,6 @@
 }
 
 .discover-section::before {
-    content: '';
-    position: absolute;
     top: 0;
     left: 0;
     right: 0;
@@ -2689,7 +3138,7 @@
         
                 /* Hero Section */
 .hero {
-    padding: 120px 0 80px;
+    padding: 80px 0 60px; /* Reduced padding to move content up */
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -2720,24 +3169,29 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    transform: translateY(-20px); /* Move content up slightly */
 }
 
 .hero-title {
-    font-size: clamp(3.4rem, 8vw, var(--h1)); /* Adds responsive scaling */
+    font-size: clamp(3.4rem, 8vw, var(--h1));
     line-height: 1.1;
     margin-bottom: 1.8rem;
-    padding-top: 40px;
+    padding-top: 20px; /* Reduced padding */
     font-weight: 720;
     margin-left: -5vw;
     position: relative;
     display: inline-block;
-    background: linear-gradient(135deg, var(--light) 80%, var(--primary) 100%);
+    background: linear-gradient(135deg, #ffffff 80%, #fbbf24 100%); /* Enhanced contrast */
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    text-shadow: var(--hero-text-shadow);
-    animation: textGlow 2s ease-in-out infinite alternate;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 4px 16px rgba(0,0,0,0.6); /* Stronger shadow for better contrast */
+    animation: none; /* Remove pulsing animation */
     text-align: left;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    letter-spacing: 0.02em;
     
     @media (max-width: 600px) {
         font-size: var(--h1);
@@ -2758,19 +3212,21 @@
     background: var(--gradient-primary);
     border-radius: 2px;
     box-shadow: var(--shadow-gold);
-    animation: underlinePulse 2.5s ease-in-out infinite;
+    animation: none; /* Remove pulsing animation */
 }
 
 .hero-subtitle {
-    color: var(--text-secondary);
+    color: #ffffff; /* Enhanced contrast */
     font-size: 1.2rem;
     max-width: 600px;
     margin: 0 auto;
     line-height: 1.7;
     font-weight: 400;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* Add shadow for better readability */
 }
 
-/* Glow Animation */
+/* Glow Animation - REMOVED to fix blurry text */
+/*
 @keyframes textGlow {
     20% {
         text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
@@ -2780,6 +3236,8 @@
                      0 0 16px rgba(237, 166, 34, 0.2);
     }
 }
+*/
+
 /* Mood Recommendation Card Flip & Scrollable Back */
 .movie-card {
     perspective: 1200px;
@@ -2800,18 +3258,8 @@
     transition: transform 0.6s cubic-bezier(.4,2,.3,1);
     transform-style: preserve-3d;
 }
-.movie-card.flipped .card-inner {
-    transform: rotateY(180deg);
-}
-.card-front, .card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    border-radius: 18px;
-    overflow: hidden;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-}
+/* REMOVED: Duplicate card flip definition - using unified system */
+
 .card-back {
     background: var(--glass-bg, #222c);
     color: var(--text-primary);
@@ -2858,23 +3306,7 @@
 .action-btn:active {
     transform: scale(0.97);
 }
-@media (max-width: 768px) {
-    .movie-card.flipped {
-        position: fixed;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%) scale(1.05);
-        width: 90vw;
-        height: 70vh;
-        z-index: 100;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.25);
-    }
-    .movie-card {
-        min-width: 80vw;
-        max-width: 95vw;
-        min-height: 320px;
-    }
-}
+/* REMOVED: Conflicting mobile card flip implementation - now using unified system */
 
 /* Analysis Loading Animation */
 .analysis-loading {
@@ -2907,7 +3339,8 @@
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Underline Animation */
+/* Underline Animation - REMOVED to fix blurry text */
+/*
 @keyframes underlinePulse {
     0% {
         width: 80px;
@@ -2922,6 +3355,7 @@
         opacity: 0.8;
     }
 }  
+*/
 
 .hero-bg-slider {
     position: absolute;
@@ -3112,21 +3546,37 @@
     pointer-events: none;
     transition: background 0.2s, color 0.s;
 }
+
 .hero-overlay .hero-title {
     font-size: 2.8rem;
     font-weight: 900;
     letter-spacing: 0.01em;
     margin-bottom: 0.2rem;
     line-height: 1.1;
-    color: #fff;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.9), 0 4px 8px rgba(0,0,0,0.7);
+    color: #ffffff; /* Enhanced contrast */
+    text-shadow: 0 4px 12px rgba(0,0,0,0.95), 0 8px 24px rgba(0,0,0,0.9); /* Stronger shadow for better contrast */
     transition: font-family 0.4s, color 0.4s;
     text-align: right;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     letter-spacing: 0.02em;
+    animation: none; /* Remove any pulsing or blurry animations */
+    /* Enhanced background for better contrast */
+    background: rgba(0,0,0,0.7);
+    padding: 1.5rem 2rem;
+    border-radius: 1.2rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+    display: inline-block;
+    margin-bottom: 1rem;
+    /* Ensure crisp text rendering */
+    -webkit-font-feature-settings: "kern" 1;
+    font-feature-settings: "kern" 1;
+    /* Prevent any blurriness */
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
+
 .hero-meta {
     display: flex;
     align-items: center;
@@ -3134,36 +3584,41 @@
     font-size: 1.1rem;
     justify-content: flex-end;
 }
+
 .hero-rating {
     display: flex;
     align-items: center;
     gap: 0.3rem;
     font-size: 1.2rem;
     color: #FFD700;
-    background: rgba(0,0,0,0.18);
+    background: rgba(0,0,0,0.3); /* Enhanced background for better contrast */
     border-radius: 1.2rem;
     padding: 0.2rem 0.9rem;
     font-weight: 700;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
 }
+
 .hero-rating .fa-star {
     color: #FFD700 !important;
     filter: drop-shadow(0 0 2px #FFD70088);
 }
+
 .hero-meta .hero-year, .hero-meta .hero-genre {
-    color: #fff;
-    opacity: 0.92;
+    color: #ffffff; /* Enhanced contrast */
+    opacity: 0.95; /* Increased opacity */
     font-size: 1.08rem;
     margin-left: 0.7rem;
     margin-right: 0.2rem;
     font-family: inherit;
     font-weight: 600;
     letter-spacing: 0.01em;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8); /* Add shadow for better readability */
 }
+
 .hero-meta .hero-genre {
     padding: 0.1rem 0.7rem;
     border-radius: 1rem;
-    background: rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.15); /* Enhanced background */
     color: #FFD700;
     font-size: 1.05rem;
     margin-left: 0.2rem;
@@ -3171,18 +3626,21 @@
     font-family: inherit;
     font-weight: 700;
     letter-spacing: 0.02em;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.8);
 }
+
 .hero-desc-bg {
-    background: transparent;
+    background: rgba(0,0,0,0.4); /* Enhanced background for better contrast */
     border-radius: 1.2rem;
     padding: 1.1rem 1.5rem 1.1rem 1.1rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
     max-width: 100%;
     margin-left: auto;
 }
+
 .hero-desc {
-    color: lavenderblush;
-    text-shadow: 0 2px 12px rgba(98, 59, 97, 0.18);
+    color: #ffffff; /* Enhanced contrast */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.9); /* Stronger shadow for better readability */
     font-size: 1.15rem;
     font-weight: 400;
     line-height: 1.5;
@@ -3194,7 +3652,9 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-height: calc(1.5em * 3); /* 3 lines * line-height */
+    animation: none; /* Remove any pulsing or blurry animations */
 }
+
 /* Remove genre-specific backgrounds/effects from overlay container */
 .hero-overlay[class*='genre-'] { background: none !important; box-shadow: none !important; border: none !important; }
 .hero-overlay[class*='genre-']::after, .hero-overlay[class*='genre-']::before { display: none !important; }
@@ -4053,61 +4513,108 @@
 /* ===== COMPREHENSIVE UI/UX OVERHAUL - MOBILE-FIRST WITH TRAILER ENFORCEMENT ===== */
 
 /* === RESPONSIVE SIDEBAR MENU SYSTEM === */
-/* Mobile Menu Button - Enhanced Design */
+/* ============================================================================
+// MOBILE MENU - 1:1 Parity with Discover Page Implementation
+// ============================================================================ */
+
+/* Mobile Menu Button - Optimized for ≥48px tap targets */
 .mobile-menu-btn {
-    display: none;
+    display: none; /* Hidden by default on desktop */
     position: fixed;
-    left: 20px;
-    top: 20px;
-    z-index: 1000;
-    background: rgba(255, 255, 255, 0.15);
-    width: 50px;
-    height: 50px;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1003;
+    background: var(--glass-bg, rgba(26, 26, 26, 0.8));
+    border: 1px solid var(--glass-border, rgba(212, 153, 26, 0.2));
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: rgba(0, 0, 0, 0.8);
-    font-size: 1.3em;
+    padding: 12px;
     cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    -webkit-user-select: none;
-    -webkit-tap-highlight-color: transparent;
+    color: var(--text-primary, #F5F5F5);
+    font-size: 18px;
+    box-shadow: var(--shadow-md, 0 4px 16px rgba(0, 0, 0, 0.2));
+    width: 48px; /* Ensures minimum tap target size */
+    height: 48px;
     align-items: center;
     justify-content: center;
+    /* Identical animation timing as discover page */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: var(--glass-blur, blur(20px));
+    -webkit-backdrop-filter: var(--glass-blur, blur(20px));
+}
+
+/* Show mobile menu button on mobile screens */
+@media (max-width: 768px) {
+    .mobile-menu-btn {
+        display: flex !important;
+    }
+    
+    /* Ensure all interactive elements meet minimum tap target size */
+    .mood-btn,
+    .action-btn,
+    .get-recommendations,
+    .discover-btn,
+    .mobile-menu-btn,
+    .btn,
+    .btn-primary,
+    .btn-secondary {
+        min-height: 48px;
+        min-width: 48px;
+    }
+    
+    /* Remove hover effects on mobile */
+    .movie-card:hover {
+        transform: none;
+    }
+    
+    /* Better mobile card flip behavior */
+    .movie-card.flipped {
+        z-index: 10; /* Ensure flipped cards appear above others */
+    }
+    
+    /* Optimize mobile menu display */
+    .mobile-menu {
+        width: 85vw;
+        max-width: 350px;
+    }
 }
 
 .mobile-menu-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--gradient-primary, linear-gradient(135deg, #D4991A 0%, #C28A16 100%));
+    color: var(--dark, #0A0A0A);
     transform: scale(1.05);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--shadow-gold, 0 0 30px rgba(212, 153, 26, 0.3));
 }
 
 .mobile-menu-btn:active {
     transform: scale(0.95);
 }
 
-/* Enhanced Mobile Menu Panel */
+/* Haptic feedback support */
+.mobile-menu-btn:focus {
+    outline: 2px solid var(--primary, #D4991A);
+    outline-offset: 2px;
+}
+
+/* Mobile Menu - Exact Animation Timing as Discover Page */
 .mobile-menu {
     position: fixed;
     top: 0;
-    left: -100%;
-    width: 85vw;
-    max-width: 320px;
+    right: -350px; /* Slightly wider for better UX */
+    width: 350px;
     height: 100vh;
-    background: rgba(255, 255, 255, 0.12);
-    -webkit-backdrop-filter: blur(25px);
-    backdrop-filter: blur(25px);
-    border-right: 1px solid rgba(255, 255, 255, 0.25);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 999;
-    will-change: transform;
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.15);
-    transform: translateX(-100%);
+    background: var(--glass-bg, rgba(26, 26, 26, 0.8));
+    backdrop-filter: var(--glass-blur, blur(20px));
+    -webkit-backdrop-filter: var(--glass-blur, blur(20px));
+    border-left: 1px solid var(--glass-border, rgba(212, 153, 26, 0.2));
+    z-index: 1002;
+    /* Identical timing as discover page navigation.js */
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-xl, 0 16px 48px rgba(0, 0, 0, 0.4));
+    /* Add sliding animation */
+    transform: translateX(100%);
     overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
 }
 
 .mobile-menu::-webkit-scrollbar {
@@ -4123,9 +4630,31 @@
     border-radius: 2px;
 }
 
-/* Active state with smooth animation */
-.menu-open .mobile-menu {
+.mobile-menu.open {
+    right: 0;
     transform: translateX(0);
+}
+
+/* Body scroll lock when menu is open - same as discover page */
+.menu-open {
+    overflow: hidden !important;
+}
+
+.menu-open::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1001;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Enhanced backdrop overlay */
@@ -5173,21 +5702,7 @@ section {
     transform-style: preserve-3d;
 }
 
-.movie-card.flipped .card-inner {
-    transform: rotateY(180deg);
-}
-
-.card-front, .card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    backface-visibility: hidden;
-    border-radius: 12px;
-    overflow: hidden;
-    background: var(--gradient-card);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: var(--shadow-md);
-}
+/* REMOVED: Duplicate card flip definition - using unified system above */
 
 .card-front {
     display: flex;
@@ -5795,37 +6310,7 @@ section {
     max-width: 200px;
 }
 
-/* Mobile Card Flip */
-@media (max-width: 768px) {
-    .movie-card.flipped {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: 1000;
-        background: #0f0f0f;
-        padding: 2rem;
-        overflow-y: auto;
-        border-radius: 0;
-    }
-    
-    .card-back .close-btn {
-        position: absolute;
-        top: 1rem;
-        right: 1rem;
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        border-radius: 50%;
-        width: 2.5rem;
-        height: 2.5rem;
-        color: white;
-        font-size: 1.2rem;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+/* REMOVED: Conflicting mobile card flip implementation - using unified system */
     
     .showcase-header {
         flex-direction: column;
@@ -6717,6 +7202,114 @@ section {
     .card-back {
         padding-bottom: 5rem;
     }
+}
+
+/* Color fade animation for hero title - no blurriness */
+/* Success Toast Styles */
+.save-success-toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  animation: slideInRight 0.3s ease;
+  max-width: 400px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.save-success-toast i {
+  font-size: 1.2rem;
+  color: white;
+}
+
+.save-success-toast span {
+  font-size: 0.9rem;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes titleColorFade {
+    0% {
+        background: linear-gradient(135deg, 
+            #ffffff 0%, 
+            #fbbf24 25%, 
+            #f59e0b 50%, 
+            #d97706 75%, 
+            #b45309 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+    }
+    100% {
+        background: linear-gradient(135deg, 
+            #fbbf24 0%, 
+            #f59e0b 25%, 
+            #d97706 50%, 
+            #b45309 75%, 
+            #92400e 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+    }
+}
+
+/* ============================================================================
+// MOBILE TOUCH OPTIMIZATIONS - ≥48px Tap Targets
+// ============================================================================ */
+
+/* REMOVED: Duplicate mobile optimizations - consolidated above with unified card system */
+
+/* ============================================================================
+// MOOD SELECTOR UI PORT - Direct from Discover Page
+// ============================================================================ */
+
+/* Remove shimmer effect from mood buttons - use clean highlight instead */
+.mood-btn.selected::after {
+    display: none !important;
+}
+
+.mood-btn.selected {
+    box-shadow: 0 0 20px rgba(212, 153, 26, 0.4) !important;
+    background: var(--gradient-mood-selected) !important;
+    border-color: var(--primary) !important;
+}
+
+/* Ensure consistent mood button styling across all breakpoints */
+.mood-btn {
+    min-height: 48px;
+    min-width: 48px;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 
