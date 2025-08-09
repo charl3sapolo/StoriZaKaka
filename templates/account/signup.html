@@ -79,7 +79,40 @@
 </div>
 
 <style>
-/* Reusing all the same styles from the login page */
+:root {
+    --bg-primary: #0f0f0f;
+    --bg-secondary: rgba(20, 20, 20, 0.8);
+    --bg-tertiary: #1a1a1a;
+    --border-color: rgba(255, 255, 255, 0.1);
+    --border-hover: rgba(255, 255, 255, 0.2);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --color-primary: #ffd700;
+    --color-secondary: #b8860b;
+    --gradient-primary: linear-gradient(135deg, #ffd700 0%, #b8860b 100%);
+    --h1: 2rem;
+    --h2: 1.5rem;
+    --body: 0.875rem;
+    --caption: 0.75rem;
+    --btn-text: 0.875rem;
+    --btn-primary-height: 48px;
+    --transition-fast: all 0.2s ease;
+    --transition-normal: all 0.3s ease;
+}
+
+[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: rgba(255, 255, 255, 0.9);
+    --bg-tertiary: #f8f9fa;
+    --border-color: rgba(0, 0, 0, 0.1);
+    --border-hover: rgba(0, 0, 0, 0.2);
+    --text-primary: #1a1a1a;
+    --text-secondary: rgba(0, 0, 0, 0.7);
+    --color-primary: #b8860b;
+    --color-secondary: #8b6914;
+    --gradient-primary: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+}
+
 .login-page {
     min-height: 100vh;
     background: var(--bg-primary);
@@ -98,8 +131,8 @@
     right: 0;
     bottom: 0;
     background: 
-        radial-gradient(circle at 25% 25%, rgba(245, 184, 35, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(68, 192, 175, 0.1) 0%, transparent 50%);
+        radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(184, 134, 11, 0.1) 0%, transparent 50%);
     pointer-events: none;
 }
 
@@ -209,9 +242,9 @@
 
 .input-group input:focus {
     outline: none;
-    border-color: var(--color-red);
-    background: rgba(245, 184, 35, 0.05);
-    box-shadow: 0 0 0 3px rgba(245, 184, 35, 0.1);
+    border-color: var(--color-primary);
+    background: rgba(255, 215, 0, 0.05);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
 }
 
 .input-group input:hover:not(:focus) {
@@ -220,7 +253,7 @@
 
 .form-extras {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     margin: 0.5rem 0;
 }
@@ -242,7 +275,7 @@
 .remember-me input[type="checkbox"] {
     width: 16px;
     height: 16px;
-    accent-color: var(--color-red);
+    accent-color: var(--color-primary);
     margin: 0;
 }
 
@@ -264,7 +297,7 @@
 
 .login-btn:hover:not(:disabled) {
     transform: translateY(-1px);
-    box-shadow: 0 8px 25px rgba(245, 184, 35, 0.4);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
 }
 
 .login-btn:active {
@@ -322,7 +355,7 @@
 }
 
 .card-footer a {
-    color: var(--color-green);
+    color: var(--color-secondary);
     text-decoration: none;
     font-weight: 600;
     transition: var(--transition-fast);
@@ -354,8 +387,17 @@
 /* Theme-specific adjustments */
 [data-theme="light"] .login-page::before {
     background: 
-        radial-gradient(circle at 25% 25%, rgba(245, 184, 35, 0.05) 0%, transparent 50%),
-        radial-gradient(circle at 75% 75%, rgba(68, 192, 175, 0.05) 0%, transparent 50%);
+        radial-gradient(circle at 25% 25%, rgba(184, 134, 11, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(218, 165, 32, 0.06) 0%, transparent 50%);
+}
+
+[data-theme="light"] .input-group input:focus {
+    background: rgba(184, 134, 11, 0.05);
+    box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+}
+
+[data-theme="light"] .login-btn:hover:not(:disabled) {
+    box-shadow: 0 8px 25px rgba(184, 134, 11, 0.3);
 }
 
 [data-theme="light"] .login-card {
@@ -380,14 +422,14 @@ document.addEventListener('DOMContentLoaded', function() {
     form.addEventListener('submit', function(e) {
         submitBtn.disabled = true;
         submitBtn.classList.add('loading');
-        btnText.textContent = 'Creating account...';
+        btnText.textContent = '{% trans "Creating account..." %}';
         
         // Reset after 3 seconds if no redirect (for demo purposes)
         setTimeout(() => {
             if (submitBtn.disabled) {
                 submitBtn.disabled = false;
                 submitBtn.classList.remove('loading');
-                btnText.textContent = 'Create Account';
+                btnText.textContent = '{% trans "Create Account" %}';
             }
         }, 3000);
     });
