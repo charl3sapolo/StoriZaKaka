@@ -3280,22 +3280,25 @@ body {
 
 .hero-content {
     max-width: 700px;
-    margin-left: -4vw;
-    margin-right: 24vw;
+    margin-left: 0;
+    margin-right: auto;
+    padding-left: 4vw;
+    padding-right: 2vw;
     position: relative;
     text-align: left;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     transform: translateY(-20px); /* Move content up slightly */
+    z-index: 2;
 }
 
 /* FIXED: Beautiful gold hero title */
 .hero-title {
-    font-size: clamp(3.4rem, 8vw, var(--h1));
+    font-size: clamp(2.2rem, 8vw, var(--h1));
     color: #FFD700 !important; /* Beautiful gold color */
     font-weight: 900;
-    line-height: 1.1;
+    line-height: 1.0;
     margin-bottom: 1.8rem;
     padding-top: 20px;
     margin-left: -5vw;
@@ -3480,7 +3483,7 @@ body {
     color: #F5F5F5 !important; /* Smoky white */
     text-shadow: 
         0 1px 2px rgba(0, 0, 0, 0.8),
-        0 0 8px rgba(245, 245, 245, 0.3) !important;
+        0 0 8px rgba(236, 236, 228, 0.3) !important;
 }
 
 /* Responsive adjustments */
@@ -3495,7 +3498,7 @@ body {
     }
     
     .hero-desc {
-        font-size: 1rem;
+        font-size: 1.5 rem;
     }
 }
 
