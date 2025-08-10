@@ -52,43 +52,34 @@ class CustomUserCreationForm(UserCreationForm):
         if email and User.objects.filter(email=email).exists():
             raise forms.ValidationError(_('A user with this email already exists.'))
         return email
-
-
 class CustomAuthenticationForm(AuthenticationForm):
     """Custom login form."""
     
-    email = forms.CharField(
-        widget=forms.EmailInput(attrs={
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print("Form fields:", list(self.fields.keys()))  # Debug line
+        
+        # Override the username field to be an email field
+        self.fields['username'] = forms.EmailField(
+            widget=forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter your email',
+                'id': 'id_username'
+            })
+        )
+        self.fields['username'].label = 'Email'
+        
+        # Update password field
+        self.fields['password'].widget.attrs.update({
             'class': 'form-control',
-            'placeholder': _('Enter your email')
+            'placeholder': 'Enter your password'
         })
-    )
-
-    password = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'class': 'form-control',
-            'placeholder': _('Enter your password')
-        })
-    )
-
+    
     remember_me = forms.BooleanField(
         required=False,
         initial=False,
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
-
-    def clean(self):
-        cleaned_data = super().clean()
-        email = cleaned_data.get('email')
-        password = cleaned_data.get('password')
-        if email and password:
-            from django.contrib.auth import authenticate
-            user = authenticate(username=email, password=password)
-            if user is None:
-                raise forms.ValidationError(_('Invalid email or password.'))
-            self.user_cache = user
-        return cleaned_data
-
 
 class UserProfileForm(forms.ModelForm):
     """Form for updating user profile."""

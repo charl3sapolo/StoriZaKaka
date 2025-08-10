@@ -72,7 +72,7 @@ class CustomRegisterView(CreateView):
         user = authenticate(username=username, password=password)
         login(self.request, user)
         
-        messages.success(self.request, _('Account created successfully! Welcome to Movie Recommender.'))
+        messages.success(self.request, _('Account created successfully! Welcome to KakaFlix.'))
         return response
 
 
