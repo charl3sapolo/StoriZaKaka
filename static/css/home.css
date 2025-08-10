@@ -229,7 +229,7 @@ body {
         }
 
         [data-theme="light"] {
-            --bg-primary: #fafafa;
+            --bg-primary: #e7ebd6;
             --bg-secondary: rgba(255, 255, 255, 0.9);
             --bg-tertiary: rgba(255, 255, 255, 0.8);
             --text-primary: #111827;

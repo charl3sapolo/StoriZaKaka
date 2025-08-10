@@ -36,15 +36,21 @@
             <form method="post" action="{% url 'authentication:login' %}" class="login-form" id="loginForm">
                 {% csrf_token %}
                 
-                <div class="input-group">
-                        <label for="{{ form.email.id_for_label }}">{% trans "Email" %}</label>
-                        {{ form.email }}
-                </div>
-                
-                <div class="input-group">
-                    <label for="{{ form.password.id_for_label }}">{% trans "Password" %}</label>
-                    {{ form.password }}
-                </div>
+               <div class="input-group">
+    <label for="{{ form.username.id_for_label }}">Email</label>
+    {{ form.username }}
+    {% if form.username.errors %}
+        <div class="error">{{ form.username.errors }}</div>
+    {% endif %}
+</div>
+
+<div class="input-group">
+    <label for="{{ form.password.id_for_label }}">Password</label>
+    {{ form.password }}
+    {% if form.password.errors %}
+        <div class="error">{{ form.password.errors }}</div>
+    {% endif %}
+</div>
                 
                 <div class="form-extras">
                     <label class="remember-me">
