@@ -241,8 +241,8 @@ body {
             --btn-border-light: rgba(0, 0, 0, 0.05);
             
             /* Light Mode Gradients (desaturated) */
-            --gradient-primary: linear-gradient(135deg, #f59e0b, #d97706);
-            --gradient-secondary: linear-gradient(135deg, #f59e0b, #d97706);
+            --gradient-primary: linear-gradient(135deg, #ecdbbe, #e4d6c5);
+            --gradient-secondary: linear-gradient(135deg, #f0d5a6, #d97706);
             --gradient-blue: linear-gradient(135deg, #abc5f0, #58d6e6);
         }
         
@@ -3136,96 +3136,6 @@ body {
             font-size: 0.95em;
         }
         
-                /* Hero Section */
-.hero {
-    padding: 80px 0 60px; /* Reduced padding to move content up */
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 30% 20%, rgba(239, 68, 68, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 70% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
-    z-index: -1;
-}
-
-.hero-content {
-    max-width: 700px;
-    margin-left: -4vw;
-    margin-right: 24vw;
-    position: relative;
-    text-align: left;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    transform: translateY(-20px); /* Move content up slightly */
-}
-
-.hero-title {
-    font-size: clamp(3.4rem, 8vw, var(--h1));
-    color: #fff; /* Solid white for max visibility */
-    font-weight: 900;
-    line-height: 1.1;
-    margin-bottom: 1.8rem;
-    padding-top: 20px;
-    margin-left: -5vw;
-    position: relative;
-    text-align: left;
-    letter-spacing: 0.02em;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.4); /* Subtle, sharp shadow */
-    background: none;
-    -webkit-background-clip: initial;
-    -webkit-text-fill-color: initial;
-    background-clip: initial;
-}
-
-.hero-title::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 4px;
-    background: var(--gradient-primary);
-    border-radius: 2px;
-    box-shadow: var(--shadow-gold);
-    animation: none; /* Remove pulsing animation */
-}
-
-.hero-subtitle {
-    color: #ffffff; /* Enhanced contrast */
-    font-size: 1.2rem;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.7;
-    font-weight: 400;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8); /* Add shadow for better readability */
-}
-
-/* Glow Animation - REMOVED to fix blurry text */
-/*
-@keyframes textGlow {
-    20% {
-        text-shadow: 0 0 8px rgba(255, 215, 0, 0.3);
-    }
-    100% {
-        text-shadow: 0 0 12px rgba(255, 215, 0, 0.5), 
-                     0 0 16px rgba(237, 166, 34, 0.2);
-    }
-}
-*/
 
 /* Mood Recommendation Card Flip & Scrollable Back */
 .movie-card {
@@ -3328,8 +3238,8 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Underline Animation - REMOVED to fix blurry text */
-/*
+/* Underline Animation */
+
 @keyframes underlinePulse {
     0% {
         width: 80px;
@@ -3344,44 +3254,266 @@ body {
         opacity: 0.8;
     }
 }  
-*/
 
-.hero-bg-slider {
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    overflow: hidden;
-}
 
-.hero-bg-slide {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    transition: opacity 1.5s ease;
-    z-index: 0;
-    pointer-events: none;
-    filter: brightness(0.6) blur(1px); /* for cinematic effect */
-}
-
-.hero-bg-slide.active {
-    opacity: 1;
-    z-index: 1;
-}
-
+/* Hero Section */
 .hero {
-    position: relative; /* ensure stacking context */
-    z-index: 1;
-}
-
-.hero .container,
-.hero-content {
+    padding: 80px 0 60px; /* Reduced padding to move content up */
+    text-align: center;
     position: relative;
-    z-index: 2; /* content above background */
+    overflow: hidden;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+}
+
+.hero-content {
+    max-width: 700px;
+    margin-left: -4vw;
+    margin-right: 24vw;
+    position: relative;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transform: translateY(-20px); /* Move content up slightly */
+}
+
+/* FIXED: Beautiful gold hero title */
+.hero-title {
+    font-size: clamp(3.4rem, 8vw, var(--h1));
+    color: #FFD700 !important; /* Beautiful gold color */
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.8rem;
+    padding-top: 20px;
+    margin-left: -5vw;
+    position: relative;
+    text-align: left;
+    letter-spacing: 0.02em;
+    
+    /* Rich gold text with depth - same as movie title */
+    text-shadow: 
+        0 1px 0px #B8860B,
+        0 2px 0px #8B6914,
+        0 3px 6px rgba(0, 0, 0, 0.5),
+        0 0 12px rgba(255, 215, 0, 0.4) !important;
+    
+    background: none;
+    transition: all 0.3s ease;
+    
+    /* Premium font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-kerning: normal;
+    
+    /* 3D effect */
+    transform: perspective(500px) translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+}
+
+.hero-title::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    border-radius: 2px;
+    animation: underlinePulse 2.5s ease-in-out infinite;
+}
+
+.hero-subtitle {
+    color: #e8e8e8 !important; /* Brighter white for better contrast */
+    font-size: 1.2rem;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.7;
+    font-weight: 400;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7); /* Cleaner shadow */
+}
+
+/* Hero Overlay: Gold Themed Movie Info */
+.hero-overlay {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 5;
+    max-width: 40vw;
+    min-width: 220px;
+    width: 100%;
+    padding: 2.2rem 2.2rem 2.2rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 1.2rem;
+    background: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.hero-overlay .hero-title {
+    font-size: 2.8rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.2rem;
+    line-height: 1.1;
+    text-align: right;
+    
+    /* Rich gold text with depth */
+    color: #FFD700 !important;
+    text-shadow: 
+        0 1px 0px #B8860B,
+        0 2px 0px #8B6914,
+        0 3px 6px rgba(0, 0, 0, 0.5),
+        0 0 12px rgba(255, 215, 0, 0.4) !important;
+    
+    /* Smooth transitions */
+    transition: all 0.3s ease;
+    
+    /* Premium font rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-kerning: normal;
+    
+    /* 3D effect */
+    transform: perspective(500px) translateZ(0);
+    backface-visibility: hidden;
+    will-change: transform;
+}
+
+/* Enhanced gold effects on hover/focus */
+.hero-overlay .hero-title:hover,
+.hero-overlay .hero-title:focus {
+    color: #FFEC8B !important;
+    text-shadow: 
+        0 1px 0px #FFD700,
+        0 2px 0px #B8860B,
+        0 3px 8px rgba(0, 0, 0, 0.6),
+        0 0 16px rgba(255, 215, 0, 0.6) !important;
+}
+
+/* Genre-specific gold variations */
+.hero-overlay.genre-action .hero-title {
+    font-family: 'Oswald', Impact, 'Arial Black', sans-serif;
+    text-transform: uppercase;
+    color: #FFD700 !important;
+    text-shadow: 
+        0 1px 0px #B8860B,
+        0 2px 0px #8B6914,
+        0 3px 6px rgba(0, 0, 0, 0.6),
+        0 0 12px rgba(255, 215, 0, 0.5) !important;
+    letter-spacing: 0.04em;
+}
+
+.hero-overlay.genre-romance .hero-title {
+    font-family: 'Quicksand', sans-serif;
+    color: #FFD700 !important;
+    text-shadow: 
+        0 1px 0px #FFB6C1,
+        0 2px 0px #FF69B4,
+        0 3px 6px rgba(0, 0, 0, 0.5),
+        0 0 12px rgba(255, 215, 0, 0.4) !important;
+}
+
+.hero-overlay.genre-noir .hero-title {
+    font-family: 'Bebas Neue', 'Oswald', Impact, sans-serif;
+    color: #FFD700 !important;
+    text-shadow: 
+        0 1px 0px #000000,
+        0 2px 0px #333333,
+        0 3px 6px rgba(0, 0, 0, 0.8),
+        0 0 12px rgba(255, 215, 0, 0.3) !important;
+}
+
+/* FIXED: Lavender/smoky white description text for better readability */
+.hero-desc {
+    color: #E6E6FA !important; /* Lavender color */
+    background: linear-gradient(135deg, #E6E6FA 0%, #F0F8FF 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    
+    /* Fallback for browsers that don't support background-clip */
+    color: #E6E6FA;
+    
+    text-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.8),
+        0 0 8px rgba(230, 230, 250, 0.3) !important;
+    
+    font-size: 1.15rem;
+    line-height: 1.5;
+    text-align: right;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: calc(1.5em * 3);
+    font-weight: 500;
+    opacity: 0.95; /* Slightly more opaque for better visibility */
+    
+    /* Better text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Alternative smoky white version if gradient doesn't work */
+.hero-desc.smoky-white {
+    color: #F5F5F5 !important; /* Smoky white */
+    text-shadow: 
+        0 1px 2px rgba(0, 0, 0, 0.8),
+        0 0 8px rgba(245, 245, 245, 0.3) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 900px) {
+    .hero-overlay .hero-title {
+        font-size: 2rem;
+        text-shadow: 
+            0 1px 0px #B8860B,
+            0 2px 0px #8B6914,
+            0 2px 4px rgba(0, 0, 0, 0.5),
+            0 0 8px rgba(255, 215, 0, 0.4) !important;
+    }
+    
+    .hero-desc {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero-overlay .hero-title {
+        font-size: 1.5rem;
+        text-shadow: 
+            0 1px 0px #B8860B,
+            0 1px 0px #8B6914,
+            0 1px 3px rgba(0, 0, 0, 0.5),
+            0 0 6px rgba(255, 215, 0, 0.3) !important;
+    }
+    
+    .hero-overlay {
+        padding: 1.5rem 1.5rem 1.5rem 0;
+        min-width: 180px;
+    }
+}
 /* Hero Navigation Arrows - Improved Glass Effect */
 .hero-arrow {
     position: absolute;
@@ -3514,152 +3646,46 @@ body {
     .nav-controls .hero-refresh { right: 4px; top: 8px; }
     .hero-content { margin-left: 2vw; max-width: 98vw; }
 }
-/* Hero Overlay: Gold Themed Movie Info */
-.hero-overlay {
+
+
+
+.hero-bg-slider {
     position: absolute;
-    right: 0;
-    bottom: 0;
-    z-index: 5;
-    max-width: 40vw;
-    min-width: 220px;
+    top: 0; left: 0; right: 0; bottom: 0;
     width: 100%;
-    padding: 2.2rem 2.2rem 2.2rem 0;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 1.2rem;
-    background: none !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    pointer-events: none;
-    transition: all 0.3s ease;
-}
-
-.hero-overlay .hero-title {
-    font-size: 2.8rem;
-    font-weight: 900;
-    letter-spacing: 0.02em;
-    margin-bottom: 0.2rem;
-    line-height: 1.1;
-    text-align: right;
-    
-    /* Rich gold text with depth */
-    color: #FFD700;
-    text-shadow: 
-        0 1px 0px #B8860B,
-        0 2px 0px #8B6914,
-        0 3px 6px rgba(0, 0, 0, 0.5),
-        0 0 12px rgba(255, 215, 0, 0.4);
-    
-    /* Smooth transitions */
-    transition: all 0.3s ease;
-    
-    /* Premium font rendering */
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    font-kerning: normal;
-    
-    /* 3D effect */
-    transform: perspective(500px) translateZ(0);
-    backface-visibility: hidden;
-    will-change: transform;
-}
-
-/* Enhanced gold effects on hover/focus */
-.hero-overlay .hero-title:hover,
-.hero-overlay .hero-title:focus {
-    color: #FFEC8B;
-    text-shadow: 
-        0 1px 0px #FFD700,
-        0 2px 0px #B8860B,
-        0 3px 8px rgba(0, 0, 0, 0.6),
-        0 0 16px rgba(255, 215, 0, 0.6);
-}
-
-/* Genre-specific gold variations */
-.hero-overlay.genre-action .hero-title {
-    font-family: 'Oswald', Impact, 'Arial Black', sans-serif;
-    text-transform: uppercase;
-    color: #FFD700;
-    text-shadow: 
-        0 1px 0px #B8860B,
-        0 2px 0px #8B6914,
-        0 3px 6px rgba(0, 0, 0, 0.6),
-        0 0 12px rgba(255, 215, 0, 0.5);
-    letter-spacing: 0.04em;
-}
-
-.hero-overlay.genre-romance .hero-title {
-    font-family: 'Quicksand', sans-serif;
-    color: #FFD700;
-    text-shadow: 
-        0 1px 0px #FFB6C1,
-        0 2px 0px #FF69B4,
-        0 3px 6px rgba(0, 0, 0, 0.5),
-        0 0 12px rgba(255, 215, 0, 0.4);
-}
-
-.hero-overlay.genre-noir .hero-title {
-    font-family: 'Bebas Neue', 'Oswald', Impact, sans-serif;
-    color: #FFD700;
-    text-shadow: 
-        0 1px 0px #000000,
-        0 2px 0px #333333,
-        0 3px 6px rgba(0, 0, 0, 0.8),
-        0 0 12px rgba(255, 215, 0, 0.3);
-}
-
-/* Gold description text */
-.hero-desc {
-    color: #FFD700;
-    text-shadow: 
-        0 1px 2px rgba(0, 0, 0, 0.8),
-        0 0 8px rgba(255, 215, 0, 0.3);
-    font-size: 1.15rem;
-    line-height: 1.5;
-    text-align: right;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
+    height: 100%;
+    z-index: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: calc(1.5em * 3);
-    font-weight: 500;
-    opacity: 0.9;
 }
 
-/* Responsive adjustments */
-@media (max-width: 900px) {
-    .hero-overlay .hero-title {
-        font-size: 2rem;
-        text-shadow: 
-            0 1px 0px #B8860B,
-            0 2px 0px #8B6914,
-            0 2px 4px rgba(0, 0, 0, 0.5),
-            0 0 8px rgba(255, 215, 0, 0.4);
-    }
-    
-    .hero-desc {
-        font-size: 1rem;
-    }
+.hero-bg-slide {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity 1.5s ease;
+    z-index: 0;
+    pointer-events: none;
+    filter: brightness(0.6) blur(1px); /* for cinematic effect */
 }
 
-@media (max-width: 600px) {
-    .hero-overlay .hero-title {
-        font-size: 1.5rem;
-        text-shadow: 
-            0 1px 0px #B8860B,
-            0 1px 0px #8B6914,
-            0 1px 3px rgba(0, 0, 0, 0.5),
-            0 0 6px rgba(255, 215, 0, 0.3);
-    }
-    
-    .hero-overlay {
-        padding: 1.5rem 1.5rem 1.5rem 0;
-        min-width: 180px;
-    }
+.hero-bg-slide.active {
+    opacity: 1;
+    z-index: 1;
 }
+
+.hero {
+    position: relative; /* ensure stacking context */
+    z-index: 1;
+}
+
+.hero .container,
+.hero-content {
+    position: relative;
+    z-index: 2; /* content above background */
+}
+
+
 /* Mobile Optimization for Hero Section */
 
 /* Mobile Details Button - Hidden on Desktop */
