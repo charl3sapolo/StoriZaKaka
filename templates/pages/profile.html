@@ -1,13 +1,246 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Stori za Kaka</title>
+    <title>Profile - KakaFlix </title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/discover.css' %}">
     <style>
+       :root {
+  /* Updated Color Palette with Darker Gold */
+  --primary: #D4991A;
+  --primary-hover: #C28A16;
+  --primary-dark: #B07B12;
+  --primary-light: #E6A91D;
+  --secondary: #E6A91D;
+  --dark: #0A0A0A;
+  --darker: #000000;
+  --light: #FFFFFF;
+  --gray: #1A1A1A;
+  --soft-gray: #2D2D2D;
+  --lighter-gray: #404040;
+  --text-primary: #F5F5F5;
+  --text-secondary: #B3B3B3;
+  --text-muted: #808080;
+  --success: #10B981;
+  --error: #DC2626;
+  --warning: #F59E0B;
+  
+  /* Background Colors */
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #1A1A1A;
+  
+  /* Enhanced Gradients */
+  --gradient-bg: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
+  --gradient-primary: linear-gradient(135deg, #D4991A 0%, #C28A16 100%);
+  --gradient-secondary: linear-gradient(135deg, #E6A91D 0%, #D4991A 100%);
+  --gradient-card: linear-gradient(145deg, rgba(26, 26, 26, 0.95) 0%, rgba(45, 45, 45, 0.9) 100%);
+  --gradient-mood-selected: linear-gradient(135deg, 
+    rgba(212, 153, 26, 0.2) 0%, 
+    rgba(194, 138, 22, 0.3) 50%, 
+    rgba(212, 153, 26, 0.2) 100%);
+  --gradient-mood-hover: linear-gradient(135deg, 
+    rgba(212, 153, 26, 0.1) 0%, 
+    rgba(194, 138, 22, 0.15) 50%, 
+    rgba(212, 153, 26, 0.1) 100%);
+  
+  /* Enhanced Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.4);
+  --shadow-gold: 0 0 30px rgba(212, 153, 26, 0.3);
+  --shadow-gold-intense: 0 0 40px rgba(212, 153, 26, 0.5);
+  
+  /* Glass Effect */
+  --glass-bg: rgba(26, 26, 26, 0.8);
+  --glass-border: rgba(212, 153, 26, 0.2);
+  --glass-blur: blur(20px);
+  
+  /* Border Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --transition-smooth: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Spacing */
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 2.5rem;
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+  --bg-primary: #0A0A0A;
+  --bg-secondary: #1A1A1A;
+  --text-primary: #F5F5F5;
+  --text-secondary: #B3B3B3;
+  --glass-bg: rgba(26, 26, 26, 0.8);
+  --glass-border: rgba(212, 153, 26, 0.2);
+}
+
+/* Light Theme Support */
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: rgba(248, 250, 252, 0.95);
+  --bg-tertiary: rgba(241, 245, 249, 0.8);
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --border-hover: #cbd5e1;
+  --shadow-color: rgba(0, 0, 0, 0.08);
+  --header-bg: rgba(255, 255, 255, 0.95);
+  
+  /* Light Mode Gradients */
+  --gradient-bg: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+  --gradient-primary: linear-gradient(135deg, #f59e0b, #d97706);
+  --gradient-secondary: linear-gradient(135deg, #fbbf24, #f59e0b);
+  --gradient-mood-selected: linear-gradient(135deg, 
+    rgba(245, 158, 11, 0.2) 0%, 
+    rgba(217, 119, 6, 0.3) 50%, 
+    rgba(245, 158, 11, 0.2) 100%);
+  --gradient-mood-hover: linear-gradient(135deg, 
+    rgba(245, 158, 11, 0.1) 0%, 
+    rgba(217, 119, 6, 0.15) 50%, 
+    rgba(245, 158, 11, 0.1) 100%);
+  
+  /* Light Mode Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+  --shadow-gold: 0 0 30px rgba(245, 158, 11, 0.3);
+  --shadow-gold-intense: 0 0 40px rgba(245, 158, 11, 0.5);
+  
+  /* Light Mode Glass Effects */
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(0, 0, 0, 0.1);
+  --glass-blur: blur(12px);
+  
+  /* Light Mode Colors */
+  --primary: #f59e0b;
+  --primary-hover: #d97706;
+  --primary-dark: #b45309;
+  --primary-light: #fbbf24;
+  --secondary: #fbbf24;
+  --dark: #ffffff;
+  --darker: #f8fafc;
+  --light: #0f172a;
+  --gray: #f1f5f9;
+  --soft-gray: #e2e8f0;
+  --lighter-gray: #cbd5e1;
+}
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .header {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            border-bottom: 1px solid var(--glass-border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .nav-center {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary);
+        }
+
+        .badge {
+            background: var(--primary);
+            color: var(--dark);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-controls button {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-controls button:hover {
+            background: var(--primary);
+            color: var(--dark);
+        }
+
+        .mobile-menu-btn, .mobile-menu { 
+            display: none; 
+        }
+
         .profile-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -101,16 +334,9 @@
             color: var(--primary);
         }
 
-        .movies-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 15px;
-        }
-
-        /* Movie Stats Grid Styles */
         .movie-stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: 1fr;
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -151,7 +377,7 @@
         }
 
         .stat-content .stat-number {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
             color: var(--text-primary);
             margin: 0 0 5px 0;
@@ -187,12 +413,12 @@
             transform: translateY(-2px);
         }
 
-        /* Quick Actions */
         .quick-actions {
             display: flex;
             gap: 15px;
             justify-content: center;
-            margin-top: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
         }
 
         .action-btn {
@@ -206,6 +432,7 @@
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
+            font-size: 0.9rem;
         }
 
         .action-btn.primary {
@@ -224,112 +451,124 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .movie-stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stat-card {
-                padding: 20px;
-            }
-
-            .quick-actions {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .action-btn {
-                width: 100%;
-                max-width: 300px;
-                justify-content: center;
-            }
-        }
-
-        .movie-card {
-            background: var(--gradient-card);
-            border: 1px solid var(--soft-gray);
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .movie-card:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .movie-poster {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-        }
-
-        .movie-info {
-            padding: 12px;
-        }
-
-        .movie-title {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 5px;
-            line-height: 1.3;
-        }
-
-        .movie-meta {
+        /* User Settings Section */
+        .settings-form {
             display: flex;
-            justify-content: space-between;
-            color: var(--text-secondary);
-            font-size: 0.8rem;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 15px;
-            color: var(--primary);
-            opacity: 0.5;
-        }
-
-        .empty-state h3 {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-        }
-
-        .empty-state p {
-            margin-bottom: 20px;
-            font-size: 1rem;
-        }
-
-        .discover-btn {
-            background: var(--gradient-primary);
-            color: var(--dark);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
+        .form-group {
+            display: flex;
+            flex-direction: column;
             gap: 8px;
         }
 
-        .discover-btn:hover {
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 12px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.2);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .settings-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .save-btn {
+            background: var(--gradient-primary);
+            color: var(--dark);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+
+        .save-btn:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-gold);
         }
 
+        .reset-btn {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--glass-border);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--primary);
+        }
+
+        .preference-group {
+            background: var(--bg-secondary);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .preference-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-item label {
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        /* Responsive Design */
         @media (max-width: 768px) {
             .profile-sections {
                 grid-template-columns: 1fr;
@@ -341,13 +580,40 @@
                 gap: 15px;
             }
 
-            .movies-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 10px;
+            .stat-card {
+                padding: 20px;
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
             }
 
-            .movie-poster {
-                height: 160px;
+            .stat-content .stat-number {
+                font-size: 1.8rem;
+            }
+
+            .quick-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                justify-content: center;
+            }
+
+            .settings-actions {
+                flex-direction: column;
+            }
+
+            .nav-center {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                color: var(--text-primary);
+                font-size: 1.2rem;
+                cursor: pointer;
             }
         }
 
@@ -366,8 +632,8 @@
                 font-size: 2rem;
             }
 
-            .movies-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .profile-container {
+                padding: 15px;
             }
         }
     </style>
@@ -378,8 +644,8 @@
         <nav class="nav">
             <div class="logo">
                 <a href="/" class="logo-link">
-                    <img src="{% static 'logo.kakaflix.jpg' %}" alt="KakaFlix Logo" class="logo-icon">
-                    <span>Stori za Kaka</span>
+                    <img src="logo.kakaflix.jpg" alt="KakaFlix Logo" class="logo-icon">
+                    <span>KakaFlix</span>
                 </a>
             </div>
             
@@ -407,66 +673,27 @@
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- Mobile Menu -->
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="menu-header">
-            <div class="menu-time-container">
-                <i class="fas fa-clock"></i>
-                <span id="menu-time">14:30</span>
-            </div>
-            <button class="close-menu" id="closeMenuBtn" aria-label="Close menu">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        
-        <nav class="vertical-nav">
-            <a href="/" class="menu-item" aria-label="Go to Home">
-                <i class="fas fa-home"></i>
-                <span data-en="Home" data-sw="Nyumbani">Home</span>
-            </a>
-            <a href="/discover/" class="menu-item" aria-label="Go to Discover">
-                <i class="fas fa-search"></i>
-                <span data-en="Discover" data-sw="Gundua">Discover</span>
-            </a>
-            <a href="/movie-details/" class="menu-item" aria-label="Go to My Movies">
-                <i class="fas fa-heart"></i>
-                <span data-en="My Movies" data-sw="Filamu Zangu">My Movies <span class="badge" id="mobileSavedCount">0</span></span>
-            </a>
-            <a href="/profile/" class="menu-item active" aria-label="Go to Profile">
-                <i class="fas fa-user"></i>
-                <span data-en="Profile" data-sw="Wasifu">Profile</span>
-            </a>
-        </nav>
-        
-        <div class="menu-footer">
-            <div class="menu-version">
-                <span data-en="Version" data-sw="Toleo">Version</span>
-                <span>1.0.0</span>
-            </div>
-        </div>
-    </div>
-
     <div class="profile-container">
         <!-- Profile Header -->
         <div class="profile-header">
             <div class="profile-avatar">
                 <i class="fas fa-user"></i>
             </div>
-            <h1 class="profile-name">{{ user.username|default:"Movie Lover" }}</h1>
-            <p class="profile-email">{{ user.email|default:"user@example.com" }}</p>
+            <h1 class="profile-name" data-en="Movie Lover" data-sw="Mpenda Filamu">Movie Lover</h1>
+            <p class="profile-email">user@example.com</p>
             
             <div class="profile-stats">
                 <div class="stat-item">
                     <span class="stat-number" id="savedCountStat">0</span>
-                    <span class="stat-label">Saved Movies</span>
+                    <span class="stat-label" data-en="Saved Movies" data-sw="Filamu Zilizohifadhiwa">Saved Movies</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number" id="watchLaterCountStat">0</span>
-                    <span class="stat-label">Watch Later</span>
+                    <span class="stat-label" data-en="Watch Later" data-sw="Angalia Baadaye">Watch Later</span>
                 </div>
                 <div class="stat-item">
                     <span class="stat-number">1</span>
-                    <span class="stat-label">Days Active</span>
+                    <span class="stat-label" data-en="Days Active" data-sw="Siku za Uongozi">Days Active</span>
                 </div>
             </div>
         </div>
@@ -477,7 +704,7 @@
             <div class="profile-section">
                 <h2 class="section-title">
                     <i class="fas fa-film"></i>
-                    My Movie Collection
+                    <span data-en="My Movie Collection" data-sw="Mkusanyiko Wangu wa Filamu">My Movie Collection</span>
                 </h2>
                 
                 <div class="movie-stats-grid">
@@ -487,13 +714,13 @@
                             <i class="fas fa-heart"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 class="stat-number" id="savedCount">0</h3>
-                            <p class="stat-label">Saved Movies</p>
+                            <h3 class="stat-number" id="savedCountMain">0</h3>
+                            <p class="stat-label" data-en="Saved Movies" data-sw="Filamu Zilizohifadhiwa">Saved Movies</p>
                         </div>
                         <div class="stat-action">
                             <a href="/movie-details/?type=saved" class="view-all-btn">
                                 <i class="fas fa-eye"></i>
-                                View All
+                                <span data-en="View All" data-sw="Angalia Zote">View All</span>
                             </a>
                         </div>
                     </div>
@@ -504,13 +731,13 @@
                             <i class="fas fa-clock"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 class="stat-number" id="watchLaterCount">0</h3>
-                            <p class="stat-label">Watch Later</p>
+                            <h3 class="stat-number" id="watchLaterCountMain">0</h3>
+                            <p class="stat-label" data-en="Watch Later" data-sw="Angalia Baadaye">Watch Later</p>
                         </div>
                         <div class="stat-action">
                             <a href="/movie-details/?type=watch_later" class="view-all-btn">
                                 <i class="fas fa-eye"></i>
-                                View All
+                                <span data-en="View All" data-sw="Angalia Zote">View All</span>
                             </a>
                         </div>
                     </div>
@@ -521,13 +748,13 @@
                             <i class="fas fa-film"></i>
                         </div>
                         <div class="stat-content">
-                            <h3 class="stat-number" id="totalCount">0</h3>
-                            <p class="stat-label">Total Movies</p>
+                            <h3 class="stat-number" id="totalCountMain">0</h3>
+                            <p class="stat-label" data-en="Total Movies" data-sw="Jumla ya Filamu">Total Movies</p>
                         </div>
                         <div class="stat-action">
                             <a href="/movie-details/" class="view-all-btn">
                                 <i class="fas fa-eye"></i>
-                                View All
+                                <span data-en="View All" data-sw="Angalia Zote">View All</span>
                             </a>
                         </div>
                     </div>
@@ -537,86 +764,367 @@
                 <div class="quick-actions">
                     <a href="/discover/" class="action-btn primary">
                         <i class="fas fa-search"></i>
-                        Discover New Movies
+                        <span data-en="Discover New Movies" data-sw="Gundua Filamu Mpya">Discover New Movies</span>
                     </a>
                     <a href="/movie-details/" class="action-btn secondary">
                         <i class="fas fa-list"></i>
-                        Manage My Collection
+                        <span data-en="Manage Collection" data-sw="Simamia Mkusanyiko">Manage Collection</span>
                     </a>
                 </div>
+            </div>
+
+            <!-- User Settings Section -->
+            <div class="profile-section">
+                <h2 class="section-title">
+                    <i class="fas fa-cog"></i>
+                    <span data-en="Account Settings" data-sw="Mipangilio ya Akaunti">Account Settings</span>
+                </h2>
+                
+                <form class="settings-form" id="settingsForm">
+                    <div class="form-group">
+                        <label class="form-label" data-en="Display Name" data-sw="Jina la Kuonyesha">Display Name</label>
+                        <input type="text" class="form-input" id="displayName" placeholder="Enter your display name" data-placeholder-en="Enter your display name" data-placeholder-sw="Weka jina lako la kuonyesha">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-en="Email Address" data-sw="Anuani ya Barua Pepe">Email Address</label>
+                        <input type="email" class="form-input" id="emailAddress" placeholder="Enter your email" data-placeholder-en="Enter your email" data-placeholder-sw="Weka barua pepe yako">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" data-en="Bio" data-sw="Maelezo Mafupi">Bio</label>
+                        <textarea class="form-input" id="userBio" rows="3" placeholder="Tell us about yourself" data-placeholder-en="Tell us about yourself" data-placeholder-sw="Tuambie kuhusu wewe"></textarea>
+                    </div>
+
+                    <!-- Movie Preferences -->
+                    <div class="preference-group">
+                        <div class="preference-title" data-en="Movie Preferences" data-sw="Mapendeleo ya Filamu">Movie Preferences</div>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pref-action">
+                                <label for="pref-action" data-en="Action" data-sw="Vitendo">Action</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pref-comedy">
+                                <label for="pref-comedy" data-en="Comedy" data-sw="Kichekesho">Comedy</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pref-drama">
+                                <label for="pref-drama" data-en="Drama" data-sw="Drama">Drama</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pref-romance">
+                                <label for="pref-romance" data-en="Romance" data-sw="Mapenzi">Romance</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pref-horror">
+                                <label for="pref-horror" data-en="Horror" data-sw="Kutisha">Horror</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="pref-scifi">
+                                <label for="pref-scifi" data-en="Sci-Fi" data-sw="Kisayansi">Sci-Fi</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notification Preferences -->
+                    <div class="preference-group">
+                        <div class="preference-title" data-en="Notification Preferences" data-sw="Mapendeleo ya Arifa">Notification Preferences</div>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="notif-recommendations">
+                                <label for="notif-recommendations" data-en="Movie Recommendations" data-sw="Mapendekezo ya Filamu">Movie Recommendations</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="notif-updates">
+                                <label for="notif-updates" data-en="New Releases" data-sw="Matoleo Mapya">New Releases</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="notif-reminders">
+                                <label for="notif-reminders" data-en="Watch Later Reminders" data-sw="Mikumbusha ya Kuangalia Baadaye">Watch Later Reminders</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button type="submit" class="save-btn">
+                            <i class="fas fa-save"></i>
+                            <span data-en="Save Changes" data-sw="Hifadhi Mabadiliko">Save Changes</span>
+                        </button>
+                        <button type="reset" class="reset-btn">
+                            <i class="fas fa-undo"></i>
+                            <span data-en="Reset" data-sw="Rudisha">Reset</span>
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 
-    <script src="{% static 'js/navigation.js' %}"></script>
-    <script src="{% static 'js/movie-manager.js' %}"></script>
-    
     <script>
-        // Profile functionality
-        class ProfileManager {
-            constructor() {
-                this.loadMovieCounts();
+        // Language switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const languageToggle = document.getElementById('languageToggle');
+            const themeToggle = document.getElementById('themeToggle');
+            const body = document.body;
+            
+            // Language toggle functionality
+            languageToggle.addEventListener('click', function() {
+                const currentLang = body.getAttribute('data-lang');
+                const newLang = currentLang === 'en' ? 'sw' : 'en';
+                body.setAttribute('data-lang', newLang);
+                updateLanguage(newLang);
+            });
+
+            // Theme toggle functionality
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = body.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                body.setAttribute('data-theme', newTheme);
+                
+                const themeIcon = themeToggle.querySelector('.theme-icon');
+                themeIcon.textContent = newTheme === 'dark' ? '🌙' : '☀️';
+            });
+            
+            function updateLanguage(lang) {
+                const elements = document.querySelectorAll('[data-en][data-sw]');
+                elements.forEach(element => {
+                    if (element.hasAttribute(`data-${lang}`)) {
+                        const translation = element.getAttribute(`data-${lang}`);
+                        if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                            element.placeholder = translation;
+                        } else {
+                            element.textContent = translation;
+                        }
+                    }
+                });
+
+                // Update placeholders separately
+                const placeholderElements = document.querySelectorAll(`[data-placeholder-${lang}]`);
+                placeholderElements.forEach(element => {
+                    element.placeholder = element.getAttribute(`data-placeholder-${lang}`);
+                });
             }
 
-            loadMovieCounts() {
-                try {
-                    // Load from localStorage
-                    const savedMovies = JSON.parse(localStorage.getItem('saved_movies') || '[]');
-                    
-                    // Calculate counts
-                    const totalCount = savedMovies.length;
-                    const watchLaterCount = savedMovies.filter(movie => movie.is_watch_later === true).length;
-                    const likedCount = savedMovies.filter(movie => movie.is_liked === true).length;
-                    
-                    const counts = {
-                        saved_count: totalCount,
-                        watch_later_count: watchLaterCount,
-                        liked_count: likedCount,
-                        total_count: totalCount
-                    };
-                    
-                    console.log('📊 Profile counts loaded:', counts);
-                    this.updateCounts(counts);
-                    
-                } catch (error) {
-                    console.error('Error loading movie counts:', error);
-                    // Fallback to showing 0 counts
-                    this.updateCounts({
-                        saved_count: 0,
-                        watch_later_count: 0,
-                        liked_count: 0,
-                        total_count: 0
+            // Profile functionality
+            class ProfileManager {
+                constructor() {
+                    this.loadMovieCounts();
+                    this.initializeSettings();
+                }
+
+                loadMovieCounts() {
+                    try {
+                        const savedMovies = JSON.parse(localStorage.getItem('saved_movies') || '[]');
+                        
+                        const totalCount = savedMovies.length;
+                        const watchLaterCount = savedMovies.filter(movie => movie.is_watch_later === true).length;
+                        const likedCount = savedMovies.filter(movie => movie.is_liked === true).length;
+                        
+                        const counts = {
+                            saved_count: totalCount,
+                            watch_later_count: watchLaterCount,
+                            liked_count: likedCount,
+                            total_count: totalCount
+                        };
+                        
+                        console.log('📊 Profile counts loaded:', counts);
+                        this.updateCounts(counts);
+                        
+                    } catch (error) {
+                        console.error('Error loading movie counts:', error);
+                        this.updateCounts({
+                            saved_count: 0,
+                            watch_later_count: 0,
+                            liked_count: 0,
+                            total_count: 0
+                        });
+                    }
+                }
+
+                updateCounts(counts) {
+                    // Update all count displays
+                    const elements = [
+                        { id: 'savedCount', value: counts.saved_count },
+                        { id: 'savedCountStat', value: counts.saved_count },
+                        { id: 'savedCountMain', value: counts.saved_count },
+                        { id: 'watchLaterCountStat', value: counts.watch_later_count },
+                        { id: 'watchLaterCountMain', value: counts.watch_later_count },
+                        { id: 'totalCountMain', value: counts.total_count }
+                    ];
+
+                    elements.forEach(({ id, value }) => {
+                        const element = document.getElementById(id);
+                        if (element) {
+                            element.textContent = value;
+                        }
                     });
+                }
+
+                initializeSettings() {
+                    const settingsForm = document.getElementById('settingsForm');
+                    
+                    // Load saved settings from localStorage
+                    this.loadSettings();
+                    
+                    // Handle form submission
+                    settingsForm.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        this.saveSettings();
+                    });
+                    
+                    // Handle form reset
+                    settingsForm.addEventListener('reset', (e) => {
+                        e.preventDefault();
+                        this.resetSettings();
+                    });
+                }
+
+                loadSettings() {
+                    try {
+                        const settings = JSON.parse(localStorage.getItem('user_settings') || '{}');
+                        
+                        // Load basic info
+                        if (settings.displayName) {
+                            document.getElementById('displayName').value = settings.displayName;
+                            document.querySelector('.profile-name').textContent = settings.displayName;
+                        }
+                        
+                        if (settings.email) {
+                            document.getElementById('emailAddress').value = settings.email;
+                            document.querySelector('.profile-email').textContent = settings.email;
+                        }
+                        
+                        if (settings.bio) {
+                            document.getElementById('userBio').value = settings.bio;
+                        }
+                        
+                        // Load preferences
+                        if (settings.moviePreferences) {
+                            settings.moviePreferences.forEach(pref => {
+                                const checkbox = document.getElementById(`pref-${pref}`);
+                                if (checkbox) checkbox.checked = true;
+                            });
+                        }
+                        
+                        if (settings.notificationPreferences) {
+                            settings.notificationPreferences.forEach(pref => {
+                                const checkbox = document.getElementById(`notif-${pref}`);
+                                if (checkbox) checkbox.checked = true;
+                            });
+                        }
+                        
+                    } catch (error) {
+                        console.error('Error loading settings:', error);
+                    }
+                }
+
+                saveSettings() {
+                    try {
+                        const settings = {
+                            displayName: document.getElementById('displayName').value,
+                            email: document.getElementById('emailAddress').value,
+                            bio: document.getElementById('userBio').value,
+                            moviePreferences: [],
+                            notificationPreferences: []
+                        };
+                        
+                        // Get movie preferences
+                        const moviePrefs = document.querySelectorAll('[id^="pref-"]:checked');
+                        moviePrefs.forEach(checkbox => {
+                            settings.moviePreferences.push(checkbox.id.replace('pref-', ''));
+                        });
+                        
+                        // Get notification preferences
+                        const notifPrefs = document.querySelectorAll('[id^="notif-"]:checked');
+                        notifPrefs.forEach(checkbox => {
+                            settings.notificationPreferences.push(checkbox.id.replace('notif-', ''));
+                        });
+                        
+                        // Save to localStorage
+                        localStorage.setItem('user_settings', JSON.stringify(settings));
+                        
+                        // Update profile display
+                        if (settings.displayName) {
+                            document.querySelector('.profile-name').textContent = settings.displayName;
+                        }
+                        if (settings.email) {
+                            document.querySelector('.profile-email').textContent = settings.email;
+                        }
+                        
+                        // Show success message
+                        this.showMessage('Settings saved successfully!', 'success');
+                        
+                    } catch (error) {
+                        console.error('Error saving settings:', error);
+                        this.showMessage('Error saving settings. Please try again.', 'error');
+                    }
+                }
+
+                resetSettings() {
+                    // Reset form
+                    document.getElementById('settingsForm').reset();
+                    
+                    // Reset to defaults
+                    document.querySelector('.profile-name').textContent = 'Movie Lover';
+                    document.querySelector('.profile-email').textContent = 'user@example.com';
+                    
+                    // Clear localStorage
+                    localStorage.removeItem('user_settings');
+                    
+                    this.showMessage('Settings reset to defaults', 'info');
+                }
+
+                showMessage(message, type = 'info') {
+                    // Create message element
+                    const messageEl = document.createElement('div');
+                    messageEl.textContent = message;
+                    messageEl.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        padding: 12px 24px;
+                        border-radius: 8px;
+                        color: white;
+                        font-weight: 600;
+                        z-index: 1000;
+                        opacity: 0;
+                        transform: translateY(-10px);
+                        transition: all 0.3s ease;
+                    `;
+                    
+                    // Set background based on type
+                    const colors = {
+                        success: '#28a745',
+                        error: '#dc3545',
+                        info: '#17a2b8'
+                    };
+                    messageEl.style.backgroundColor = colors[type] || colors.info;
+                    
+                    document.body.appendChild(messageEl);
+                    
+                    // Animate in
+                    setTimeout(() => {
+                        messageEl.style.opacity = '1';
+                        messageEl.style.transform = 'translateY(0)';
+                    }, 100);
+                    
+                    // Remove after 3 seconds
+                    setTimeout(() => {
+                        messageEl.style.opacity = '0';
+                        messageEl.style.transform = 'translateY(-10px)';
+                        setTimeout(() => {
+                            if (messageEl.parentNode) {
+                                messageEl.parentNode.removeChild(messageEl);
+                            }
+                        }, 300);
+                    }, 3000);
                 }
             }
 
-            updateCounts(counts) {
-                // Update main count displays
-                const savedCount = document.getElementById('savedCount');
-                const watchLaterCount = document.getElementById('watchLaterCount');
-                const totalCount = document.getElementById('totalCount');
-                
-                if (savedCount) savedCount.textContent = counts.saved_count;
-                if (watchLaterCount) watchLaterCount.textContent = counts.watch_later_count;
-                if (totalCount) totalCount.textContent = counts.total_count;
-                
-                // Update header stats if they exist
-                const savedCountStat = document.getElementById('savedCountStat');
-                const watchLaterCountStat = document.getElementById('watchLaterCountStat');
-                const mobileSavedCount = document.getElementById('mobileSavedCount');
-                
-                if (savedCountStat) savedCountStat.textContent = counts.saved_count;
-                if (watchLaterCountStat) watchLaterCountStat.textContent = counts.watch_later_count;
-                if (mobileSavedCount) mobileSavedCount.textContent = counts.saved_count;
-                
-                // Update navigation badges
-                const navSavedCount = document.getElementById('savedCount');
-                if (navSavedCount) navSavedCount.textContent = counts.saved_count;
-            }
-        }
-
-        // Initialize profile manager
-        window.profileManager = new ProfileManager();
+            // Initialize profile manager
+            window.profileManager = new ProfileManager();
+        });
     </script>
 </body>
 </html>

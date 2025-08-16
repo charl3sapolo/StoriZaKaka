@@ -1,5 +1,5 @@
 :root {
-  /* Updated Color Palette with Darker Gold */
+ /* Updated Color Palette with Darker Gold */
   --primary: #D4991A;
   --primary-hover: #C28A16;
   --primary-dark: #B07B12;
@@ -15,7 +15,7 @@
   --text-muted: #808080;
   --success: #10B981;
   --error: #DC2626;
-  --warning: #F59E0B;
+  --warning: #F59E0B; 
   
   /* Enhanced Gradients */
   --gradient-bg: linear-gradient(135deg, #0A0A0A 0%, #1A1A1A 100%);
