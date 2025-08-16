@@ -6,138 +6,141 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Discover - Stori za Kaka</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="{% static 'css/discover.css' %}">
-</head>
+   <link rel="stylesheet" href="{% static 'css/discover.css' %}">
+  </head>
 <body data-theme="dark" data-lang="en">
   <div class="container">
-    <!-- Header Section -->
-   
-<!-- Scroll Progress Bar -->
-<div class="scroll-progress" id="scrollProgress"></div>
- <!-- Header -->
- <header class="header">
-  <nav class="nav">
-      <div class="logo">
-          <a href="/" class="logo-link">
-              <img src="{% static 'logo.kakaflix.jpg' %}" alt="KakaFlix Logo" class="logo-icon">
-              <span>Stori za Kaka</span>
-          </a>
-      </div>
-      
-      <ul class="nav-center">
-          <li><a href="/" class="nav-link" data-en="Home" data-sw="Nyumbani">Home</a></li>
-          <li><a href="/discover/" class="nav-link active" data-en="Discover" data-sw="Gundua">Discover</a></li>
-          <li><a href="/movie-details/" class="nav-link" data-en="My Movies" data-sw="Filamu Zangu">My Movies <span class="badge" id="savedCount">0</span></a></li>
-          <li><a href="/profile/" class="nav-link" data-en="Profile" data-sw="Wasifu">Profile</a></li>
-      </ul>
-      
-      <div class="nav-controls">
-          <button class="theme-toggle" id="themeToggle" title="Toggle theme">
-              <span class="theme-icon">🌙</span>
-          </button>
-          <button class="language-toggle" id="languageToggle">
-              <span data-en="SW" data-sw="EN">SW</span>
-          </button>
-      </div>
-  </nav>
-</header>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+    
+    <!-- Header -->
+    <header class="header">
+      <nav class="nav">
+          <div class="logo">
+              <a href="/" class="logo-link">
+                  <img src="logo.kakaflix.jpg" alt="KakaFlix Logo" class="logo-icon">
+                  <span>Stori za Kaka</span>
+              </a>
+          </div>
+          
+          <ul class="nav-center">
+              <li><a href="/" class="nav-link" data-en="Home" data-sw="Nyumbani">Home</a></li>
+              <li><a href="/discover/" class="nav-link active" data-en="Discover" data-sw="Gundua">Discover</a></li>
+              <li><a href="/movie-details/" class="nav-link" data-en="My Movies" data-sw="Filamu Zangu">My Movies <span class="badge" id="savedCount">0</span></a></li>
+              <li><a href="/profile/" class="nav-link" data-en="Profile" data-sw="Wasifu">Profile</a></li>
+          </ul>
+          
+          <div class="nav-controls">
+              <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                  <span class="theme-icon">🌙</span>
+              </button>
+              <button class="language-toggle" id="languageToggle">
+                  <span data-en="SW" data-sw="EN">SW</span>
+              </button>
+          </div>
+      </nav>
+    </header>
 
     <!-- Mobile Menu Button -->
     <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
       <i class="fas fa-bars"></i>
-  </button>
+    </button>
 
-  <!-- Mobile Menu -->
-  <div class="mobile-menu" id="mobileMenu">
-      <div class="menu-header">
-          <div class="menu-time-container">
-              <i class="fas fa-clock"></i>
-              <span id="menu-time">14:30</span>
-          </div>
-          <button class="close-menu" id="closeMenuBtn" aria-label="Close menu">
-              <i class="fas fa-times"></i>
-          </button>
-      </div>
-      
-      <nav class="vertical-nav">
-          <a href="/" class="menu-item" aria-label="Go to Home">
-              <i class="fas fa-home"></i>
-              <span data-en="Home" data-sw="Nyumbani">Home</span>
-          </a>
-          <a href="/discover/" class="menu-item active" aria-label="Go to Discover">
-              <i class="fas fa-search"></i>
-              <span data-en="Discover" data-sw="Gundua">Discover</span>
-          </a>
-          <a href="/movie-details/" class="menu-item" aria-label="Go to My Movies">
-              <i class="fas fa-heart"></i>
-              <span data-en="My Movies" data-sw="Filamu Zangu">My Movies <span class="badge" id="mobileSavedCount">0</span></span>
-          </a>
-          <a href="/profile/" class="menu-item" aria-label="Go to Profile">
-              <i class="fas fa-user"></i>
-              <span data-en="Profile" data-sw="Wasifu">Profile</span>
-          </a>
-      </nav>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="menu-header">
+            <div class="menu-time-container">
+                <i class="fas fa-clock"></i>
+                <span id="menu-time">14:30</span>
+            </div>
+            <button class="close-menu" id="closeMenuBtn" aria-label="Close menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <nav class="vertical-nav">
+            <a href="/" class="menu-item" aria-label="Go to Home">
+                <i class="fas fa-home"></i>
+                <span data-en="Home" data-sw="Nyumbani">Home</span>
+            </a>
+            <a href="/discover/" class="menu-item active" aria-label="Go to Discover">
+                <i class="fas fa-search"></i>
+                <span data-en="Discover" data-sw="Gundua">Discover</span>
+            </a>
+            <a href="/movie-details/" class="menu-item" aria-label="Go to My Movies">
+                <i class="fas fa-heart"></i>
+                <span data-en="My Movies" data-sw="Filamu Zangu">My Movies <span class="badge" id="mobileSavedCount">0</span></span>
+            </a>
+            <a href="/profile/" class="menu-item" aria-label="Go to Profile">
+                <i class="fas fa-user"></i>
+                <span data-en="Profile" data-sw="Wasifu">Profile</span>
+            </a>
+        </nav>
 
-      <div class="menu-footer">
-          <div class="menu-version">
-              <span data-en="Version" data-sw="Toleo">Version</span>
-              <span>1.0.0</span>
-          </div>
-      </div>
-  </div>
+        <div class="menu-footer">
+            <div class="menu-version">
+                <span data-en="Version" data-sw="Toleo">Version</span>
+                <span>1.0.0</span>
+            </div>
+        </div>
+    </div>
 
-<div class="h1">
-  <h1>Discover</h1>
-  <p>Browse trending content and get personalized recommendations based on your mood</p>
-</div>
-    
+    <!-- Header Section -->
+    <div class="h1">
+      <h1 data-en="Discover" data-sw="Gundua">Discover</h1>
+      <p data-en="Browse trending content and get personalized recommendations based on your mood" 
+         data-sw="Vinjari maudhui yanayovuma na upate mapendekezo ya kibinafsi kulingana na hali yako ya kihisia">
+         Browse trending content and get personalized recommendations based on your mood
+      </p>
+    </div>
+        
     <!-- Mood Selector -->
     <div class="mood-selector">
-      <h2><i class="fas fa-heart"></i> Select Your Moods</h2>
+      <h2><i class="fas fa-heart"></i> <span data-en="Select Your Moods" data-sw="Chagua Hali Zako">Select Your Moods</span></h2>
       <div class="mood-grid">
         <div class="mood-option" data-mood="comedy">
           <i class="mood-icon fas fa-laugh-beam"></i>
-          <div class="mood-name">Happy</div>
-          <div class="mood-description">Feel-good comedies</div>
+          <div class="mood-name" data-en="Happy" data-sw="Furaha">Happy</div>
+          <div class="mood-description" data-en="Feel-good comedies" data-sw="Kichekesho kinachofurahisha">Feel-good comedies</div>
         </div>
         <div class="mood-option" data-mood="drama">
           <i class="mood-icon fas fa-sad-tear"></i>
-          <div class="mood-name">Emotional</div>
-          <div class="mood-description">Deep dramas</div>
+          <div class="mood-name" data-en="Emotional" data-sw="Kihasia">Emotional</div>
+          <div class="mood-description" data-en="Deep dramas" data-sw="Drama za kina">Deep dramas</div>
         </div>
         <div class="mood-option" data-mood="action">
           <i class="mood-icon fas fa-bolt"></i>
-          <div class="mood-name">Excited</div>
-          <div class="mood-description">Action-packed</div>
+          <div class="mood-name" data-en="Excited" data-sw="Msisimko">Excited</div>
+          <div class="mood-description" data-en="Action-packed" data-sw="Zenye vitendo">Action-packed</div>
         </div>
         <div class="mood-option" data-mood="romance">
           <i class="mood-icon fas fa-heart"></i>
-          <div class="mood-name">Romantic</div>
-          <div class="mood-description">Love stories</div>
+          <div class="mood-name" data-en="Romantic" data-sw="Mapenzi">Romantic</div>
+          <div class="mood-description" data-en="Love stories" data-sw="Hadithi za mapenzi">Love stories</div>
         </div>
         <div class="mood-option" data-mood="adventure">
           <i class="mood-icon fas fa-mountain"></i>
-          <div class="mood-name">Adventurous</div>
-          <div class="mood-description">Epic journeys</div>
+          <div class="mood-name" data-en="Adventurous" data-sw="Ujasiri">Adventurous</div>
+          <div class="mood-description" data-en="Epic journeys" data-sw="Safari kubwa">Epic journeys</div>
         </div>
         <div class="mood-option" data-mood="thriller">
           <i class="mood-icon fas fa-brain"></i>
-          <div class="mood-name">Thoughtful</div>
-          <div class="mood-description">Mind-bending</div>
+          <div class="mood-name" data-en="Thoughtful" data-sw="Mawazo">Thoughtful</div>
+          <div class="mood-description" data-en="Mind-bending" data-sw="Zinazochaganya akili">Mind-bending</div>
         </div>
         <div class="mood-option" data-mood="family">
           <i class="mood-icon fas fa-history"></i>
-          <div class="mood-name">Nostalgic</div>
-          <div class="mood-description">Family classics</div>
+          <div class="mood-name" data-en="Nostalgic" data-sw="Kumbukumbu">Nostalgic</div>
+          <div class="mood-description" data-en="Family classics" data-sw="Za familia za zamani">Family classics</div>
         </div>
         <div class="mood-option" data-mood="horror">
           <i class="mood-icon fas fa-ghost"></i>
-          <div class="mood-name">Thrilled</div>
-          <div class="mood-description">Horror & suspense</div>
+          <div class="mood-name" data-en="Thrilled" data-sw="Kutisha">Thrilled</div>
+          <div class="mood-description" data-en="Horror & suspense" data-sw="Kutisha na mashaka">Horror & suspense</div>
         </div>
       </div>
       <button class="get-recommendations" id="getRecommendations" disabled>
-        <i class="fas fa-magic"></i> Analyze
+        <i class="fas fa-magic"></i> <span data-en="Analyze" data-sw="Changanua">Analyze</span>
       </button>
     </div>
 
@@ -145,36 +148,36 @@
     <section class="genre-selector-section">
       <div class="explore-selector-grid">
         <div class="explore-selector-item">
-          <label for="genreSelect">Genre:</label>
+          <label for="genreSelect" data-en="Genre:" data-sw="Aina:">Genre:</label>
           <select id="genreSelect">
-            <option value="">Select a genre...</option>
+            <option value="" data-en="Select a genre..." data-sw="Chagua aina...">Select a genre...</option>
             <!-- JS will populate the rest -->
           </select>
         </div>
         <div class="explore-selector-item">
-          <label for="yearSelect">Year:</label>
+          <label for="yearSelect" data-en="Year:" data-sw="Mwaka:">Year:</label>
           <select id="yearSelect">
-            <option value=""> year</option>
+            <option value="" data-en="Year" data-sw="Mwaka">Year</option>
             <!-- JS will populate -->
           </select>
         </div>
         <div class="explore-selector-item">
-          <label for="languageSelect">Language:</label>
+          <label for="languageSelect" data-en="Language:" data-sw="Lugha:">Language:</label>
           <select id="languageSelect">
-            <option value="">Language</option>
+            <option value="" data-en="Language" data-sw="Lugha">Language</option>
             <!-- JS will populate -->
           </select>
         </div>
         <div class="explore-selector-item">
-          <label for="dramaTypeSelect">Drama Type:</label>
+          <label for="dramaTypeSelect" data-en="Drama Type:" data-sw="Aina ya Drama:">Drama Type:</label>
           <select id="dramaTypeSelect">
-            <option value="">Any</option>
+            <option value="" data-en="Any" data-sw="Yoyote">Any</option>
             <option value="kdrama">K-Drama</option>
             <option value="cdrama">C-Drama</option>
             <option value="jdrama">J-Drama</option>
-            <option value="thaidrama">Thai Drama</option>
-            <option value="turkishdrama">Turkish Drama</option>
-            <option value="other">Other</option>
+            <option value="thaidrama" data-en="Thai Drama" data-sw="Drama ya Kithai">Thai Drama</option>
+            <option value="turkishdrama" data-en="Turkish Drama" data-sw="Drama ya Kituruki">Turkish Drama</option>
+            <option value="other" data-en="Other" data-sw="Nyingine">Other</option>
           </select>
         </div>
       </div>
@@ -183,63 +186,88 @@
     <!-- Curated For You Section (hidden by default, JS will show/hide) -->
     <section class="curated-section" id="curatedSection" style="display: none;">
       <div class="curated-header">
-        <h2 class="section-title"><i class="fas fa-star"></i> Curated For You</h2>
+        <h2 class="section-title">
+          <i class="fas fa-star"></i> 
+          <span data-en="Curated For You" data-sw="Zilizochukuliwa Kwa Ajili Yako">Curated For You</span>
+        </h2>
         <button class="refresh-btn" id="refreshCurated">
-          <i class="fas fa-sync-alt"></i> Refresh
+          <i class="fas fa-sync-alt"></i> <span data-en="Refresh" data-sw="Onyesha Upya">Refresh</span>
         </button>
       </div>
       <div class="media-grid" id="curatedGrid">
         <!-- Content will be loaded here -->
+        <div class="movie-card">Sample Movie 1</div>
+        <div class="movie-card">Sample Movie 2</div>
+        <div class="movie-card">Sample Movie 3</div>
       </div>
     </section>
 
     <!-- Selected Genre Section (hidden by default, JS will show/hide) -->
     <section class="selected-genre-section" id="selectedGenreSection" style="display: none;">
-      <h2 id="genreTitle">Genre Movies</h2>
+      <h2 id="genreTitle" data-en="Genre Movies" data-sw="Filamu za Aina">Genre Movies</h2>
       <div class="movie-row" id="genreMovieRow">
         <!-- Genre-specific movies here -->
+        <div class="movie-card">Genre Movie 1</div>
+        <div class="movie-card">Genre Movie 2</div>
+        <div class="movie-card">Genre Movie 3</div>
       </div>
     </section>
 
     <!-- Movies Section -->
     <section class="movie-section" id="trending-movies">
-      <h2 class="section-title">Trending Movies</h2>
+      <h2 class="section-title" data-en="Trending Movies" data-sw="Filamu Zinazovuma">Trending Movies</h2>
       <div class="movie-row" id="moviesRow1">
         <div class="loading-indicator hidden" id="moviesLoading1">
           <div class="spinner"></div>
         </div>
+        <div class="movie-card">Movie 1</div>
+        <div class="movie-card">Movie 2</div>
+        <div class="movie-card">Movie 3</div>
+        <div class="movie-card">Movie 4</div>
       </div>
       <div class="movie-row" id="moviesRow2">
         <div class="loading-indicator hidden" id="moviesLoading2">
-        <div class="spinner"></div>
+          <div class="spinner"></div>
         </div>
+        <div class="movie-card">Movie 5</div>
+        <div class="movie-card">Movie 6</div>
+        <div class="movie-card">Movie 7</div>
+        <div class="movie-card">Movie 8</div>
       </div>
     </section>
 
     <!-- TV Shows Section -->
     <section class="movie-section" id="trending-tv">
-      <h2 class="section-title">Trending TV Shows</h2>
+      <h2 class="section-title" data-en="Trending TV Shows" data-sw="Vipindi vya Televisheni Vinavyovuma">Trending TV Shows</h2>
       <div class="movie-row" id="tvRow1">
         <div class="loading-indicator hidden" id="tvLoading1">
           <div class="spinner"></div>
         </div>
+        <div class="movie-card">TV Show 1</div>
+        <div class="movie-card">TV Show 2</div>
+        <div class="movie-card">TV Show 3</div>
+        <div class="movie-card">TV Show 4</div>
       </div>
       <div class="movie-row" id="tvRow2">
         <div class="loading-indicator hidden" id="tvLoading2">
-        <div class="spinner"></div>
+          <div class="spinner"></div>
         </div>
+        <div class="movie-card">TV Show 5</div>
+        <div class="movie-card">TV Show 6</div>
+        <div class="movie-card">TV Show 7</div>
+        <div class="movie-card">TV Show 8</div>
       </div>
     </section>
 
     <!-- Error State -->
     <div class="error-state hidden">
       <i class="fas fa-exclamation-triangle"></i>
-      <p>Failed to load content</p>
-      <button class="retry-btn">Retry</button>
+      <p data-en="Failed to load content" data-sw="Imeshindikana kupakia maudhui">Failed to load content</p>
+      <button class="retry-btn" data-en="Retry" data-sw="Jaribu Tena">Retry</button>
     </div>
   </div>
 
-  {% csrf_token %}
+   {% csrf_token %}
   <script>
     window.TMDB_API_KEY = "{{ TMDB_API_KEY|escapejs }}";
   </script>
