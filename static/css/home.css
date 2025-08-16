@@ -1,8 +1,6 @@
 /* ===== HOMEPAGE STYLES ===== */
 
-/* ============================================================================
-// UNIFIED SCROLLBAR HIDING - Mobile-First Priority
-// ============================================================================ */
+/* UNIFIED SCROLLBAR HIDING - Mobile-First Priority*/
 
 /* Hide scrollbars completely without disabling scrolling functionality */
 ::-webkit-scrollbar {
@@ -14,7 +12,7 @@
   -ms-overflow-style: none; /* IE and Edge */
 }
 
-/* Ensure smooth scrolling behavior */
+/* Smooth scrolling behavior */
 html {
   scroll-behavior: smooth;
 }
@@ -40,107 +38,167 @@ body {
     border-radius: 50%;
     filter: blur(40px);
     opacity: 0.3;
-    animation: float 25s infinite ease-in-out;
+    animation: float 30s infinite ease-in-out;
     z-index: -1;
-    transition: all 2s ease;
+    transition: all 4s ease;
+    will-change: transform, opacity;
+}
+
+[data-theme="light"] .bubble {
+    opacity: 0.25;
+    filter: blur(50px);
 }
 
 .bubble:hover {
-    opacity: 0.5;
-    filter: blur(30px);
-    transform: scale(1.1);
+    opacity: 0.4;
+    filter: blur(35px);
+    transform: scale(1.05);
 }
 
+[data-theme="light"] .bubble:hover {
+    opacity: 0.35;
+}
+
+/* Dark mode bubbles - richer colors */
 .bubble-1 {
     width: 250px;
     height: 250px;
-    background: radial-gradient(circle, #F5B823, #F5B823);
+    background: radial-gradient(circle, #F5B823, rgba(245, 184, 35, 0.5));
     top: 15%;
     left: 10%;
     animation-delay: 0s;
-    animation-duration: 30s;
+    animation-duration: 35s;
 }
 
 .bubble-2 {
     width: 350px;
     height: 350px;
-    background: radial-gradient(circle, #1A1A1A, #F5B823);
+    background: radial-gradient(circle, #1A1A1A, rgba(245, 184, 35, 0.4));
     top: 65%;
     left: 85%;
-    animation-delay: 5s;
-    animation-duration: 35s;
+    animation-delay: 7s;
+    animation-duration: 40s;
 }
 
 .bubble-3 {
     width: 180px;
     height: 180px;
-    background: radial-gradient(circle, #F5B823, #b5f2de);
+    background: radial-gradient(circle, #F5B823, rgba(181, 242, 222, 0.6));
     top: 35%;
     left: 75%;
-    animation-delay: 10s;
-    animation-duration: 25s;
+    animation-delay: 14s;
+    animation-duration: 30s;
+}
+
+/* Light mode bubbles - softer, more pastel colors */
+[data-theme="light"] .bubble-1 {
+    background: radial-gradient(circle, rgba(245, 184, 35, 0.6), rgba(245, 184, 35, 0.2));
+}
+
+[data-theme="light"] .bubble-2 {
+    background: radial-gradient(circle, rgba(230, 230, 230, 0.8), rgba(245, 184, 35, 0.2));
+}
+
+[data-theme="light"] .bubble-3 {
+    background: radial-gradient(circle, rgba(245, 184, 35, 0.5), rgba(181, 242, 222, 0.3));
 }
 
 .bubble-4 {
     width: 300px;
     height: 300px;
-    background: radial-gradient(circle, #1A1A1A, #F5B823);
+    background: radial-gradient(circle, #463c3c, rgba(206, 156, 30, 0.3));
     top: 75%;
     left: 20%;
-    animation-delay: 15s;
-    animation-duration: 40s;
+    animation-delay: 21s;
+    animation-duration: 45s;
 }
 
 .bubble-5 {
     width: 220px;
     height: 220px;
-    background: radial-gradient(circle, #a1c7ea, #F5B823);
+    background: radial-gradient(circle, rgba(161, 199, 234, 0.7), rgba(245, 184, 35, 0.4));
     top: 25%;
     left: 45%;
-    animation-delay: 20s;
-    animation-duration: 28s;
+    animation-delay: 28s;
+    animation-duration: 33s;
 }
 
 .bubble-6 {
     width: 280px;
     height: 280px;
-    background: radial-gradient(circle, #F5B823, #e5d6d6);
+    background: radial-gradient(circle, #F5B823, rgba(229, 214, 214, 0.5));
     top: 50%;
     left: 5%;
-    animation-delay: 12s;
-    animation-duration: 32s;
+    animation-delay: 10s;
+    animation-duration: 37s;
 }
 
 .bubble-7 {
     width: 320px;
     height: 320px;
-    background: radial-gradient(circle, #F5B823, #d4c5aa);
+    background: radial-gradient(circle, #F5B823, rgba(212, 197, 170, 0.5));
     top: 10%;
     left: 80%;
-    animation-delay: 18s;
-    animation-duration: 38s;
+    animation-delay: 17s;
+    animation-duration: 42s;
+}
+
+[data-theme="light"] .bubble-4 {
+    background: radial-gradient(circle, rgba(230, 230, 230, 0.7), rgba(190, 148, 41, 0.197));
+}
+
+[data-theme="light"] .bubble-5 {
+    background: radial-gradient(circle, rgba(161, 199, 234, 0.5), rgba(245, 189, 48, 0.2));
+}
+
+[data-theme="light"] .bubble-6 {
+    background: radial-gradient(circle, rgba(245, 184, 35, 0.4), rgba(229, 214, 214, 0.3));
+}
+
+[data-theme="light"] .bubble-7 {
+    background: radial-gradient(circle, rgba(200, 156, 43, 0.4), rgba(212, 197, 170, 0.3));
 }
 
 @keyframes float {
-    0% {
-        transform: translate(0, 0) rotate(0deg);
+    0%, 100% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
     }
     20% {
-        transform: translate(50px, 100px) rotate(90deg);
+        transform: translate(30px, 50px) rotate(5deg) scale(1.02);
     }
     40% {
-        transform: translate(100px, 50px) rotate(180deg);
+        transform: translate(-20px, 80px) rotate(-5deg) scale(0.98);
     }
     60% {
-        transform: translate(150px, 150px) rotate(270deg);
+        transform: translate(40px, -30px) rotate(8deg) scale(1.01);
     }
     80% {
-        transform: translate(50px, 200px) rotate(360deg);
-    }
-    100% {
-        transform: translate(0, 0) rotate(0deg);
+        transform: translate(-10px, -40px) rotate(-3deg) scale(0.99);
     }
 }
+[data-theme="light"] {
+    /* Ensure the correct syntax */
+    @keyframes float {
+        0%, 100% {
+            transform: translate(0, 0) rotate(0deg) scale(1);
+        }
+        20% {
+            transform: translate(15px, 25px) rotate(3deg) scale(1.01);
+        }
+        40% {
+            transform: translate(-10px, 40px) rotate(-3deg) scale(0.99);
+        }
+        60% {
+            transform: translate(20px, -15px) rotate(4deg) scale(1.005);
+        }
+        80% {
+            transform: translate(-5px, -20px) rotate(-2deg) scale(0.995);
+        }
+    }
+}
+
+
+
 :root {
             /* === EXISTING BRAND COLORS === */
             --bg-primary: #32353c;
@@ -331,6 +389,35 @@ body:not([data-theme="dark"]) .feature-description {
         --text-secondary: #94a3b8 !important;
         --border-hover: #4b5563 !important;
     }
+}
+/* Enhanced Theme Variables */
+:root {
+    /* Light Mode - Warmer, Softer Colors */
+    --card-bg-light: rgba(255, 255, 255, 0.95);
+    --card-border-light: rgba(0, 0, 0, 0.08);
+    --card-shadow-light: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --card-hover-shadow-light: 0 10px 30px rgba(0, 0, 0, 0.12);
+    --text-primary-light: #2a2a3a;
+    --text-secondary-light: #5a5a6a;
+    --border-hover-light: rgba(245, 184, 35, 0.25);
+    
+    /* Dark Mode */
+    --card-bg-dark: rgba(25, 25, 35, 0.9);
+    --card-border-dark: rgba(255, 255, 255, 0.08);
+    --card-shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --card-hover-shadow-dark: 0 12px 40px rgba(0, 0, 0, 0.4);
+    --text-primary-dark: #ffffff;
+    --text-secondary-dark: rgba(255, 255, 255, 0.8);
+    --border-hover-dark: rgba(245, 184, 35, 0.4);
+    
+    /* Default to light mode */
+    --card-bg: var(--card-bg-light);
+    --card-border: var(--card-border-light);
+    --card-shadow: var(--card-shadow-light);
+    --card-hover-shadow: var(--card-hover-shadow-light);
+    --text-primary: var(--text-primary-light);
+    --text-secondary: var(--text-secondary-light);
+    --border-hover: var(--border-hover-light);
 }
 
 /* Force feature cards to be light in light mode */
@@ -821,36 +908,6 @@ body:not([data-theme="dark"]) .feature-card:hover,
         padding: 0 0.5rem;
     }
         }
-
-/* Enhanced Theme Variables */
-:root {
-    /* Light Mode - Warmer, Softer Colors */
-    --card-bg-light: rgba(255, 255, 255, 0.95);
-    --card-border-light: rgba(0, 0, 0, 0.08);
-    --card-shadow-light: 0 4px 20px rgba(0, 0, 0, 0.08);
-    --card-hover-shadow-light: 0 10px 30px rgba(0, 0, 0, 0.12);
-    --text-primary-light: #2a2a3a;
-    --text-secondary-light: #5a5a6a;
-    --border-hover-light: rgba(245, 184, 35, 0.25);
-    
-    /* Dark Mode */
-    --card-bg-dark: rgba(25, 25, 35, 0.9);
-    --card-border-dark: rgba(255, 255, 255, 0.08);
-    --card-shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.3);
-    --card-hover-shadow-dark: 0 12px 40px rgba(0, 0, 0, 0.4);
-    --text-primary-dark: #ffffff;
-    --text-secondary-dark: rgba(255, 255, 255, 0.8);
-    --border-hover-dark: rgba(245, 184, 35, 0.4);
-    
-    /* Default to light mode */
-    --card-bg: var(--card-bg-light);
-    --card-border: var(--card-border-light);
-    --card-shadow: var(--card-shadow-light);
-    --card-hover-shadow: var(--card-hover-shadow-light);
-    --text-primary: var(--text-primary-light);
-    --text-secondary: var(--text-secondary-light);
-    --border-hover: var(--border-hover-light);
-}
 
 /* Responsive Features Grid */
 .features-grid {
@@ -6445,7 +6502,6 @@ section {
     .carousel-controls {
         justify-content: center;
     }
-}
 
 /* === SHOWCASE SKELETON LOADING === */
 .carousel-container .skeleton-card {
