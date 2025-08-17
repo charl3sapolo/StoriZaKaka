@@ -3457,7 +3457,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
 
 /* Hero Section */
 .hero {
-    padding: 80px 0 60px; /* Reduced padding to move content up */
+    padding: 80px 0 60px;
     text-align: center;
     position: relative;
     overflow: hidden;
@@ -3488,11 +3488,241 @@ body:not([data-theme="dark"]) .feature-card:hover,
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    transform: translateY(-20px); /* Move content up slightly */
+    transform: translateY(-20px);
     z-index: 2;
 }
 
-/* FIXED: Beautiful gold hero title */
+/* Elegant Search Button Container */
+.hero-search {
+    position: absolute;
+    top: 120px; /* Position just below header */
+    right: 20px; /* Far right positioning */
+    z-index: 3;
+    animation: fadeInSlide 1s ease-out 0.5s both;
+}
+
+/* Hero Search Form (hidden initially) */
+.hero-search-form {
+    display: none;
+    align-items: center;
+    background: var(--glass-bg, rgba(255, 255, 255, 0.1));
+    backdrop-filter: blur(20px);
+    border-radius: 50px;
+    padding: 8px;
+    border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.2));
+    box-shadow: var(--shadow-lg, 0 10px 40px rgba(0, 0, 0, 0.1));
+    min-width: 300px;
+    transition: all 0.3s ease;
+    animation: searchFormSlideIn 0.3s ease-out;
+}
+
+.hero-search-form .search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 12px 16px;
+    color: var(--text-primary, #fff);
+    font-size: 16px;
+    border-radius: 50px;
+}
+
+.hero-search-form .search-input::placeholder {
+    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.hero-search-form .search-btn {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-right: 4px;
+    transition: all 0.2s ease;
+}
+
+.hero-search-form .search-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+}
+
+.hero-search-form .search-btn .fa-search {
+    color: #1a1a1a;
+    font-size: 14px;
+}
+
+.hero-search-form .close-search {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-left: 4px;
+    transition: all 0.2s ease;
+    color: var(--text-secondary, rgba(255, 255, 255, 0.6));
+}
+
+.hero-search-form .close-search:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary, #fff);
+    transform: scale(1.05);
+}
+
+.hero-search-form .close-search .fa-times {
+    font-size: 12px;
+}
+
+/* Search Form Animation */
+@keyframes searchFormSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* Search Button Styling */
+.hero .search-btn {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.1),
+        0 2px 8px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.hero .search-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.hero .search-btn:hover {
+    background: linear-gradient(135deg, #FFD700, #FFA500, #FF8C00);
+    border-color: rgba(255, 215, 0, 0.5);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 
+        0 8px 30px rgba(255, 215, 0, 0.4),
+        0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.hero .search-btn:hover::before {
+    opacity: 1;
+}
+
+.hero .search-btn:active {
+    transform: translateY(-1px) scale(1.02);
+    transition-duration: 0.1s;
+}
+
+/* Search Icon Styling */
+.hero .search-btn .fa-search {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 18px;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+
+.hero .search-btn:hover .fa-search {
+    color: #1a1a1a;
+    transform: scale(1.1);
+    font-weight: 600;
+}
+
+/* Subtle Glow Effect */
+.hero .search-btn::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-radius: 50%;
+    z-index: -1;
+    opacity: 0;
+    filter: blur(8px);
+    transition: opacity 0.3s ease;
+}
+
+.hero .search-btn:hover::after {
+    opacity: 0.3;
+}
+
+/* Fade in animation */
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-search {
+        top: 100px;
+        right: 20px;
+    }
+    
+    .hero .search-btn {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .hero .search-btn .fa-search {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-search {
+        top: 90px;
+        right: 16px;
+    }
+    
+    .hero .search-btn {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .hero .search-btn .fa-search {
+        font-size: 14px;
+    }
+}
+
+
 .hero-title {
     font-size: clamp(2.2rem, 8vw, var(--h1));
     color: #FFD700 !important; /* Beautiful gold color */
@@ -3912,7 +4142,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
 
 .mobile-details-btn:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 15px rgba(139, 92, 246, 0.6);
+    box-shadow: 0 4px 15px rgba(246, 226, 92, 0.6);
     animation: colorPulse 1s ease-in-out infinite alternate;
 }
 
@@ -4098,17 +4328,17 @@ body:not([data-theme="dark"]) .feature-card:hover,
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    box-shadow: 0 2px 12px rgba(255, 0, 0, 0.3);
+    box-shadow: 0 2px 12px rgba(255, 153, 0, 0.3);
 }
 
 .watch-trailer-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+    box-shadow: 0 6px 20px rgba(255, 213, 0, 0.4);
 }
 
 .watch-trailer-btn:active {
     transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
+    box-shadow: 0 2px 8px rgba(255, 200, 0, 0.3);
 }
 
 /* Modal Navigation Arrows */
@@ -4143,103 +4373,6 @@ body:not([data-theme="dark"]) .feature-card:hover,
     right: 20px;
 }
 
-/* YouTube iframe container */
-.youtube-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.95);
-    z-index: 1002;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    animation: modalFadeIn 0.3s ease-out;
-}
-
-.youtube-container iframe {
-    width: min(95vw, 1200px);
-    height: calc(min(95vw, 1200px) / 1.7777777778); /* 16:9 aspect ratio */
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-    max-width: 100%;
-    max-height: 90vh;
-}
-
-/* Responsive YouTube container */
-@media (max-width: 600px) {
-    .youtube-container iframe {
-        width: 95vw;
-        height: calc(95vw / 1.7777777778);
-        border-radius: 8px;
-    }
-}
-
-/* YouTube Skeleton Loading */
-.youtube-skeleton {
-    background: linear-gradient(135deg, #2a2a2a, #3a3a3a);
-    aspect-ratio: 16/9;
-    position: relative;
-    overflow: hidden;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.loader {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.1),
-        transparent
-    );
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    0% {
-        transform: translateX(-100%);
-    }
-    100% {
-        transform: translateX(100%);
-    }
-}
-
-.youtube-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 12px;
-}
-
-.youtube-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    border-radius: 50%;
-    color: rgb(240, 251, 194);
-    font-size: 1.2rem;
-    cursor: pointer;
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
-    transition: background 0.2s, transform 0.2s;
-}
-
-.youtube-close:hover {
-    background: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
-}
 
 /* Mobile-First Overhaul (max-width: 600px) */
 @media (max-width: 600px) {
@@ -4349,11 +4482,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
         right: 12px;
     }
     
-    .youtube-container iframe {
-        width: 95%;
-        height: 50%;
-    }
-}
+   }
 
 /* Ensure touch targets meet WCAG standards */
 @media (max-width: 600px) {
@@ -4438,259 +4567,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
                 max-width: 100vw;
             }
         }
-/* REMOVED DUPLICATE - Using enhanced modal system above */
 
-.modal-backdrop {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    z-index: -1;
-}
-
-.modal-container {
-    position: relative;
-    background: var(--dark);
-    border-radius: 12px;
-    width: 90%;
-    max-width: 800px;
-    max-height: 90vh;
-    display: flex;
-    overflow: hidden;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    animation: modalFadeIn 0.3s ease-out;
-}
-
-.modal-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s ease;
-}
-
-.modal-close:hover {
-    background: var(--primary);
-    transform: rotate(90deg);
-}
-
-.modal-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 1rem;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.modal-arrow:hover {
-    background: var(--primary);
-}
-
-.modal-arrow-left {
-    left: 15px;
-}
-
-.modal-arrow-right {
-    right: 15px;
-}
-
-.modal-poster {
-    flex: 0 0 40%;
-    background-size: cover;
-    background-position: center;
-    min-height: 300px;
-}
-
-.modal-content {
-    flex: 1;
-    padding: 30px;
-    overflow-y: auto;
-}
-
-#modalTitle {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-    color: white;
-}
-
-.modal-meta {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-}
-
-.modal-meta span {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.modal-rating {
-    color: var(--primary);
-}
-
-.modal-desc {
-    color: var(--text-secondary);
-    line-height: 1.7;
-    margin-bottom: 30px;
-}
-
-.modal-actions {
-    display: flex;
-    gap: 15px;
-    margin-top: 30px;
-}
-
-.watch-trailer {
-    padding: 12px 25px;
-    border-radius: 6px;
-    border: none;
-    background: var(--primary);
-    color: var(--dark);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.watch-trailer:hover {
-    background: var(--primary-dark);
-    transform: translateY(-2px);
-}
-
-.watch-trailer:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    background: var(--text-secondary);
-}
-
-/* YouTube Container Styles */
-.youtube-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1001;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.youtube-container.active {
-    opacity: 1;
-    display: flex;
-}
-
-.youtube-container iframe {
-    width: 90%;
-    max-width: 900px;
-    aspect-ratio: 16/9;
-    border: none;
-}
-
-.youtube-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 1.2rem;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.3s ease;
-}
-
-.youtube-close:hover {
-    background: var(--primary);
-    transform: rotate(90deg);
-}
-
-.youtube-skeleton {
-    width: 90%;
-    max-width: 900px;
-    aspect-ratio: 16/9;
-    background: #1f1f23;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.loader {
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    border-top: 4px solid var(--primary);
-    width: 40px;
-    height: 40px;
-    animation: spin 1s linear infinite;
-}
-
-/* Animations */
-@keyframes modalFadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* Responsive Styles */
-@media (max-width: 768px) {
-    .modal-container {
-        flex-direction: column;
-        width: 95%;
-        max-height: 90vh;
-    }
-    
-    .modal-poster {
-        flex: 0 0 200px;
-        min-height: 200px;
-    }
-    
-    .modal-content {
-        max-height: calc(90vh - 200px);
-    }
-    
-    .youtube-container iframe {
-        width: 95%;
-    }
-}
 /* ===== COMPREHENSIVE UI/UX OVERHAUL - MOBILE-FIRST WITH TRAILER ENFORCEMENT ===== */
 
 /* === RESPONSIVE SIDEBAR MENU SYSTEM === */
