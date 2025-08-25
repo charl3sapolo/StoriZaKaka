@@ -1,7 +1,17 @@
 // TMDB API Configuration
-const TMDB_API_KEY = window.TMDB_API_KEY || '';
+// const TMDB_API_KEY = window.TMDB_API_KEY || '';
+// const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+// const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+
+// TMDB API Configuration (Single source of truth)
+const TMDB_API_KEY = 'b6e814a0b9ff291122e8a05a0f206cd8';
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+const TMDB_IMAGE_BASE_ORIGINAL = 'https://image.tmdb.org/t/p/original';
+
+// Make API key globally available
+window.TMDB_API_KEY = TMDB_API_KEY;
+
 
 // Mood to Genre Mapping
 const MOOD_TO_GENRE = {
