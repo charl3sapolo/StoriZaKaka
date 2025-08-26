@@ -4137,7 +4137,10 @@ body:not([data-theme="dark"]) .feature-card:hover,
 
 /* Modal Container */
 .modal-container {
-    position: relative;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     background: linear-gradient(
         to bottom,
         rgba(0, 0, 0, 0.7) 0%,
@@ -4148,11 +4151,13 @@ body:not([data-theme="dark"]) .feature-card:hover,
     backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-    max-width: 90vw;
-    max-height: 90vh;
+    width: 75vw; /* Occupy 75% of the screen width */
+    max-width: 1000px;
+    max-height: 85vh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    position: relative; /* Ensure arrows position correctly */
 }
 
 @keyframes modalFadeIn {
@@ -4302,31 +4307,36 @@ body:not([data-theme="dark"]) .feature-card:hover,
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.2);
+    width: 44px;
+    height: 44px;
+    background: rgba(255, 255, 255, 0.25);
     border: none;
     border-radius: 50%;
     color: white;
-    font-size: 1rem;
+    font-size: 1.2rem;
     cursor: pointer;
     -webkit-backdrop-filter: blur(8px);
     backdrop-filter: blur(8px);
     transition: background 0.2s, transform 0.2s;
     z-index: 1001;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal-arrow:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.4);
     transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
 .modal-arrow-left {
-    left: 20px;
+    left: -22px;
 }
 
 .modal-arrow-right {
-    right: 20px;
+    right: -22px;
 }
 
 
@@ -4531,6 +4541,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: var(--glass-blur, blur(20px));
     -webkit-backdrop-filter: var(--glass-blur, blur(20px));
+    pointer-events: auto;
 }
 
 @media (max-width: 768px) {
@@ -4597,6 +4608,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
     box-shadow: var(--shadow-xl, 0 16px 48px rgba(0, 0, 0, 0.4));
     transform: translateX(100%);
     overflow-y: auto;
+    pointer-events: auto;
 }
 
 .mobile-menu::-webkit-scrollbar {
