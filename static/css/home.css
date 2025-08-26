@@ -4236,8 +4236,22 @@ body:not([data-theme="dark"]) .feature-card:hover,
     margin-bottom: 20px;
 }
 
-.watch-trailer {
+.modal-buttons {
+    display: flex;
+    gap: 12px;
     width: 100%;
+}
+
+.modal-buttons .action-btn {
+    flex: 1;
+    min-height: var(--btn-primary-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.watch-trailer {
+    flex: 1;
     min-height: var(--btn-primary-height);
     background: linear-gradient(135deg, #afbc72, #a98a11);
     border: none;
@@ -4247,9 +4261,9 @@ body:not([data-theme="dark"]) .feature-card:hover,
     font-size: var(--btn-text);
     cursor: pointer;
     transition: var(--transition-normal);
-    position: sticky;
-    bottom: 20px;
-    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     
     &:hover {
         background: linear-gradient(135deg,  #afbc72, #a98a11);
@@ -4333,11 +4347,11 @@ body:not([data-theme="dark"]) .feature-card:hover,
 }
 
 .modal-arrow-left {
-    left: -22px;
+    left: -60px; /* Further outside the modal content */
 }
 
 .modal-arrow-right {
-    right: -22px;
+    right: -60px; /* Further outside the modal content */
 }
 
 
