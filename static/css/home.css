@@ -4195,13 +4195,20 @@ body:not([data-theme="dark"]) .feature-card:hover,
     justify-content: center;
     padding: 20px;
     max-height: 50vh;
+    overflow: hidden;
 }
 
 .modal-poster img {
-    max-height: 200px;
+    max-height: 300px;
     max-width: 100%;
     border-radius: 12px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    object-fit: contain;
+}
+
+.modal-poster img:hover {
+    transform: scale(1.05);
 }
 
 .modal-content {
