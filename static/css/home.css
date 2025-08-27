@@ -7196,27 +7196,35 @@ section {
 
 /* Enhanced flip animation for discover section on small screens */
 @media (max-width: 768px) {
+    /* Force 3D perspective and transform style */
     .discover-section .movie-match-content .movie-card {
         perspective: 1500px !important;
         transform-style: preserve-3d !important;
+        position: relative !important;
     }
     
+    /* Ensure card inner has proper 3D transforms */
     .discover-section .movie-match-content .movie-card .card-inner {
         transform-style: preserve-3d !important;
         transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
         position: relative !important;
+        width: 100% !important;
+        height: 100% !important;
     }
     
-    /* Override conflicting mobile styles */
+    /* Force flip animation */
     .discover-section .movie-match-content .movie-card.flipped .card-inner {
         transform: rotateY(180deg) !important;
         animation: tarotFlip 1.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
     }
     
+    /* Ensure both sides are properly positioned */
     .discover-section .movie-match-content .movie-card .card-front,
     .discover-section .movie-match-content .movie-card .card-back {
         backface-visibility: hidden !important;
         position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
         width: 100% !important;
         height: 100% !important;
         border-radius: 12px !important;
@@ -7225,11 +7233,13 @@ section {
         transition: all 0.3s ease !important;
     }
     
+    /* Front side */
     .discover-section .movie-match-content .movie-card .card-front {
         transform: rotateY(0deg) !important;
         z-index: 2 !important;
     }
     
+    /* Back side */
     .discover-section .movie-match-content .movie-card .card-back {
         transform: rotateY(180deg) !important;
         z-index: 1 !important;
@@ -7245,11 +7255,12 @@ section {
         text-align: left !important;
     }
     
-    /* Override conflicting flipped states */
+    /* Flipped state overrides */
     .discover-section .movie-match-content .movie-card.flipped .card-front {
         opacity: 0 !important;
         transform: rotateY(180deg) !important;
         filter: none !important;
+        pointer-events: none !important;
     }
     
     .discover-section .movie-match-content .movie-card.flipped .card-back {
@@ -7258,6 +7269,7 @@ section {
         background: var(--glass-bg) !important;
         -webkit-backdrop-filter: var(--glass-blur) !important;
         backdrop-filter: var(--glass-blur) !important;
+        pointer-events: auto !important;
     }
     
     /* Tarot card flip animation */
@@ -7287,6 +7299,27 @@ section {
     
     .discover-section .movie-match-content .movie-card.flipped:hover {
         transform: translateY(-5px) scale(1.02) !important;
+    }
+}
+
+/* Additional mobile-specific discover card flip styles for maximum compatibility */
+@media (max-width: 768px) {
+    /* Force discover cards to use 3D transforms */
+    .discover-section .movie-match-content .movie-card {
+        transform-style: preserve-3d !important;
+        perspective: 1500px !important;
+    }
+    
+    /* Ensure the flip works by overriding any conflicting styles */
+    .discover-section .movie-match-content .movie-card.flipped .card-inner {
+        transform: rotateY(180deg) !important;
+    }
+    
+    /* Make sure backface visibility is enforced */
+    .discover-section .movie-match-content .movie-card .card-front,
+    .discover-section .movie-match-content .movie-card .card-back {
+        -webkit-backface-visibility: hidden !important;
+        backface-visibility: hidden !important;
     }
 }
 
