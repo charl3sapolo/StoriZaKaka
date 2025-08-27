@@ -3,7 +3,7 @@ services:
     name: kakaflix
     runtime: python
     buildCommand: chmod +x render-build.sh && ./render-build.sh
-    startCommand: cd $RENDER_PROJECT_DIR && bash run.sh
+    startCommand: gunicorn movierecommender.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: movierecommender.settings.production
@@ -27,8 +27,6 @@ services:
         value: media
       - key: LOG_LEVEL
         value: WARNING
-      - key: LOG_FILE
-        value: logs/django.log
       - fromGroup: kakaflix-db
         key: DATABASE_URL
       - fromGroup: kakaflix-redis
