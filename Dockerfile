@@ -32,8 +32,9 @@ RUN pip install --upgrade pip && \
 # Copy project
 COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput
+# Make startup script executable
+COPY start.sh .
+RUN chmod +x start.sh
 
-# Run gunicorn
-CMD gunicorn movierecommender.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120
+# Run startup script
+CMD ["./start.sh"]

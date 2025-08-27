@@ -1,0 +1,90 @@
+services:
+  # Web service
+  - type: web
+    name: kakaflix
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: gunicorn movierecommender.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.7
+      - key: DJANGO_SETTINGS_MODULE
+        value: movierecommender.settings.production
+      - key: SECRET_KEY
+        sync: false
+      - key: ALLOWED_HOSTS
+        value: .onrender.com
+      - key: CSRF_TRUSTED_ORIGINS
+        value: https://*.onrender.com
+      - key: SECURE_SSL_REDIRECT
+        value: true
+      - key: SESSION_COOKIE_SECURE
+        value: true
+      - key: CSRF_COOKIE_SECURE
+        value: true
+      - key: DEBUG
+        value: false
+      - key: STATIC_URL
+        value: /static/
+      - key: STATIC_ROOT
+        value: staticfiles
+      - key: MEDIA_URL
+        value: /media/
+      - key: MEDIA_ROOT
+        value: media
+      - key: LOG_LEVEL
+        value: WARNING
+      - key: LOG_FILE
+        value: logs/django.log
+      - key: DB_NAME
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: 5432
+      - key: TMDB_API_KEY
+        sync: false
+      - key: IMDB_API_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: EMAIL_BACKEND
+        value: django.core.mail.backends.smtp.EmailBackend
+      - key: EMAIL_HOST
+        sync: false
+      - key: EMAIL_PORT
+        value: 587
+      - key: EMAIL_USE_TLS
+        value: true
+      - key: EMAIL_HOST_USER
+        sync: false
+      - key: EMAIL_HOST_PASSWORD
+        sync: false
+      - fromGroup: kakaflix-db
+        key: DATABASE_URL
+      - fromGroup: kakaflix-redis
+        key: REDIS_URL
+
+  # Redis service
+  - type: redis
+    name: kakaflix-redis
+    ipAllowList: # required
+      - source: 0.0.0.0/0
+        description: everywhere
+    plan: free # optional (defaults to free)
+
+databases:
+  # PostgreSQL database
+  - name: kakaflix-db
+    plan: free
+    ipAllowList: # required
+      - source: 0.0.0.0/0
+        description: everywhere
