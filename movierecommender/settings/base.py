@@ -197,12 +197,6 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
-            'level': config('LOG_LEVEL', default='INFO'),
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / config('LOG_FILE', default='logs/django.log'),
-            'formatter': 'verbose',
-        },
         'console': {
             'level': config('LOG_LEVEL', default='INFO'),
             'class': 'logging.StreamHandler',
@@ -210,7 +204,7 @@ LOGGING = {
         },
     },
     'root': {
-        'handlers': ['console', 'file'],
+        'handlers': ['console'],
         'level': config('LOG_LEVEL', default='INFO'),
     },
 }
