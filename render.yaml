@@ -2,8 +2,8 @@ services:
   - type: web
     name: kakaflix
     runtime: python
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
-    startCommand: cd $RENDER_PROJECT_DIR && gunicorn movierecommender.wsgi:application --bind 0.0.0.0:$PORT
+    buildCommand: chmod +x render-build.sh && ./render-build.sh
+    startCommand: cd $RENDER_PROJECT_DIR && bash run.sh
     envVars:
       - key: DJANGO_SETTINGS_MODULE
         value: movierecommender.settings.production
@@ -25,6 +25,10 @@ services:
         value: /media/
       - key: MEDIA_ROOT
         value: media
+      - key: LOG_LEVEL
+        value: WARNING
+      - key: LOG_FILE
+        value: logs/django.log
       - fromGroup: kakaflix-db
         key: DATABASE_URL
       - fromGroup: kakaflix-redis
