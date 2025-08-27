@@ -2,12 +2,9 @@ services:
   # Web service
   - type: web
     name: kakaflix
-    env: python
-    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
-    startCommand: gunicorn movierecommender.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120
+    env: docker
+    dockerfilePath: ./Dockerfile
     envVars:
-      - key: PYTHON_VERSION
-        value: 3.11.7
       - key: DJANGO_SETTINGS_MODULE
         value: movierecommender.settings.production
       - key: SECRET_KEY
@@ -66,6 +63,10 @@ services:
         sync: false
       - key: EMAIL_HOST_PASSWORD
         sync: false
+      - fromGroup: kakaflix-db
+        key: DATABASE_URL
+      - fromGroup: kakaflix-redis
+        key: REDIS_URL
 
   # Redis service
   - type: redis

@@ -1,6 +1,6 @@
 # Deploying KakaFlix to Render
 
-This guide provides step-by-step instructions for deploying KakaFlix to Render.
+This guide provides step-by-step instructions for deploying KakaFlix to Render using Docker.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ Render Blueprints allow you to define your infrastructure as code using a `rende
 2. Click on the **"New +"** button and select **"Blueprint"**
 3. Connect your repository that contains this project
 4. Render will automatically detect the `render.yaml` file and set up:
-   - Web service (Django application)
+   - Web service (Docker-based Django application)
    - PostgreSQL database
    - Redis instance
 5. Review the configuration and click **"Apply"**
@@ -53,9 +53,8 @@ If you prefer to set up services manually:
 2. Connect your repository
 3. Configure the service:
    - Name: `kakaflix`
-   - Runtime: Python
-   - Build Command: `pip install -r requirements.txt && python manage.py collectstatic --noinput`
-   - Start Command: `gunicorn movierecommender.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120`
+   - Environment: Docker
+   - Region: Choose the same region as your database
 4. Add environment variables:
    - `DJANGO_SETTINGS_MODULE=movierecommender.settings.production`
    - `DATABASE_URL` (use the internal URL from your PostgreSQL database)
@@ -65,6 +64,22 @@ If you prefer to set up services manually:
    - `CSRF_TRUSTED_ORIGINS=https://*.onrender.com`
    - Add all other variables from your `.env` file
 5. Click **"Create Web Service"**
+
+## Docker Deployment Details
+
+The application uses Docker for deployment, which provides several benefits:
+
+1. **Consistent Environment**: The same environment is used for development and production
+2. **Dependency Management**: All system and Python dependencies are installed automatically
+3. **Isolation**: The application runs in an isolated container
+4. **Performance**: The Docker image is optimized for performance
+
+The Dockerfile:
+- Uses Python 3.11 slim image as a base
+- Installs system dependencies required for Pillow and other packages
+- Sets up the Python environment
+- Collects static files
+- Runs the application using Gunicorn
 
 ## Post-Deployment Steps
 
@@ -138,6 +153,7 @@ If you encounter issues during deployment:
 2. **Verify Environment Variables**: Ensure all required variables are set correctly
 3. **Database Connection**: Confirm the database URL is correct and accessible
 4. **Static Files**: If static files are missing, check the collectstatic command output
+5. **Docker Build Issues**: Check the build logs for any errors related to Docker
 
 ## Maintenance
 

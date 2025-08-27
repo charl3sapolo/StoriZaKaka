@@ -4,21 +4,26 @@
 
 1. **render.yaml**
    - Blueprint configuration file for Render
-   - Defines web service, PostgreSQL database, and Redis instance
+   - Defines web service (using Docker), PostgreSQL database, and Redis instance
 
-2. **build.sh**
-   - Build script that Render will execute during deployment
-   - Installs dependencies, collects static files, and runs migrations
+2. **Dockerfile**
+   - Docker configuration for building the application
+   - Installs necessary system dependencies for Pillow and other packages
+   - Sets up the Python environment and runs the application
 
-3. **requirements.txt**
-   - Updated to include all necessary dependencies
-   - Added dj-database-url for database URL parsing
+3. **.dockerignore**
+   - Excludes unnecessary files from the Docker build context
+   - Improves build performance and security
 
-4. **movierecommender/settings/production.py**
+4. **requirements.txt**
+   - Updated to use a more flexible version of Pillow
+   - Includes all necessary dependencies
+
+5. **movierecommender/settings/production.py**
    - Updated to support Render's DATABASE_URL environment variable
    - Added fallback for Redis if not available
 
-5. **DEPLOYMENT.md**
+6. **DEPLOYMENT.md**
    - Detailed deployment instructions
    - Environment variable reference
 
@@ -47,19 +52,23 @@
 
 ## Important Notes
 
-1. **Database**
+1. **Docker Deployment**
+   - The application now uses Docker for deployment
+   - This provides a more consistent environment and avoids dependency issues
+
+2. **Database**
    - Render provides a PostgreSQL database
    - The connection string is automatically set as DATABASE_URL
 
-2. **Static Files**
+3. **Static Files**
    - Whitenoise handles static file serving
    - No need for separate static file hosting
 
-3. **Environment Variables**
+4. **Environment Variables**
    - All sensitive information should be set as environment variables
    - Never commit sensitive information to your repository
 
-4. **SSL/HTTPS**
+5. **SSL/HTTPS**
    - Render provides free SSL certificates
    - The application is configured to use HTTPS by default
 
