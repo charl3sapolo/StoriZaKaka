@@ -1739,7 +1739,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
         height: 110px;
     }
 }
-/* Movie Card Grid */
+/* ========== MOVIE CARD GRID SYSTEM ========== */
 .movie-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -1754,19 +1754,26 @@ body:not([data-theme="dark"]) .feature-card:hover,
     padding: var(--space-md, 1rem) 0;
 }
 
-/* Card Flip System - True*/
-/* Flip Card */
+/* ========== MOVIE CARD FLIP SYSTEM ========== */
 .movie-card {
     position: relative;
-    width: 200px;
-    height: 320px;
-    perspective: 1000px;
+    width: clamp(120px, 30vw, 300px);
+    height: auto;
+    aspect-ratio: 2/3;
+    perspective: 1200px;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    border-radius: 10px;
+    overflow: visible;
+    background: none;
+    margin: 0 auto 1.5rem;
+    transition: transform var(--transition-normal, 0.3s ease);
 }
 
 .movie-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-8px) scale(1.05);
+    z-index: 10;
+    box-shadow: 0 0 30px rgba(255,255,255,0.4), 0 15px 40px rgba(0,0,0,0.3);
+    outline: 2px solid rgba(255,255,255,0.2);
 }
 
 .card-inner {
@@ -1774,46 +1781,106 @@ body:not([data-theme="dark"]) .feature-card:hover,
     width: 100%;
     height: 100%;
     text-align: left;
-    transition: transform 0.6s;
+    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
     transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.movie-card.flipped .card-inner {
+    transform: rotateY(180deg);
+    z-index: 10;
+}
+
+/* ========== CARD FRONT & BACK BASE ========== */
+.card-front,
+.card-back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
 .card-front {
+    z-index: 2;
+    background: var(--bg-secondary);
     display: flex;
     flex-direction: column;
 }
 
 .card-back {
     transform: rotateY(180deg);
-    padding: 1rem;
-    padding-bottom: 7rem;
+    z-index: 3;
+    background: var(--bg-primary);
+    background-image: linear-gradient(135deg, rgba(0,0,0,0.35) 0%, transparent 80%);
+    color: #fff;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    align-items: stretch;
+    padding: 1rem;
+    padding-bottom: 7rem;
     position: relative;
     overflow: hidden;
     min-height: 100%;
 }
 
+[data-theme="light"] .card-back {
+    color: #23272f;
+}
+
+/* ========== POSTER & IMAGE STYLING ========== */
+.poster-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    align-items: stretch;
+    justify-content: stretch;
+    overflow: hidden;
+    border-radius: 12px;
+}
+
 .poster-image {
     width: 100%;
-    height: 240px;
+    height: 100%;
     object-fit: cover;
-    border-radius: 12px 12px 0 0;
+    border-radius: 12px;
     transition: transform 0.3s ease;
+    display: block;
 }
 
 .movie-card:hover .poster-image {
     transform: scale(1.05);
 }
 
+/* ========== CARD METADATA ========== */
 .card-meta {
-    padding: 0.75rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    padding: 1.25rem 0.9375rem 0.9375rem;
+    opacity: 0;
+    transform: translateY(100%);
+    transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
     flex: 1;
     justify-content: space-between;
+}
+
+.movie-card:hover .card-meta {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .genre {
@@ -1846,9 +1913,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
     color: var(--text-muted);
 }
 
-
-
-/* Card Back */
+/* ========== CARD BACK CONTENT ========== */
 .close-detail {
     position: absolute;
     top: 0.5rem;
@@ -1919,7 +1984,16 @@ body:not([data-theme="dark"]) .feature-card:hover,
     margin-bottom: 0.1rem;
 }
 
-/* Watch Trailer Button */
+/* ========== ACTION BUTTONS ========== */
+.card-actions {
+    opacity: 0;
+    transition: opacity 0.3s ease 0.4s;
+}
+
+.movie-card.flipped .card-back .card-actions {
+    opacity: 1;
+}
+
 .action-btn {
     background: linear-gradient(135deg, var(--color-red), #cc0000);
     color: white;
@@ -1952,295 +2026,17 @@ body:not([data-theme="dark"]) .feature-card:hover,
     top: auto;
 }
 
-.watch-trailer-btn:hover {
+.action-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
 }
 
-.watch-trailer-btn:active {
+.action-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
 }
 
-    /* Mobile */
-@media (max-width: 768px) {
-    .movie-card {
-        width: 150px;
-        height: 240px;
-    }
-    
-    .poster-image {
-        height: 180px;
-    }
-    
-    .card-meta {
-        padding: 0.5rem;
-        gap: 0.2rem;
-    }
-    
-    .genre {
-        font-size: 0.7rem;
-    }
-    
-    .rating {
-        font-size: 0.8rem;
-    }
-    
-    .year {
-        font-size: 0.7rem;
-    }
-    
-    .card-back {
-        padding: 0.75rem;
-    }
-    
-    .movie-title {
-        font-size: 0.9rem;
-        margin-bottom: 0.4rem;
-    }
-    
-    .movie-description {
-        font-size: 0.75rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    .movie-details-grid {
-        font-size: 0.7rem;
-        gap: 0.4rem 1rem;
-    }
-    
-    .watch-trailer-btn {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.8rem;
-    }
-    
-    .trailer-preview i {
-        font-size: 1.5rem;
-    }
-    
-    .trailer-preview span {
-        font-size: 0.7rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .movie-card {
-        width: 130px;
-        height: 200px;
-    }
-    
-    .poster-image {
-        height: 150px;
-    }
-    
-    .card-meta {
-        padding: 0.4rem;
-    }
-    
-    .genre {
-        font-size: 0.65rem;
-    }
-    
-    .rating {
-        font-size: 0.75rem;
-    }
-    
-    .year {
-        font-size: 0.65rem;
-    }
-    
-    .card-back {
-        padding: 0.6rem;
-    }
-    
-    .movie-title {
-        font-size: 0.8rem;
-    }
-    
-    .movie-description {
-        font-size: 0.7rem;
-    }
-    
-    .movie-details-grid {
-        font-size: 0.65rem;
-        gap: 0.3rem 0.8rem;
-    }
-    
-    .watch-trailer-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.75rem;
-    }
-}
-
-/* Card Details Preview */
-.card-details-preview {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.8) 100%);
-    padding: 0.75rem;
-    opacity: 0;
-    transform: translateY(100%);
-    transition: all 0.3s ease;
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border-radius: 0 0 12px 12px;
-}
-
-.movie-card:hover .card-details-preview {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.details-text {
-    font-size: 0.8rem;
-    color: white;
-    font-weight: 500;
-    line-height: 1.3;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* Mobile Responsive Card Design */
-@media (max-width: 768px) {
-    .movie-card {
-        width: 150px;
-        height: 240px;
-    }
-    
-    .poster-image {
-        height: 180px;
-    }
-    
-    .card-meta {
-        padding: 0.5rem;
-        gap: 0.2rem;
-    }
-    
-    .genre {
-        font-size: 0.7rem;
-    }
-    
-    .rating {
-        font-size: 0.8rem;
-    }
-    
-    .year {
-        font-size: 0.7rem;
-    }
-    
-    .card-details-preview {
-        padding: 0.5rem;
-    }
-    
-    .details-text {
-        font-size: 0.7rem;
-    }
-    
-    .card-back {
-        padding: 0.75rem;
-    }
-    
-    .movie-title {
-        font-size: 0.9rem;
-        margin-bottom: 0.4rem;
-    }
-    
-    .movie-description {
-        font-size: 0.75rem;
-        margin-bottom: 0.75rem;
-    }
-    
-    .movie-details-grid {
-        font-size: 0.7rem;
-        gap: 0.4rem 1rem;
-    }
-    
-    .watch-trailer-btn {
-        padding: 0.6rem 1.2rem;
-        font-size: 0.8rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .movie-card {
-        width: 130px;
-        height: 200px;
-    }
-    
-    .poster-image {
-        height: 150px;
-    }
-    
-    .card-meta {
-        padding: 0.4rem;
-    }
-    
-    .genre {
-        font-size: 0.65rem;
-    }
-    
-    .rating {
-        font-size: 0.75rem;
-    }
-    
-    .year {
-        font-size: 0.65rem;
-    }
-    
-    .card-details-preview {
-        padding: 0.4rem;
-    }
-    
-    .details-text {
-        font-size: 0.65rem;
-    }
-    
-    .card-back {
-        padding: 0.6rem;
-    }
-    
-    .movie-title {
-        font-size: 0.8rem;
-    }
-    
-    .movie-description {
-        font-size: 0.7rem;
-    }
-    
-    .movie-details-grid {
-        font-size: 0.65rem;
-        gap: 0.3rem 0.8rem;
-    }
-    
-    .watch-trailer-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.75rem;
-    }
-}.poster-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    min-height: 0;
-    display: flex;
-    align-items: stretch;
-    justify-content: stretch;
-    overflow: hidden;
-    border-radius: 12px;
-}
-
-.poster-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border-radius: 12px;
-}
-
-/* Overlaid movie details */
+/* ========== CARD DETAILS PREVIEW ========== */
 .card-details-preview {
     position: absolute;
     bottom: 0;
@@ -2257,16 +2053,16 @@ body:not([data-theme="dark"]) .feature-card:hover,
     flex-direction: column;
     align-items: flex-start;
     justify-content: flex-end;
+    border-radius: 0 0 12px 12px;
 }
 
-/* Show on hover or interaction */
-.movie-card.show-details .card-details-preview {
+.movie-card.show-details .card-details-preview,
+.movie-card:hover .card-details-preview {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
 }
 
-/* Two stacked lines: title, then rest */
 .details-title {
     font-size: 0.9rem;
     font-weight: 700;
@@ -2277,7 +2073,8 @@ body:not([data-theme="dark"]) .feature-card:hover,
     text-overflow: ellipsis;
 }
 
-.details-meta {
+.details-meta,
+.details-text {
     font-size: 0.75rem;
     font-weight: 500;
     color: #ddd;
@@ -2287,145 +2084,164 @@ body:not([data-theme="dark"]) .feature-card:hover,
     text-overflow: ellipsis;
 }
 
-/* Mobile tweaks */
-@media (max-width: 768px) {
-    .poster-wrapper {
-        height: 180px;
-    }
-    .details-title {
-        font-size: 0.8rem;
-    }
-    .details-meta {
-        font-size: 0.7rem;
-    }
-    .card-details-preview {
-        padding: 0.4rem 0.5rem;
-    }
-}
-
-
-.movie-card {
-    perspective: 1200px;
-    cursor: pointer;
-    border-radius: 10px;
-    overflow: visible;
-    background: none;
-    position: relative;
-    width: clamp(120px, 30vw, 300px);
-    height: auto;
-    aspect-ratio: 2/3; 
-    margin: 0 auto 1.5rem;
-    transition: transform var(--transition-normal, 0.3s ease);
-}
-
-.movie-card:hover {
-    transform: translateY(-8px);
-}
-
-.card-inner {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    transform-style: preserve-3d;
-    transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
-    will-change: transform;
-}
-
-.movie-card.flipped .card-inner {
-    transform: rotateY(var(--flip-style, 180deg));
-    z-index: 10;
-}
-
-.card-front, .card-back {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0; 
-    left: 0;
-    backface-visibility: hidden;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.card-front {
-    z-index: 2;
-    background: var(--bg-secondary);
-}
-
-.card-back {
-    transform: rotateY(180deg);
-    z-index: 3;
-    background: var(--bg-primary);
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: stretch;
-    padding: 24px 18px 18px 18px;
-    background-image: linear-gradient(135deg, rgba(0,0,0,0.35) 0%, transparent 80%);
-}
-
-/* Hide action buttons initially */
-.card-back .card-actions {
-    opacity: 0;
-    transition: opacity 0.3s ease 0.4s;
-}
-
-/* Shows action buttons after flip animation */
-.movie-card.flipped .card-back .card-actions {
-    opacity: 1;
-}
-
-[data-theme="light"] .card-back {
-    color: #23272f;
-}
-
-.poster-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-    display: block;
-}
-
-.card-meta {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-    color: white;
-    padding: 20px 15px 15px;
-    opacity: 0;
-    transform: translateY(100%);
-    transition: all 0.3s ease;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    font-size: 1rem;
-    gap: 0.7rem;
-}
-
-.movie-card:hover {
-    transform: scale(1.15);
-    z-index: 10;
-    box-shadow: 0 0 30px rgba(255,255,255,0.4), 0 15px 40px rgba(0,0,0,0.3);
-    outline: 2px solid rgba(255,255,255,0.2);
-}
-
-.movie-card:hover .card-meta {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.movie-card:hover .poster-image {
-    transform: scale(1.05);
-}
-
+/* ========== GRID HOVER EFFECTS ========== */
 .movie-grid:hover .movie-card:not(:hover) {
     transform: scale(0.95);
     filter: brightness(0.9);
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+/* Tablet */
+@media (max-width: 768px) {
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 20px;
+        padding: 15px;
+    }
+    
+    .movie-card {
+        width: 150px;
+        height: 240px;
+        margin-bottom: 1rem;
+    }
+    
+    .poster-image,
+    .poster-wrapper {
+        height: 180px;
+    }
+    
+    .card-meta {
+        padding: 0.5rem;
+        gap: 0.2rem;
+    }
+    
+    .genre {
+        font-size: 0.7rem;
+    }
+    
+    .rating {
+        font-size: 0.8rem;
+    }
+    
+    .year {
+        font-size: 0.7rem;
+    }
+    
+    .card-back {
+        padding: 0.75rem;
+        padding-bottom: 6rem;
+    }
+    
+    .movie-title {
+        font-size: 0.9rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .movie-overview {
+        font-size: 0.75rem;
+        margin-bottom: 0.75rem;
+        max-height: 100px;
+    }
+    
+    .movie-details-grid {
+        font-size: 0.7rem;
+        gap: 0.4rem 1rem;
+    }
+    
+    .action-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.8rem;
+    }
+    
+    .card-details-preview {
+        padding: 0.4rem 0.5rem;
+    }
+    
+    .details-title {
+        font-size: 0.8rem;
+    }
+    
+    .details-meta,
+    .details-text {
+        font-size: 0.7rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .movie-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 15px;
+        padding: 10px;
+    }
+    
+    .movie-card {
+        width: 130px;
+        height: 200px;
+    }
+    
+    .poster-image,
+    .poster-wrapper {
+        height: 150px;
+    }
+    
+    .card-meta {
+        padding: 0.4rem;
+    }
+    
+    .genre {
+        font-size: 0.65rem;
+    }
+    
+    .rating {
+        font-size: 0.75rem;
+    }
+    
+    .year {
+        font-size: 0.65rem;
+    }
+    
+    .card-back {
+        padding: 0.6rem;
+        padding-bottom: 5rem;
+    }
+    
+    .movie-title {
+        font-size: 0.8rem;
+    }
+    
+    .movie-overview {
+        font-size: 0.7rem;
+        max-height: 80px;
+    }
+    
+    .movie-details-grid {
+        font-size: 0.65rem;
+        gap: 0.3rem 0.8rem;
+    }
+    
+    .action-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+        min-height: 40px;
+    }
+    
+    .action-btn.secondary {
+        bottom: 3.5rem;
+    }
+    
+    .card-details-preview {
+        padding: 0.4rem;
+    }
+    
+    .details-title {
+        font-size: 0.75rem;
+    }
+    
+    .details-meta,
+    .details-text {
+        font-size: 0.65rem;
+    }
 }
 
 /* Skeleton Loaders */
@@ -7364,5 +7180,101 @@ section {
     align-items: center;
     justify-content: center;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Movie Recommendations */
+.movie-match-content {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary) var(--glass-border);
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced flip animation for discover section on small screens */
+@media (max-width: 768px) {
+    .discover-section .movie-match-content .movie-card {
+        perspective: 1500px;
+        transform-style: preserve-3d;
+    }
+    
+    .discover-section .movie-match-content .movie-card .card-inner {
+        transform-style: preserve-3d;
+        transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+    }
+    
+    .discover-section .movie-match-content .movie-card.flipped .card-inner {
+        transform: rotateY(180deg);
+        animation: tarotFlip 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .discover-section .movie-match-content .movie-card .card-front,
+    .discover-section .movie-match-content .movie-card .card-back {
+        backface-visibility: hidden;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .discover-section .movie-match-content .movie-card .card-front {
+        transform: rotateY(0deg);
+        z-index: 2;
+    }
+    
+    .discover-section .movie-match-content .movie-card .card-back {
+        transform: rotateY(180deg);
+        z-index: 1;
+        background: var(--glass-bg);
+        -webkit-backdrop-filter: var(--glass-blur);
+        backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--glass-border);
+    }
+    
+    .discover-section .movie-match-content .movie-card.flipped .card-front {
+        opacity: 0;
+        transform: rotateY(180deg);
+    }
+    
+    .discover-section .movie-match-content .movie-card.flipped .card-back {
+        opacity: 1;
+        transform: rotateY(0deg);
+    }
+    
+    /* Tarot card flip animation */
+    @keyframes tarotFlip {
+        0% {
+            transform: rotateY(0deg) scale(1);
+        }
+        25% {
+            transform: rotateY(45deg) scale(1.05);
+        }
+        50% {
+            transform: rotateY(90deg) scale(1.1);
+        }
+        75% {
+            transform: rotateY(135deg) scale(1.05);
+        }
+        100% {
+            transform: rotateY(180deg) scale(1);
+        }
+    }
+    
+    /* Enhanced hover effects for discover cards */
+    .discover-section .movie-match-content .movie-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 12px 35px rgba(212, 153, 26, 0.2);
+    }
+    
+    .discover-section .movie-match-content .movie-card.flipped:hover {
+        transform: translateY(-5px) scale(1.02);
+    }
 }
 
