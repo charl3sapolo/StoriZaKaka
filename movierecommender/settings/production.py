@@ -2,6 +2,8 @@
 Production settings for Movie Recommender project.
 """
 
+import os
+import dj_database_url
 from .base import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -30,20 +32,40 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 LOGGING['root']['level'] = 'WARNING'
 LOGGING['handlers']['file']['level'] = 'WARNING'
 
+# Database configuration - use dj_database_url to parse DATABASE_URL from environment
+DATABASE_URL = os.environ.get('DATABASE_URL')
+if DATABASE_URL:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+    }
+
 # Cache configuration for production
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': REDIS_URL,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'redis.client.DefaultClient',
-            'CONNECTION_POOL_KWARGS': {
-                'max_connections': 50,
-                'retry_on_timeout': True,
+REDIS_URL = config('REDIS_URL', default=None)
+if REDIS_URL:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+            'LOCATION': REDIS_URL,
+            'OPTIONS': {
+                'CLIENT_CLASS': 'redis.client.DefaultClient',
+                'CONNECTION_POOL_KWARGS': {
+                    'max_connections': 50,
+                    'retry_on_timeout': True,
+                }
             }
         }
     }
-}
+else:
+    # Fallback to local memory cache if Redis is not available
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        }
+    }
 
 # Session configuration for production
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
@@ -53,4 +75,4 @@ SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 
 # Performance optimizations
-CONN_MAX_AGE = 60  # Database connection pooling 
+CONN_MAX_AGE = 60  # Database connection pooling
