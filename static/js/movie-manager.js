@@ -76,8 +76,11 @@ class UltimateMovieGallery {
     loadAndDisplayMovies() {
         console.log('📂 Loading movies...');
         
-        // Show skeleton loading
-        this.showSkeletonLoading();
+        // Show loading container
+        const loadingContainer = document.getElementById('loadingContainer');
+        if (loadingContainer) {
+            loadingContainer.style.display = 'flex';
+        }
         
         // Load from localStorage using the correct key from discover.js
         const savedMovies = JSON.parse(localStorage.getItem('saved_movies') || '[]');
@@ -250,6 +253,12 @@ class UltimateMovieGallery {
         const filteredMovies = this.getFilteredMovies();
         console.log(`📊 Filtered movies: ${filteredMovies.length}`);
         
+        // Hide loading container now that we have data
+        const loadingContainer = document.getElementById('loadingContainer');
+        if (loadingContainer) {
+            loadingContainer.style.display = 'none';
+        }
+        
         if (filteredMovies.length === 0) {
             this.showEmptyState();
             return;
@@ -336,39 +345,54 @@ class UltimateMovieGallery {
             return;
         }
         
-        // Group movies by genre with proper categorization
+        // Group movies by genre with improved categorization
         const genreGroups = {};
         movies.forEach(movie => {
-            // Get genres from the movie data
+            // First try to get genres from genre_ids
             let genres = [];
             if (movie.genre_ids && movie.genre_ids.length > 0) {
                 genres = movie.genre_ids.map(id => GENRE_MAP[id]).filter(genre => genre);
             }
             
-            // If no valid genres found, try to infer from movie data
+            // If that fails, try to get genres from genres array if available
+            if (genres.length === 0 && movie.genres && movie.genres.length > 0) {
+                genres = movie.genres.map(genre => genre.name || genre).filter(genre => genre);
+            }
+            
+            // If still no valid genres found, try to infer from movie data
             if (genres.length === 0) {
-                // Try to get genre from movie title or other properties
+                // Try to get genre from overview if available
+                const overview = movie.overview?.toLowerCase() || '';
                 const title = movie.title?.toLowerCase() || '';
-                if (title.includes('action') || title.includes('fight') || title.includes('war')) {
+                
+                // Check both title and overview for genre keywords
+                const text = title + ' ' + overview;
+                
+                if (text.includes('action') || text.includes('fight') || text.includes('war') || 
+                    text.includes('battle') || text.includes('combat')) {
                     genres = ['Action'];
-                } else if (title.includes('comedy') || title.includes('funny') || title.includes('humor')) {
+                } else if (text.includes('comedy') || text.includes('funny') || text.includes('humor') || 
+                          text.includes('laugh') || text.includes('hilarious')) {
                     genres = ['Comedy'];
-                } else if (title.includes('drama') || title.includes('emotional')) {
-                    genres = ['Drama'];
-                } else if (title.includes('horror') || title.includes('scary') || title.includes('fear')) {
+                } else if (text.includes('horror') || text.includes('scary') || text.includes('fear') || 
+                          text.includes('terror') || text.includes('nightmare')) {
                     genres = ['Horror'];
-                } else if (title.includes('romance') || title.includes('love') || title.includes('romantic')) {
+                } else if (text.includes('romance') || text.includes('love') || text.includes('romantic') || 
+                          text.includes('relationship')) {
                     genres = ['Romance'];
-                } else if (title.includes('sci-fi') || title.includes('science') || title.includes('space')) {
+                } else if (text.includes('sci-fi') || text.includes('science fiction') || text.includes('space') || 
+                          text.includes('future') || text.includes('alien')) {
                     genres = ['Science Fiction'];
-                } else if (title.includes('thriller') || title.includes('suspense')) {
+                } else if (text.includes('thriller') || text.includes('suspense') || text.includes('mystery')) {
                     genres = ['Thriller'];
-                } else if (title.includes('adventure') || title.includes('journey')) {
+                } else if (text.includes('adventure') || text.includes('journey') || text.includes('quest')) {
                     genres = ['Adventure'];
-                } else if (title.includes('fantasy') || title.includes('magic')) {
+                } else if (text.includes('fantasy') || text.includes('magic') || text.includes('mythical')) {
                     genres = ['Fantasy'];
+                } else if (text.includes('drama') || text.includes('emotional')) {
+                    genres = ['Drama'];
                 } else {
-                    // Default to Drama for unknown genres
+                    // Default to Drama for unknown genres as last resort
                     genres = ['Drama'];
                 }
             }
@@ -436,8 +460,40 @@ class UltimateMovieGallery {
             return;
         }
         
-        const movieCards = movies.map(movie => this.createMovieCard(movie)).join('');
-        container.innerHTML = movieCards;
+        // Apply stacked effect CSS
+        container.style.position = 'relative';
+        
+        // Clear container first
+        container.innerHTML = '';
+        
+        // Add cards with stacked effect
+        movies.forEach((movie, index) => {
+            const cardElement = document.createElement('div');
+            cardElement.innerHTML = this.createMovieCard(movie);
+            const card = cardElement.firstElementChild;
+            
+            // Add stacked positioning
+            if (card) {
+                card.style.position = 'relative';
+                card.style.marginTop = index > 0 ? '-20px' : '0';
+                card.style.zIndex = movies.length - index; // Higher index = lower in stack
+                card.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
+                card.style.transition = 'transform 0.3s ease, margin-top 0.3s ease';
+                
+                // Add hover effect
+                card.addEventListener('mouseenter', () => {
+                    card.style.transform = 'translateY(-10px) scale(1.05)';
+                    card.style.zIndex = 100; // Bring to front on hover
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                    card.style.zIndex = movies.length - index;
+                });
+                
+                container.appendChild(card);
+            }
+        });
         
         console.log(`✅ Stack layout displayed with ${movies.length} movies`);
     }

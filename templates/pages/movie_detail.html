@@ -130,8 +130,8 @@
             background: var(--glass-bg);
             border-radius: 12px;
             border: 1px solid var(--glass-border);
-            backdrop-filter: var(--glass-blur);
             -webkit-backdrop-filter: var(--glass-blur);
+            backdrop-filter: var(--glass-blur);
         }
 
         .tab-controls {
@@ -226,8 +226,8 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            backdrop-filter: var(--glass-blur);
             -webkit-backdrop-filter: var(--glass-blur);
+            backdrop-filter: var(--glass-blur);
             box-shadow: var(--shadow-lg);
             transition: all 0.3s ease;
             position: relative;
@@ -279,11 +279,13 @@
 
         /* Stack View Layout */
         .stack-view {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-            grid-auto-rows: 240px;
-            gap: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
             margin-top: 20px;
+            padding: 20px;
+            position: relative;
         }
 
         /* Timeline View Layout */
@@ -299,8 +301,8 @@
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             padding: 20px;
-            backdrop-filter: var(--glass-blur);
             -webkit-backdrop-filter: var(--glass-blur);
+            backdrop-filter: var(--glass-blur);
         }
 
         .timeline-header {
@@ -328,8 +330,8 @@
             min-width: 150px;
             height: 240px;
             scroll-snap-align: start;
-            backdrop-filter: var(--glass-blur);
             -webkit-backdrop-filter: var(--glass-blur);
+            backdrop-filter: var(--glass-blur);
         }
 
         .movie-card:hover {
@@ -602,19 +604,40 @@
 
         /* Loading States */
         .loading-container {
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             padding: 40px;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
+            background: var(--glass-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            -webkit-backdrop-filter: var(--glass-blur);
+            backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--glass-border);
+            width: 120px;
+            height: 120px;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .loading-spinner {
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border: 4px solid var(--soft-gray);
             border-top: 4px solid var(--primary);
             border-radius: 50%;
             animation: spin 1s linear infinite;
+        }
+        
+        .loading-container:after {
+            content: 'Loading...';
+            color: var(--text-primary);
+            font-weight: 600;
         }
 
         @keyframes spin {
