@@ -1791,6 +1791,37 @@ body:not([data-theme="dark"]) .feature-card:hover,
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+/* Blurred poster background for card back */
+.card-back::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: var(--bg-primary);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+/* When flipped, show blurred poster only on the back */
+.movie-card.flipped .card-back::before {
+    background-image: var(--poster-url);
+    background-size: cover;
+    background-position: center;
+    filter: blur(8px) saturate(0.95);
+    transform: scale(1.05); /* avoid edge bleed after blur */
+    opacity: 1;
+}
+
+/* Optional readability gradient on top of blur */
+.movie-card.flipped .card-back::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(135deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0) 100%);
+    pointer-events: none;
+}
+
 .card-front {
     z-index: 2;
     background: var(--bg-secondary);
@@ -1813,6 +1844,12 @@ body:not([data-theme="dark"]) .feature-card:hover,
     position: relative;
     overflow: hidden;
     min-height: 100%;
+}
+
+/* Keep back content above the blur */
+.card-back > * {
+    position: relative;
+    z-index: 2;
 }
 
 [data-theme="light"] .card-back {
@@ -1864,9 +1901,11 @@ body:not([data-theme="dark"]) .feature-card:hover,
     justify-content: space-between;
 }
 
-.movie-card:hover .card-meta {
+.movie-card:hover .card-meta,
+.movie-card.flipped .card-meta {
     opacity: 1;
     transform: translateY(0);
+    pointer-events: auto;
 }
 
 .genre {
@@ -1974,10 +2013,20 @@ body:not([data-theme="dark"]) .feature-card:hover,
 .card-actions {
     opacity: 0;
     transition: opacity 0.3s ease 0.4s;
+    position: absolute;
+    bottom: 1rem;
+    left: 1rem;
+    right: 1rem;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
+.movie-card:hover .card-actions,
 .movie-card.flipped .card-back .card-actions {
     opacity: 1;
+    pointer-events: auto;
 }
 
 .action-btn {
@@ -1995,21 +2044,17 @@ body:not([data-theme="dark"]) .feature-card:hover,
     justify-content: center;
     gap: 0.5rem;
     box-shadow: 0 2px 12px rgba(255, 0, 0, 0.3);
-    position: absolute;
-    bottom: 1rem;
-    left: 1rem;
-    right: 1rem;
     z-index: 10;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     min-height: 48px;
+    width: 100%;
 }
 
 .action-btn.secondary {
     background: linear-gradient(135deg, var(--primary), var(--gradient-primary));
     box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3);
-    bottom: 4.5rem;
-    top: auto;
+    margin-top: 0.5rem;
     z-index: 19;
 }
 
@@ -2044,10 +2089,12 @@ body:not([data-theme="dark"]) .feature-card:hover,
 }
 
 .movie-card.show-details .card-details-preview,
-.movie-card:hover .card-details-preview {
+.movie-card:hover .card-details-preview,
+.movie-card.flipped .card-details-preview {
     opacity: 1;
     transform: translateY(0);
     pointer-events: auto;
+    z-index: 5;
 }
 
 .details-title {
@@ -2072,9 +2119,115 @@ body:not([data-theme="dark"]) .feature-card:hover,
 }
 
 /* ========== GRID HOVER EFFECTS ========== */
-.movie-grid:hover .movie-card:not(:hover) {
+.movie-grid:hover .movie-card:not(:hover):not(.flipped) {
     transform: scale(0.95);
     filter: brightness(0.9);
+}
+
+/* Mobile movie card styles */
+@media (max-width: 480px) {
+    .movie-card {
+        width: 90vw;
+        max-width: 300px;
+        aspect-ratio: 2/3;
+        height: auto;
+        margin: 0 auto 1rem;
+        perspective: 1000px;
+    }
+    
+    .card-front,
+    .card-back {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        border-radius: inherit;
+        overflow: hidden;
+    }
+    
+    .card-inner {
+        transform-style: preserve-3d;
+        -webkit-transform-style: preserve-3d;
+        transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        will-change: transform;
+    }
+    
+    .movie-card.flipped .card-inner {
+        transform: rotateY(180deg);
+    }
+    
+    .movie-card.flipped .card-front::after {
+        display: none;
+    }
+    
+    /* Ensure card-meta and card-details-preview are visible when flipped */
+    .movie-card.flipped .card-details-preview,
+    .movie-card.flipped .card-meta {
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+    
+    /* Ensure blurred background works on mobile */
+    .movie-card.flipped .card-back::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: var(--poster-url);
+        background-size: cover;
+        background-position: center;
+        filter: blur(8px) saturate(0.95);
+        transform: scale(1.05);
+        opacity: 1;
+        z-index: 0;
+    }
+    
+    /* Add readability gradient */
+    .movie-card.flipped .card-back::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: linear-gradient(135deg, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0) 100%);
+        pointer-events: none;
+    }
+    
+    /* Keep back content above blur */
+    .card-back > * {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .movie-card.flipped .card-back {
+        padding-bottom: 5rem; /* Ensure space for buttons */
+    }
+    
+    .movie-card.flipped .card-back .movie-title {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .movie-card.flipped .card-back .movie-overview {
+        font-size: 0.85rem;
+        max-height: 100px;
+        overflow-y: auto;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Disable hover flip on touch devices */
+@media (hover: none) {
+    .movie-card:hover .card-inner {
+        transform: none;
+    }
+    
+    .movie-card:hover .card-meta,
+    .movie-card:hover .card-details-preview {
+        opacity: 0;
+        transform: translateY(10px);
+    }
 }
 
 /* ========== RESPONSIVE DESIGN ========== */
@@ -6967,7 +7120,7 @@ section {
     }
     
     .action-btn.secondary {
-        bottom: 4rem;
+        margin-top: 0.5rem;
     }
     
     .card-back {
