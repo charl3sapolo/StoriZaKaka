@@ -1767,11 +1767,13 @@ body:not([data-theme="dark"]) .feature-card:hover,
     transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
     transform-style: preserve-3d;
     will-change: transform;
+    -webkit-transform-style: preserve-3d; /* Safari fix */
 }
 
 .movie-card.flipped .card-inner {
     transform: rotateY(180deg);
     z-index: 10;
+    transform-origin: center center;
 }
 
 /* ========== CARD FRONT & BACK BASE ========== */
@@ -1783,6 +1785,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
     width: 100%;
     height: 100%;
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden; /* Safari fix */
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
@@ -2007,6 +2010,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
     box-shadow: 0 2px 12px rgba(102, 126, 234, 0.3);
     bottom: 4.5rem;
     top: auto;
+    z-index: 19;
 }
 
 .action-btn:hover {
@@ -2111,9 +2115,11 @@ body:not([data-theme="dark"]) .feature-card:hover,
     }
     
     .card-back {
-        padding: 0.75rem;
-        padding-bottom: 6rem;
-    }
+    padding: 0.75rem;
+    padding-bottom: 6rem;
+    display: flex;
+    flex-direction: column;
+}
     
     .movie-title {
         font-size: 0.9rem;
@@ -2124,6 +2130,9 @@ body:not([data-theme="dark"]) .feature-card:hover,
         font-size: 0.75rem;
         margin-bottom: 0.75rem;
         max-height: 100px;
+        overflow-y: auto;
+        flex: 1;
+        -webkit-overflow-scrolling: touch;
     }
     
     .movie-details-grid {
@@ -2134,6 +2143,8 @@ body:not([data-theme="dark"]) .feature-card:hover,
     .action-btn {
         padding: 0.6rem 1.2rem;
         font-size: 0.8rem;
+        bottom: 0.75rem;
+        z-index: 20;
     }
     
     .card-details-preview {
@@ -2149,160 +2160,6 @@ body:not([data-theme="dark"]) .feature-card:hover,
         font-size: 0.7rem;
     }
 }
-
-/* Mobile */
-@media (max-width: 480px) {
-    .movie-grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-        gap: 15px;
-        padding: 10px;
-    }
-    
-    .movie-card {
-        width: 130px;
-        height: 200px;
-    }
-    
-    .poster-image,
-    .poster-wrapper {
-        height: 150px;
-    }
-    
-    .card-meta {
-        padding: 0.4rem;
-    }
-    
-    .genre {
-        font-size: 0.65rem;
-    }
-    
-    .rating {
-        font-size: 0.75rem;
-    }
-    
-    .year {
-        font-size: 0.65rem;
-    }
-    
-    .card-back {
-        padding: 0.6rem;
-        padding-bottom: 5rem;
-    }
-    
-    .movie-title {
-        font-size: 0.8rem;
-    }
-    
-    .movie-overview {
-        font-size: 0.7rem;
-        max-height: 80px;
-    }
-    
-    .movie-details-grid {
-        font-size: 0.65rem;
-        gap: 0.3rem 0.8rem;
-    }
-    
-    .action-btn {
-        padding: 0.5rem 1rem;
-        font-size: 0.75rem;
-        min-height: 40px;
-    }
-    
-    .action-btn.secondary {
-        bottom: 3.5rem;
-    }
-    
-    .card-details-preview {
-        padding: 0.4rem;
-    }
-    
-    .details-title {
-        font-size: 0.75rem;
-    }
-    
-    .details-meta,
-    .details-text {
-        font-size: 0.65rem;
-    }
-}
-
-
-/* Enhanced mobile card back styles */
-.movie-card.flipped .card-back .movie-title {
-    font-size: 1.3rem;
-    margin-bottom: 10px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-}
-
-.movie-card.flipped .card-back .movie-overview {
-    font-size: 1rem;
-    max-height: 120px;
-    margin-bottom: 15px;
-    overflow: hidden;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-}
-
-
-@media (max-width: 480px) {
-.movie-overview {
-    max-height: 80px;
-}
-
-.action-btn {
-    min-height: 40px;
-    padding: 0.5rem 1rem;
-    font-size: 0.8rem;
-}
-
-.action-btn.secondary {
-    bottom: 3.5rem;
-}
-
-.card-back {
-    padding-bottom: 5rem;
-}
-
-/* Enhanced small screen card flip styling */
-.movie-card.flipped .card-back .movie-title {
-    font-size: 1.2rem;
-    margin-bottom: 8px;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
-}
-
-.movie-card.flipped .card-back .movie-overview {
-    font-size: 0.9rem;
-    max-height: 100px;
-    margin-bottom: 12px;
-    overflow: hidden;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
-}
-
-/* Add overlay effect for better text readability */
-.movie-card.flipped .card-front::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 2;
-}
-
-.movie-card {
-    width: 98vw;
-    min-width: 0;
-    max-width: 100vw;
-    height: 180px;
-    min-height: 100px;
-    max-height: 220px;
-}
-.card-front, .card-back {
-    padding: 0.5rem;
-}
-}
-
 
     
 /* Success Toast Styles */
@@ -6160,6 +6017,8 @@ section {
     scroll-behavior: smooth;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    position: relative;
+    z-index: 1;
 }
 
 .carousel-container::-webkit-scrollbar {
@@ -6167,9 +6026,20 @@ section {
 }
 
 .carousel-container .movie-card {
+    position: relative;
     flex-shrink: 0;
     min-width: 200px;
     max-width: 200px;
+    height: 320px;
+    margin: 0 0.5rem 1rem 0.5rem;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    border-radius: 10px;
+    overflow: visible;
+    background: none;
+    transition: transform 0.3s ease;
+    z-index: 2;
 }
 
     
@@ -6181,6 +6051,56 @@ section {
     
     .carousel-controls {
         justify-content: center;
+    }
+    
+    /* Card inner styles for TV Shows */
+    .carousel-container .card-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        text-align: left;
+        transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        transform-style: preserve-3d;
+        -webkit-transform-style: preserve-3d;
+        will-change: transform;
+    }
+    
+    .carousel-container .movie-card.flipped .card-inner {
+        transform: rotateY(180deg);
+        z-index: 10;
+    }
+    
+    .carousel-container .card-front,
+    .carousel-container .card-back {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    
+    .carousel-container .card-front {
+        z-index: 2;
+        background: var(--bg-secondary);
+    }
+    
+    .carousel-container .card-back {
+        transform: rotateY(180deg);
+        z-index: 3;
+        background: var(--bg-primary);
+        background-image: linear-gradient(135deg, rgba(0,0,0,0.35) 0%, transparent 80%);
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1rem;
+        padding-bottom: 7rem;
+        position: relative;
     }
 
 /* Showcase Loading */
