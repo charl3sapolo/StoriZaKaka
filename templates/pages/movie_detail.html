@@ -177,22 +177,46 @@
             transform: translateY(-2px);
         }
 
-        /* Genre Infinity Scroll Layout */
+        /* Genre Layout */
         .genre-row {
+            width: 100%;
+            margin-bottom: 40px;
+            position: relative;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 20px;
+        }
+        
+        .genre-header {
             display: flex;
             align-items: center;
-            gap: 20px;
-            padding: 15px 0;
-            margin-bottom: 30px;
-            position: relative;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 0 15px;
+        }
+        
+        .genre-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .genre-count {
+            background: var(--gradient-primary);
+            color: var(--dark);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
         .movie-cards-container {
             display: flex;
             overflow-x: auto;
+            gap: 15px;
+            padding: 10px 15px;
             scroll-snap-type: x mandatory;
-            gap: 20px;
-            padding: 15px 0;
             scrollbar-width: thin;
             scrollbar-color: var(--primary) var(--soft-gray);
         }
@@ -285,7 +309,28 @@
             gap: 10px;
             margin-top: 20px;
             padding: 20px;
+        }
+        
+        /* Horizontal stack layout */
+        .stack-layout {
+            display: flex;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            overflow-x: auto;
+            padding: 20px;
+            gap: 0;
+        }
+        
+        .stack-layout .movie-card {
+            margin-right: -70px; /* Negative margin creates overlap */
+            transition: transform 0.3s ease, margin-right 0.3s ease, z-index 0.3s ease;
             position: relative;
+        }
+        
+        .stack-layout .movie-card:hover {
+            transform: translateY(-15px);
+            margin-right: 0;
+            z-index: 10;
         }
 
         /* Timeline View Layout */

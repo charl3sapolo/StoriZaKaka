@@ -337,69 +337,51 @@ class UltimateMovieGallery {
     displayGenreLayout(movies) {
         console.log('🎭 Displaying genre layout with', movies.length, 'movies');
         
-        const startTime = performance.now();
-        
         const container = document.getElementById('genreContainer');
         if (!container) {
             console.error('❌ Genre container not found!');
             return;
         }
         
-        // Group movies by genre with improved categorization
+        // Simple genre grouping - use the first genre from TMDB data
         const genreGroups = {};
+        
         movies.forEach(movie => {
-            // First try to get genres from genre_ids
-            let genres = [];
+            // Get genres from the movie data - ONLY use TMDB data, no guessing
+            let primaryGenre = 'Other';
+            
+            // First check genre_ids (from TMDB API)
             if (movie.genre_ids && movie.genre_ids.length > 0) {
-                genres = movie.genre_ids.map(id => GENRE_MAP[id]).filter(genre => genre);
+                const mappedGenres = movie.genre_ids
+                    .map(id => GENRE_MAP[id])
+                    .filter(genre => genre);
+                    
+                if (mappedGenres.length > 0) {
+                    // Skip Drama if there are other genres available
+                    if (mappedGenres.length > 1 && mappedGenres.includes('Drama')) {
+                        primaryGenre = mappedGenres.find(genre => genre !== 'Drama') || mappedGenres[0];
+                    } else {
+                        primaryGenre = mappedGenres[0];
+                    }
+                }
             }
-            
-            // If that fails, try to get genres from genres array if available
-            if (genres.length === 0 && movie.genres && movie.genres.length > 0) {
-                genres = movie.genres.map(genre => genre.name || genre).filter(genre => genre);
-            }
-            
-            // If still no valid genres found, try to infer from movie data
-            if (genres.length === 0) {
-                // Try to get genre from overview if available
-                const overview = movie.overview?.toLowerCase() || '';
-                const title = movie.title?.toLowerCase() || '';
-                
-                // Check both title and overview for genre keywords
-                const text = title + ' ' + overview;
-                
-                if (text.includes('action') || text.includes('fight') || text.includes('war') || 
-                    text.includes('battle') || text.includes('combat')) {
-                    genres = ['Action'];
-                } else if (text.includes('comedy') || text.includes('funny') || text.includes('humor') || 
-                          text.includes('laugh') || text.includes('hilarious')) {
-                    genres = ['Comedy'];
-                } else if (text.includes('horror') || text.includes('scary') || text.includes('fear') || 
-                          text.includes('terror') || text.includes('nightmare')) {
-                    genres = ['Horror'];
-                } else if (text.includes('romance') || text.includes('love') || text.includes('romantic') || 
-                          text.includes('relationship')) {
-                    genres = ['Romance'];
-                } else if (text.includes('sci-fi') || text.includes('science fiction') || text.includes('space') || 
-                          text.includes('future') || text.includes('alien')) {
-                    genres = ['Science Fiction'];
-                } else if (text.includes('thriller') || text.includes('suspense') || text.includes('mystery')) {
-                    genres = ['Thriller'];
-                } else if (text.includes('adventure') || text.includes('journey') || text.includes('quest')) {
-                    genres = ['Adventure'];
-                } else if (text.includes('fantasy') || text.includes('magic') || text.includes('mythical')) {
-                    genres = ['Fantasy'];
-                } else if (text.includes('drama') || text.includes('emotional')) {
-                    genres = ['Drama'];
-                } else {
-                    // Default to Drama for unknown genres as last resort
-                    genres = ['Drama'];
+            // Then check genres array if available
+            else if (movie.genres && movie.genres.length > 0) {
+                const genreNames = movie.genres
+                    .map(genre => genre.name || genre)
+                    .filter(genre => genre);
+                    
+                if (genreNames.length > 0) {
+                    // Skip Drama if there are other genres available
+                    if (genreNames.length > 1 && genreNames.includes('Drama')) {
+                        primaryGenre = genreNames.find(genre => genre !== 'Drama') || genreNames[0];
+                    } else {
+                        primaryGenre = genreNames[0];
+                    }
                 }
             }
             
-            // Use the first valid genre
-            const primaryGenre = genres[0];
-            
+            // Add to genre group
             if (!genreGroups[primaryGenre]) {
                 genreGroups[primaryGenre] = [];
             }
@@ -415,40 +397,42 @@ class UltimateMovieGallery {
         const sortedGenres = Object.entries(genreGroups)
             .sort(([,a], [,b]) => b.length - a.length);
         
-        // Create genre rows with proper scrolling
+        // Create genre rows - one genre per row
         sortedGenres.forEach(([genreName, genreMovies]) => {
             console.log(`🎬 Creating ${genreName} row with ${genreMovies.length} movies`);
+            
+            // Only create rows for genres with movies
+            if (genreMovies.length === 0) return;
             
             const genreRow = document.createElement('div');
             genreRow.className = 'genre-row';
             genreRow.setAttribute('data-genre', genreName);
             
-            // Create movie cards
-            const movieCards = genreMovies.map(movie => this.createMovieCard(movie)).join('');
-            
-            // Create the genre label as a card-like element
-            const genreLabelCard = `
-                <div class="genre-label-card">
-                    <div class="genre-label-content">
-                        <h3 class="genre-name">${genreName}</h3>
-                        <span class="genre-count">${genreMovies.length} movie${genreMovies.length !== 1 ? 's' : ''}</span>
-                    </div>
-                </div>
+            // Create the genre header
+            const genreHeader = document.createElement('div');
+            genreHeader.className = 'genre-header';
+            genreHeader.innerHTML = `
+                <h3 class="genre-name">${genreName}</h3>
+                <span class="genre-count">${genreMovies.length} movie${genreMovies.length !== 1 ? 's' : ''}</span>
             `;
+            genreRow.appendChild(genreHeader);
             
-            // Create the row with proper scrolling container
-            genreRow.innerHTML = `
-                <div class="movie-cards-container">
-                    ${movieCards}
-                    ${genreLabelCard}
-                </div>
-            `;
+            // Create movie cards container
+            const cardsContainer = document.createElement('div');
+            cardsContainer.className = 'movie-cards-container';
             
+            // Add movie cards
+            genreMovies.forEach(movie => {
+                const cardElement = document.createElement('div');
+                cardElement.innerHTML = this.createMovieCard(movie);
+                cardsContainer.appendChild(cardElement.firstElementChild);
+            });
+            
+            genreRow.appendChild(cardsContainer);
             container.appendChild(genreRow);
         });
         
-        const endTime = performance.now();
-        console.log(`✅ Genre layout displayed successfully in ${(endTime - startTime).toFixed(2)}ms`);
+        console.log(`✅ Genre layout displayed successfully with ${Object.keys(genreGroups).length} genres`);
     }
 
     displayStackLayout(movies) {
@@ -460,39 +444,17 @@ class UltimateMovieGallery {
             return;
         }
         
-        // Apply stacked effect CSS
-        container.style.position = 'relative';
+        // Simple solution: just add the stack class to container
+        container.className = 'stack-view stack-layout';
         
         // Clear container first
         container.innerHTML = '';
         
-        // Add cards with stacked effect
-        movies.forEach((movie, index) => {
-            const cardElement = document.createElement('div');
-            cardElement.innerHTML = this.createMovieCard(movie);
-            const card = cardElement.firstElementChild;
-            
-            // Add stacked positioning
-            if (card) {
-                card.style.position = 'relative';
-                card.style.marginTop = index > 0 ? '-20px' : '0';
-                card.style.zIndex = movies.length - index; // Higher index = lower in stack
-                card.style.boxShadow = '0 4px 8px rgba(0,0,0,0.3)';
-                card.style.transition = 'transform 0.3s ease, margin-top 0.3s ease';
-                
-                // Add hover effect
-                card.addEventListener('mouseenter', () => {
-                    card.style.transform = 'translateY(-10px) scale(1.05)';
-                    card.style.zIndex = 100; // Bring to front on hover
-                });
-                
-                card.addEventListener('mouseleave', () => {
-                    card.style.transform = '';
-                    card.style.zIndex = movies.length - index;
-                });
-                
-                container.appendChild(card);
-            }
+        // Create movie cards
+        movies.forEach(movie => {
+            const movieCard = document.createElement('div');
+            movieCard.innerHTML = this.createMovieCard(movie);
+            container.appendChild(movieCard.firstElementChild);
         });
         
         console.log(`✅ Stack layout displayed with ${movies.length} movies`);
