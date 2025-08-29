@@ -1,12 +1,9 @@
 #!/bin/bash
-set -e
+# Make sure pip and wheel are up-to-date
+python -m pip install --upgrade pip setuptools wheel
 
-# Collect static files
-python manage.py collectstatic --noinput
+# Ensure gunicorn is installed in runtime
+python -m pip install gunicorn==21.2.0
 
-# Apply database migrations
-python manage.py migrate
-
-# Start Gunicorn processes
-echo "Starting Gunicorn with movierecommender.wsgi:application"
-exec gunicorn movierecommender.wsgi:application --bind 0.0.0.0:$PORT --workers 3 --timeout 120
+# Run the Django app
+python -m gunicorn movierecommender.wsgi:application --bind 0.0.0.0:$PORT
