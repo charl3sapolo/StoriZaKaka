@@ -1,1 +1,1 @@
-web: bash run.sh
+web: gunicorn StoriZaKaka.wsgi:application --bind 0.0.0.0:$PORT
