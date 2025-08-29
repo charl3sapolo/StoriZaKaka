@@ -2097,6 +2097,9 @@ body:not([data-theme="dark"]) .feature-card:hover,
     z-index: 5;
 }
 
+/* Always reveal actions on flip */
+.movie-card.flipped .card-actions { opacity: 1; pointer-events: auto; }
+
 .details-title {
     font-size: 0.9rem;
     font-weight: 700;
@@ -2127,10 +2130,10 @@ body:not([data-theme="dark"]) .feature-card:hover,
 /* Mobile movie card styles */
 @media (max-width: 480px) {
     .movie-card {
-        width: 90vw;
-        max-width: 300px;
+        width: 92vw;
+        max-width: 96vw;
         aspect-ratio: 2/3;
-        height: auto;
+        height: 420px;
         margin: 0 auto 1rem;
         perspective: 1000px;
     }
@@ -2211,8 +2214,8 @@ body:not([data-theme="dark"]) .feature-card:hover,
     }
     
     .movie-card.flipped .card-back .movie-overview {
-        font-size: 0.85rem;
-        max-height: 100px;
+        font-size: 1rem;
+        max-height: 220px;
         overflow-y: auto;
         margin-bottom: 1rem;
     }
@@ -2235,20 +2238,20 @@ body:not([data-theme="dark"]) .feature-card:hover,
 /* Tablet */
 @media (max-width: 768px) {
     .movie-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-        gap: 20px;
-        padding: 15px;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 22px;
+        padding: 16px;
     }
     
     .movie-card {
-        width: 150px;
-        height: 240px;
+        width: 260px;
+        height: 400px;
         margin-bottom: 1rem;
     }
     
     .poster-image,
     .poster-wrapper {
-        height: 180px;
+        height: 70%;
     }
     
     .card-meta {
@@ -2281,9 +2284,9 @@ body:not([data-theme="dark"]) .feature-card:hover,
     }
     
     .movie-overview {
-        font-size: 0.75rem;
+        font-size: 0.85rem;
         margin-bottom: 0.75rem;
-        max-height: 100px;
+        max-height: 140px;
         overflow-y: auto;
         flex: 1;
         -webkit-overflow-scrolling: touch;
@@ -2752,12 +2755,12 @@ opacity: 0;
 
 @media (max-width: 600px) {
     .movie-card {
-        width: 90vw;
-        min-width: 140px;
+        width: 96vw;
+        min-width: 300px;
         max-width: 98vw;
-        height: 200px;
-        min-height: 120px;
-        max-height: 260px;
+        height: 480px;
+        min-height: 360px;
+        max-height: none;
     }
     
     .media-grid {
@@ -2770,11 +2773,11 @@ opacity: 0;
     }
     
     .skeleton-card {
-        height: 240px;
+        height: 480px;
     }
     
     .skeleton-poster {
-        height: 160px;
+        height: 70%;
     }
 }
 
@@ -6106,7 +6109,7 @@ section {
 
 @media (max-width: 480px) {
     .poster-wrapper {
-        height: 140px;
+        height: 70%;
     }
     .details-title {
         font-size: 0.75rem;
