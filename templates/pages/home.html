@@ -493,6 +493,31 @@
         </div>
     </section>
 
+    <!-- Movie Info Modal -->
+    <div class="movie-info-modal" id="movieInfoModal">
+        <div class="info-modal-backdrop" id="infoModalBackdrop"></div>
+        <div class="info-modal-container">
+            <button class="info-modal-close" id="infoModalClose">✕</button>
+            <div class="info-modal-content">
+                <div class="info-modal-header">
+                    <h2 class="info-modal-title" id="infoModalTitle">Movie Title</h2>
+                </div>
+                <p class="info-modal-description" id="infoModalDescription">
+                    Movie description will be inserted here...
+                </p>
+                <div class="info-modal-details" id="infoModalDetails">
+                    <!-- Movie details will be inserted here -->
+                </div>
+                <div class="info-modal-cast">
+                    <h3 class="info-modal-cast-title" data-en="Cast" data-sw="Waigizaji">Cast</h3>
+                    <div class="cast-list" id="infoModalCast">
+                        <!-- Cast will be inserted here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript -->
     <script src="{% static 'js/home.js' %}"></script>
 </body>
