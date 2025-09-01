@@ -2058,6 +2058,10 @@ body:not([data-theme="dark"]) .feature-card:hover,
     z-index: 19;
 }
 
+.modal-buttons .action-btn.secondary {
+    margin-top: 0;
+}
+
 .action-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
@@ -4708,7 +4712,7 @@ opacity: 0;
 
 .watch-trailer {
     min-height: var(--btn-primary-height);
-    background: linear-gradient(135deg, #afbc72, #a98a11);
+    background: linear-gradient(135deg, var(--color-red), #cc0000);
     border: none;
     border-radius: var(--btn-border-radius);
     color: white;
@@ -4724,11 +4728,12 @@ opacity: 0;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    box-shadow: 0 2px 12px rgba(255, 0, 0, 0.3);
     
     &:hover {
-        background: linear-gradient(135deg,  #afbc72, #a98a11);
+        background: linear-gradient(135deg, var(--color-red), #cc0000);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 242, 0, 0.3);
+        box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
     }
     
     &:disabled {
@@ -4740,8 +4745,13 @@ opacity: 0;
 }
 
 .watch-trailer:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 0, 0, 0.4);
+}
+
+.modal-buttons .action-btn.secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
 }
 
     /* Watch Trailer Button */
@@ -4770,6 +4780,16 @@ opacity: 0;
 .watch-trailer-btn:active {
     transform: translateY(0);
     box-shadow: 0 2px 8px rgba(255, 200, 0, 0.3);
+}
+
+.watch-trailer:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
+}
+
+.modal-buttons .action-btn.secondary:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 /* Modal Navigation Arrows */
@@ -4891,9 +4911,22 @@ opacity: 0;
         font-size: 0.9rem;
     }
     
+    .modal-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
     .watch-trailer {
         height: 44px;
         font-size: 0.95rem;
+        width: 100%;
+    }
+    
+    .modal-buttons .action-btn {
+        height: 44px;
+        font-size: 0.95rem;
+        width: 100%;
+        margin-top: 0;
     }
     
     .modal-arrow {
