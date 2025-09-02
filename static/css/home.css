@@ -1850,11 +1850,11 @@ body:not([data-theme="dark"]) .feature-card:hover,
 .info-btn {
     position: absolute;
     top: 0.5rem;
-    left: 0.5rem;
+    right: 0.4rem;
     width: 28px;
     height: 28px;
     border-radius: 50%;
-    background: rgba(255, 215, 0, 0.8);
+    background: rgba(249, 197, 8, 0.43);
     border: none;
     color: #000;
     font-size: 16px;
@@ -1868,23 +1868,7 @@ body:not([data-theme="dark"]) .feature-card:hover,
 }
 
 /* Responsive movie card adjustments for small screens */
-@media (max-width: 480px) {
-    .movie-card.flipped {
-        width: 180px; /* Wider when flipped on mobile */
-        max-width: 90vw;
-        z-index: 100;
-    }
-    
-    .movie-card.flipped .card-inner {
-        width: 180px; /* Match the card width */
-        max-width: 90vw;
-    }
-    
-    .movie-card.flipped .card-back {
-        width: 180px; /* Match the card width */
-        max-width: 90vw;
-    }
-    
+@media (max-width: 480px) {  
     .info-btn {
         width: 24px;
         height: 24px;
@@ -2292,12 +2276,12 @@ body:not([data-theme="dark"]) .feature-card:hover,
 }
 
 .cast-list::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
+    background: rgba(254, 225, 5, 0.12);
     border-radius: 10px;
 }
 
 .cast-list::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(249, 225, 2, 0.3);
     border-radius: 10px;
 }
 
