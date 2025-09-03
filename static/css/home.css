@@ -2484,20 +2484,112 @@ body:not([data-theme="dark"]) .feature-card:hover,
         z-index: 2;
     }
     
+    /* Enhanced responsive card back for small screens */
     .movie-card.flipped .card-back {
-        padding-bottom: 5rem; /* Ensure space for buttons */
+        padding: 1.5rem 1.5rem 5rem;
+        width: 100%;
+        min-width: 100%;
+        height: auto;
+        min-height: 100%;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+    }
+    
+    /* Custom scrollbar for movie overview */
+    .movie-card.flipped .movie-overview::-webkit-scrollbar {
+        width: 4px;
+    }
+    
+    .movie-card.flipped .movie-overview::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+    
+    .movie-card.flipped .movie-overview::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+    }
+    
+    .movie-card.flipped .card-back .movie-title {
+        font-size: 1.1rem;
+        margin-bottom: 0.75rem;
+        width: 100%;
+    }
+    
+    .movie-card.flipped .card-back .movie-overview {
+        font-size: 0.95rem;
+        max-height: 220px;
+        overflow-y: auto;
+        margin-bottom: 1rem;
+        width: 100%;
+        line-height: 1.4;
+    }
+}
+
+/* Additional responsive styles for movie cards */
+@media (max-width: 768px) and (min-width: 481px) {
+    /* Medium-sized screens */
+    .movie-card.flipped .card-back {
+        padding: 1.25rem 1.25rem 4.5rem;
+        overflow-y: auto;
+    }
+    
+    .movie-card.flipped .movie-overview {
+        max-height: 180px;
+        font-size: 0.9rem;
+        line-height: 1.4;
+        margin-bottom: 0.75rem;
+    }
+    
+    .movie-card.flipped .movie-details-grid {
+        margin-bottom: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .movie-card.flipped .card-actions {
+        bottom: 1rem;
+    }
+}
+
+/* Smaller screens (375px and below) */
+@media (max-width: 375px) {
+    .movie-card.flipped .card-back {
+        padding: 1.25rem 1rem 4.5rem;
     }
     
     .movie-card.flipped .card-back .movie-title {
         font-size: 1rem;
-        margin-bottom: 0.75rem;
+        margin-bottom: 0.5rem;
     }
     
     .movie-card.flipped .card-back .movie-overview {
-        font-size: 1rem;
-        max-height: 220px;
-        overflow-y: auto;
-        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        max-height: 180px;
+        line-height: 1.35;
+    }
+    
+    .movie-card.flipped .movie-details-grid {
+        font-size: 0.85rem;
+        gap: 0.5rem;
+    }
+    
+    .movie-card.flipped .action-btn {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+    
+    /* Ensure action buttons are properly positioned */
+    .movie-card.flipped .card-actions {
+        position: absolute;
+        bottom: 0.75rem;
+        left: 0;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0 0.75rem;
     }
 }
 
