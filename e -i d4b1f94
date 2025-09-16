@@ -1,0 +1,181 @@
+[33m4a5d969[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m auth
+[33m677836b[m wqw
+[33m17fac26[m w
+[33m908bf58[m gun
+[33m7d725fa[m big
+[33mf64d64a[m 1pray
+[33md3fd7ac[m pray
+[33m7547fb2[m tt
+[33m338e7b5[m p
+[33ma50f988[m pp
+[33mfd33fb9[m ww
+[33m6706aad[m yyy
+[33m1f38a24[m bttr
+[33m8079906[m hahaha
+[33mdb0965d[m q
+[33md4b1f94[m qqq
+[33m972d1eb[m rqrmnt change
+[33m0fa0ef0[m procfile changes
+[33m0f54a9d[m edited requirements.txt
+[33m9b076f7[m shibaal
+[33m7c172bb[m shibal
+[33m8bb9c15[m ui
+[33m8f6a023[m ui
+[33m573f911[m flipping annoying
+[33m22a1222[m flip
+[33m20944da[m shibaaal
+[33m76f0616[m Enhance mobile card flip animation with improved 3D perspective and positioning styles
+[33ma489af6[m still no flip
+[33md4c0c71[m ui
+[33m55846b4[m back card
+[33m1b05c5a[m spoke too soon so no yaay
+[33mc972858[m Fix build and start commands in render.yaml
+[33m55e8b70[m Fix start command in render.yaml
+[33mf2a09e9[m Remove file logging from base settings
+[33m4b12f37[m Fix logging configuration for Render deployment
+[33ma4b6f7a[m Fix logs directory issue in Render deployment
+[33m10d94e3[m Update deployment configuration with explicit run script
+[33md96ec0e[m Make render-build.sh executable
+[33m261cb34[m Add Render deployment files with app.py entry point
+[33m6a3ed46[m bhula
+[33m8da56d4[m deployed yaay
+[33mfa02b7b[m deploy102
+[33mf405dd2[m deploy101
+[33m09f6683[m deploy
+[33m8569b8b[m refresh button
+[33mda80ab9[m strict year filtering
+[33mee1a41c[m store movie questions for recomendation
+[33m4a27811[m recommendation
+[33md010f11[m shibaaal
+[33m67720f4[m shibal im back
+[33m88e1795[m fuckng bugs- shiball
+[33mf090f7a[m modal trailer
+[33mf38d273[m dynamic modal UI
+[33mf8d4460[m save button on modal
+[33md8291f1[m menu button
+[33m0bf91d1[m modal ui
+[33m5ac7a67[m movie modal
+[33m5ff28d8[m minor fixs
+[33m9842f9b[m deploy
+[33m05cc2cd[m Search bar
+[33m2ca5bf3[m ui
+[33m7e0f210[m ui
+[33m5f2f0d9[m logo
+[33m8e8174e[m home
+[33m63339b6[m login/signup
+[33m73282c5[m ui
+[33m473d3d0[m spinner
+[33mc18c763[m stori za kaka-kakaflix
+[33m8b8d689[m Light mode
+[33me1725a8[m ui
+[33m3967158[m ui
+[33m9b84e85[m ui
+[33m738f36c[m swahli
+[33ma106a9a[m ui
+[33me9c1218[m signup
+[33m189da82[m Update authentication forms to use email for login and adjust labels in signup template
+[33m9c47de5[m Refactor templates to unify base structure and update branding to KakaFlix
+[33md26bca8[m auth ui
+[33m7975244[m  pull
+[33mc6524c9[m usr auth
+[33m53ce356[m Merge pull request #3 from adrianofina/UI-fixs
+[33m0a16f0b[m[33m ([m[1;31morigin/UI-fixs[m[33m)[m logo
+[33m1177d71[m Card flip on small screen
+[33mc1a75d9[m fix: update logo text from 'Stori za Kaka' to 'KakaFlix' for brand consistency
+[33m23efe4a[m Dark/ light mode toggle
+[33m4d8b3ae[m feat: add API endpoints for movie management and enhance light theme support in CSS; improve mobile menu styles and loading indicators
+[33m09a6666[m refactor: update authentication templates for a unified design, enhance form validation, and improve user experience with error handling
+[33mdf19ce7[m feat: implement unified navigation system with theme and language toggles, mobile menu functionality, and accessibility enhancements
+[33m9bdab8d[m style: enhance hero section with improved layout, stronger text shadows, and color fade animation; remove blurry animations for better readability
+[33m0fb016b[m refactor: comment out debug toolbar settings in development and update CSS for responsive design improvements
+[33mcded270[m Merge branch 'main' of https://github.com/adrianofina/StoriZaKaka
+[33me2a9607[m refactor: update template paths for authentication views and enhance CSRF settings in development
+[33m81cea3a[m[33m ([m[1;31morigin/UI-fix[m[33m)[m refactor: update template paths for authentication views and enhance CSRF settings in development
+[33mbd3ca0f[m ui
+[33ma2a1bef[m ui
+[33m8ea968b[m bug fix
+[33m457b346[m UI
+[33m44bf801[m logo
+[33mcef89e0[m bug fix
+[33m4fcc583[m UI
+[33m9b92357[m Trailer API
+[33m047a203[m Search bar
+[33mba955c5[m Add custom authentication adapters and new questionnaire view
+[33me0c8440[m UI
+[33m483cfa9[m Flip
+[33m7e38e38[m UI
+[33m89055e5[m UI
+[33me64e811[m Movie match
+[33mc07d586[m UI
+[33mf28f6e7[m UI
+[33md52c867[m Questionnaire
+[33m42d5b23[m UI
+[33m7e0907c[m ui
+[33mfb5bd6e[m UI
+[33m88b8f59[m Gallery
+[33m86dbbb6[m login
+[33m140fa1a[m sign up
+[33mc442026[m login
+[33mcb23b04[m auth
+[33mff8841c[m UI
+[33mae77442[m Gallery
+[33md187030[m login
+[33m2b3a350[m feat: Add user movie management features and enhance profile page
+[33mfcc549f[m Add user movie management endpoints and enhance authentication redirects
+[33m662ae5d[m Finalize and save my work
+[33m02783f2[m Merge pull request #2 from adrianofina/backend-test
+[33mc694927[m[33m ([m[1;32mbackend-test[m[33m)[m Add user mood preferences and movie saving functionality
+[33m3f7f1bd[m API
+[33m76cd734[m UI bugs fix
+[33m9bf11be[m Movie Gallery
+[33m0c14ba3[m Gallery
+[33m1b50fa5[m Gallery
+[33m62612fa[m Gallery
+[33m3a578d3[m My movie Gallery
+[33m9f4dbcc[m My movies Page
+[33m2805445[m Save movies
+[33m8e537c3[m session
+[33m0686e6d[m js
+[33md9ce5b6[m modal
+[33m4dbca4d[m Login
+[33mce2db80[m menu bar
+[33me3e114b[m Login
+[33m4dff2a0[m Questions js
+[33m2960473[m UI
+[33mb775e0f[m UX
+[33m21fc3d8[m UI
+[33mb0b09f4[m UI
+[33mdc5afe8[m UI
+[33m21b030f[m Js
+[33m0cb2f1f[m API UI
+[33maf0d4ae[m UI
+[33m1774591[m mmhhhhh
+[33m6b37720[m UI
+[33m0548ae9[m API UI
+[33maec04a4[m UI
+[33ma1ff038[m UI
+[33m1637c0d[m UI
+[33m0c8d4be[m[33m ([m[1;31morigin/backend-test[m[33m)[m Tired
+[33meb2d67f[m Tired
+[33m67a2fd4[m UI
+[33m7af7db0[m Fatur
+[33m96a7826[m Stats
+[33m10f0583[m UI
+[33m2b360e3[m UI
+[33mec0e028[m UI
+[33m3e4045f[m UX
+[33m397577a[m UX
+[33mb9ba776[m UI/UX
+[33mb706a5c[m UI
+[33m4cb3809[m UI
+[33m9d535c6[m API
+[33m07a2f93[m UI
+[33m1325ea9[m Genre Dropdown
+[33m71ea4fc[m YouTube API
+[33m43f1cd8[m Flip
+[33m83f3333[m UI
+[33me92a7d4[m API
+[33m43634d7[m API
+[33m46d886c[m URL
+[33mdf8ece9[m UI
+[33mebc2043[m API

@@ -4,6 +4,10 @@
 
 {% block title %}{% trans "Register" %}{% endblock %}
 
+{% block head_extra %}
+<link rel="stylesheet" href="{% static 'css/translate.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="login-page">
     <div class="login-container">
@@ -416,6 +420,13 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Load translation service
+    if (!window.translateService) {
+        const script = document.createElement('script');
+        script.src = "{% static 'js/translate-service.js' %}";
+        document.body.appendChild(script);
+    }
+    
     const form = document.getElementById('registerForm');
     const submitBtn = form.querySelector('.login-btn');
     const btnText = submitBtn.querySelector('.btn-text');

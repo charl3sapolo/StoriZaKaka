@@ -1,0 +1,40 @@
+/* Translation Service Styles */
+
+/* Language Toggle Button */
+.language-toggle {
+    background: rgba(26, 26, 26, 0.8);
+    border: 1px solid rgba(212, 153, 26, 0.2);
+    color: #ffffff;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.language-toggle:hover {
+    background: #D4991A;
+    color: #0A0A0A;
+}
+
+/* Toast notification for language change */
+.translate-toast {
+    position: fixed;
+    z-index: 10000;
+    background: rgba(33, 33, 33, 0.95);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    top: 20px;
+    right: 20px;
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 768px) {
+    .translate-toast {
+        width: calc(100% - 40px);
+        right: 20px;
+        left: 20px;
+    }
+}

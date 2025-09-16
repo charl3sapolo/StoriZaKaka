@@ -36,15 +36,32 @@ class NavigationManager {
                 setTimeout(() => {
                     themeToggle.style.transform = 'scale(1)';
                 }, 150);
+                
+                // Show notification on active change
+                this.showThemeToast(newTheme);
             });
         }
     }
+    
+    showThemeToast(theme) {
+        this.showNotification({
+            icon: theme === 'dark' ? '🌙' : '☀️',
+            text: `Switched to ${theme} mode`
+        });
+    }
 
-    // Language System
+    // Language System - Use TranslateService if available
     initializeLanguageSystem() {
         const langToggle = document.getElementById('languageToggle');
         const rootElement = document.body;
 
+        // If TranslateService is available, let it handle language switching
+        if (window.translateService) {
+            console.log('🌐 Using TranslateService for language handling');
+            return;
+        }
+        
+        // Fallback if TranslateService is not available
         if (langToggle) {
             langToggle.addEventListener('click', () => {
                 const currentLang = rootElement.getAttribute('data-lang') || 'en';
@@ -62,8 +79,28 @@ class NavigationManager {
                 setTimeout(() => {
                     langToggle.style.transform = 'scale(1)';
                 }, 150);
+                
+                // Show notification on active change
+                this.showLanguageToast(newLang);
+                
+                // Update auth links with new language
+                if (window.updateAuthLinks) {
+                    window.updateAuthLinks();
+                }
             });
         }
+    }
+    
+    showLanguageToast(lang) {
+        const languages = {
+            'en': { name: 'English', flag: '🇺🇸' },
+            'sw': { name: 'Kiswahili', flag: '🇹🇿' }
+        };
+        
+        this.showNotification({
+            icon: languages[lang].flag,
+            text: `Switched to ${languages[lang].name}`
+        });
     }
 
     updateLanguageElements(lang) {
@@ -185,25 +222,28 @@ class NavigationManager {
 
     // Load Saved Preferences
     loadSavedPreferences() {
-        const savedTheme = localStorage.getItem('theme');
-        const savedLang = localStorage.getItem('language');
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        const savedLang = localStorage.getItem('language') || 'en';
         const rootElement = document.body;
 
-        if (savedTheme) {
-            rootElement.setAttribute('data-theme', savedTheme);
-            const themeToggle = document.getElementById('themeToggle');
-            if (themeToggle) {
-                themeToggle.querySelector('.theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
-            }
+        // Apply theme without showing notification
+        rootElement.setAttribute('data-theme', savedTheme);
+        const themeToggle = document.getElementById('themeToggle');
+        if (themeToggle) {
+            themeToggle.querySelector('.theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
         }
 
-        if (savedLang) {
-            rootElement.setAttribute('data-lang', savedLang);
-            const langToggle = document.getElementById('languageToggle');
-            if (langToggle) {
-                langToggle.querySelector('span').textContent = savedLang === 'en' ? 'SW' : 'EN';
-            }
-            this.updateLanguageElements(savedLang);
+        // Apply language without showing notification
+        rootElement.setAttribute('data-lang', savedLang);
+        const langToggle = document.getElementById('languageToggle');
+        if (langToggle) {
+            langToggle.querySelector('span').textContent = savedLang === 'en' ? 'SW' : 'EN';
+        }
+        this.updateLanguageElements(savedLang);
+        
+        // Update auth links based on current authentication status
+        if (window.updateAuthLinks) {
+            window.updateAuthLinks();
         }
     }
 
@@ -238,6 +278,97 @@ class NavigationManager {
                 element.textContent = count;
             }
         });
+    }
+    
+    // Unified notification system with mobile responsiveness
+    showNotification({icon, text, position = 'top'}) {
+        const toast = document.createElement('div');
+        toast.className = 'dynamic-toast';
+        
+        toast.innerHTML = `
+            <div class="toast-content">
+                <span class="toast-icon">${icon}</span>
+                <span class="toast-text">${text}</span>
+            </div>
+        `;
+        
+        // Mobile-responsive styles
+        const isMobile = window.innerWidth <= 768;
+        const mobileStyles = isMobile ? `
+            width: calc(100% - 40px);
+            right: 20px;
+            left: 20px;
+            top: ${position === 'top' ? '20px' : 'auto'};
+            bottom: ${position === 'bottom' ? '20px' : 'auto'};
+        ` : `
+            min-width: 280px;
+            max-width: 320px;
+            top: ${position === 'top' ? '20px' : 'auto'};
+            bottom: ${position === 'bottom' ? '20px' : 'auto'};
+            right: 20px;
+        `;
+        
+        // Apply styles
+        toast.style.cssText = `
+            position: fixed;
+            z-index: 10000;
+            background: rgba(33, 33, 33, 0.95);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            ${mobileStyles}
+        `;
+        
+        // Toast content styles
+        const toastContent = toast.querySelector('.toast-content');
+        toastContent.style.cssText = `
+            display: flex;
+            align-items: center;
+            width: 100%;
+        `;
+        
+        // Icon styles
+        const toastIcon = toast.querySelector('.toast-icon');
+        toastIcon.style.cssText = `
+            font-size: 20px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        `;
+        
+        // Text styles
+        const toastText = toast.querySelector('.toast-text');
+        toastText.style.cssText = `
+            font-size: 14px;
+            font-weight: 500;
+        `;
+        
+        // Add to DOM and animate in
+        document.body.appendChild(toast);
+        
+        // Force reflow to ensure animation works
+        toast.offsetHeight;
+        
+        toast.style.transform = 'translateY(0)';
+        toast.style.opacity = '1';
+        
+        // Remove after delay
+        setTimeout(() => {
+            toast.style.transform = 'translateY(-20px)';
+            toast.style.opacity = '0';
+            
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
     }
 }
 
