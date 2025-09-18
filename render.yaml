@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: storizakaka
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: pip install -r StoriZaKaka/requirements.txt && python StoriZaKaka/manage.py collectstatic --noinput
+    startCommand: python -m gunicorn movierecommender.wsgi:application --chdir StoriZaKaka --bind 0.0.0.0:$PORT --workers 3
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: DJANGO_SETTINGS_MODULE
+        value: movierecommender.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value:
+      - key: CSRF_TRUSTED_ORIGINS
+        value:
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: STATIC_URL
+        value: /static/
+      - key: STATIC_ROOT
+        value: staticfiles
+      - key: MEDIA_URL
+        value: /media/
+      - key: MEDIA_ROOT
+        value: media
+    autoDeploy: true
